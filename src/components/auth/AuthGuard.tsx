@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { PATHS } from '@/constants/path';
 import { useAuth, useUserRole } from '@/hooks';
+import { useSelector } from 'react-redux';
 
 // Define route permissions
 const ROUTE_PERMISSIONS: { [key: string]: string[] } = {
@@ -20,8 +21,11 @@ const AuthGuard = () => {
     const router = useRouter();
     const { isAuth, user } = useAuth();
     const { isHost } = useUserRole();   
+    const isRehydrated = useSelector((state: any) => state._persist?.rehydrated);
 
     useEffect(() => {
+        if (!isRehydrated) return; // Wait until Redux Persist is fully rehydrated before redirecting
+
         // 1. Check if route requires auth
         const isProtectedRoute = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
@@ -60,7 +64,7 @@ const AuthGuard = () => {
             }
             router.replace(PATHS.HOME_PAGE || '/space-list');
         }
-    }, [pathname, isAuth, isHost, router, user]);
+    }, [pathname, isAuth, isHost, router, user, isRehydrated]);
 
     return null;
 };
