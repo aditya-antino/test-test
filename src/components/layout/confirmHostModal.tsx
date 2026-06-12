@@ -6,14 +6,14 @@ import { Button } from '../ui/button';
 const ConfirmHostModal = ({ open, onClose, onConfirm }) => {
     return (
         <Modal showClose={false} className="" open={open} onClose={onClose}>
-            <div className="flex max-w-80 h-fit flex-col gap-8 items-center">
-                <div className="flex items-center flex-col gap-2">
+            <div className="flex w-full max-w-80 h-fit flex-col gap-8 items-center mx-auto">
+                <div className="flex w-full items-center flex-col gap-2">
                     <TriangleAlert className="mx-auto h-20 w-20 text-[#F6CD28]" />
                     <div className="self-stretch text-center justify-start text-gray-900 text-2xl font-semibold font-['Figtree'] leading-loose">
                         Switch Profile?
                     </div>
                 </div>
-                <div className="flex flex-col gap-4">
+                <div className="flex w-full flex-col gap-4">
                     <div className="self-stretch text-center justify-start">
                         <span className="text-zinc-800 text-xl font-semibold font-['Figtree'] leading-tight">
                             You{"'"}re about to switch to{' '}
