@@ -39,9 +39,7 @@ export default function HeroHomeSection() {
                         Book by the hour. Flexible, affordable, and hassle-free.
                     </Typography>
                     {/* Search Bar */}
-                    <div className="absolute w-[95%] lg:w-[85%] max-w-6xl z-[40] top-[58%] left-1/2 -translate-x-1/2">
-                        <HomePageSearchBarTab />
-                    </div>
+                    <HomePageSearchBarTab className="absolute w-[95%] lg:w-[85%] max-w-6xl z-[40] top-[58%] left-1/2 -translate-x-1/2" />
                 </div>
 
                 {/* Right Images */}
