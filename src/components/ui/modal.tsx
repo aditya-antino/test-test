@@ -89,7 +89,7 @@ export function Modal({
             ref={overlayRef}
             onMouseDown={onOverlayClick}
             className={cn(
-                'fixed h-screen w-screen top-0 left-0 inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px]',
+                'fixed h-screen w-screen top-0 left-0 inset-0 z-[80] flex items-center justify-center bg-black/30 backdrop-blur-[2px]',
                 'transition-all duration-200 ease-out',
                 isVisible ? 'opacity-100' : 'opacity-0',
             )}
