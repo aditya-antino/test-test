@@ -1,6 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { encryptRequest, decryptResponse, isEncrypted } from '@/utils/encryption';
+import { store } from '@/store/store';
+import { logout } from '@/store/slice/authSlice';
 import { PATHS } from '@/constants/path';
 
 const ENABLE_ENCRYPTION = process.env.NEXT_PUBLIC_ENABLE_ENCRYPTION === 'true';
@@ -25,15 +27,13 @@ const handleSessionExpired = () => {
     if (typeof window === 'undefined') return;
     const token = localStorage.getItem('accessToken');
     
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    sessionStorage.removeItem('signup_step');
-    sessionStorage.removeItem('signup_gender');
+    // Dispatch logout to Redux. This handles clearing localStorage and Redux state.
+    // AuthGuard will then react to `isAuth` becoming false and automatically safely navigate.
+    store.dispatch(logout());
 
-    // Only show toast and redirect if we were actually logged in
+    // Only show toast if we were actually logged in
     if (token) {
         toast.error('Your session has expired. Please log in again.');
-        setTimeout(() => window.location.replace(PATHS.LOGIN), 1500);
     }
 };
 

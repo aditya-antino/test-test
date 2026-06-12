@@ -1,9 +1,10 @@
 'use client';
 
-import { store } from '@/store/store';
+import { store, persistor } from '@/store/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { ToastContainer } from 'react-toastify';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AuthGuard from '@/components/auth/AuthGuard';
@@ -51,11 +52,13 @@ export default function RootProvider({ children }: { children: React.ReactNode }
             )}
             <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
                 <Provider store={store}>
-                    <ToastContainer />
-                    <AuthGuard />
-                    <QueryClientProvider client={queryClient}>
-                        <AppErrorBoundary>{children}</AppErrorBoundary>
-                    </QueryClientProvider>
+                    <PersistGate loading={null} persistor={persistor}>
+                        <ToastContainer />
+                        <AuthGuard />
+                        <QueryClientProvider client={queryClient}>
+                            <AppErrorBoundary>{children}</AppErrorBoundary>
+                        </QueryClientProvider>
+                    </PersistGate>
                 </Provider>
             </GoogleOAuthProvider>
         </>
