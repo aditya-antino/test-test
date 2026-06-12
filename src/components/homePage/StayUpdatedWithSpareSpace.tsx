@@ -78,8 +78,27 @@ const MobileCarousel = React.memo(function MobileCarousel(props: { opts: typeof 
 });
 
 const SpareSpaceVideoSection = React.memo(function SpareSpaceVideoSection() {
+    const [isVisible, setIsVisible] = React.useState(false);
+    const sectionRef = React.useRef<HTMLElement>(null);
+
+    React.useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: '200px' }
+        );
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <section className="w-full py-4 px-4 md:px-16 relative overflow-hidden mt-8">
+        <section ref={sectionRef} className="w-full py-4 px-4 md:px-16 relative overflow-hidden mt-8 min-h-[500px]">
             <div className="flex flex-col items-center text-center gap-4 relative z-10 mb-8">
                 <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
                     See <span className="text-[#F7CD29]">Spare Space</span> Live
@@ -90,8 +109,12 @@ const SpareSpaceVideoSection = React.memo(function SpareSpaceVideoSection() {
                 </p>
             </div>
 
-            <DesktopVideos opts={VIDEO_OPTS} />
-            <MobileCarousel opts={VIDEO_OPTS} />
+            {isVisible && (
+                <>
+                    <DesktopVideos opts={VIDEO_OPTS} />
+                    <MobileCarousel opts={VIDEO_OPTS} />
+                </>
+            )}
         </section>
     );
 });

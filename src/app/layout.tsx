@@ -77,12 +77,14 @@ const figtree = Figtree({
     subsets: ['latin'],
     weight: ['400', '500', '600', '700'],
     variable: '--font-figtree',
+    display: 'swap',
 });
 
 const poppins = Poppins({
     subsets: ['latin'],
     weight: ['400', '500', '600', '700'],
     variable: '--font-poppins',
+    display: 'swap',
 });
 
 const GTM_ID = 'GTM-T5JZ8LHH';
@@ -108,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <RootProvider>{children}</RootProvider>
 
                 {/* Google Tag Manager - loads as early as possible (equivalent to top of <head>) */}
-                <Script id="gtm-script" strategy="afterInteractive">
+                <Script id="gtm-script" strategy="lazyOnload">
                     {`
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -122,9 +124,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <>
                         <Script
                             src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-                            strategy="afterInteractive"
+                            strategy="lazyOnload"
                         />
-                        <Script id="google-analytics" strategy="afterInteractive">
+                        <Script id="google-analytics" strategy="lazyOnload">
                             {`
                                 window.dataLayer = window.dataLayer || [];
                                 function gtag(){dataLayer.push(arguments);}
@@ -138,13 +140,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {MAP_API_KEY && (
                     <Script
                         src={`https://maps.googleapis.com/maps/api/js?key=${MAP_API_KEY}&libraries=places`}
-                        strategy="afterInteractive"
+                        strategy="lazyOnload"
                     />
                 )}
 
                 <Script
                     src="https://checkout.razorpay.com/v1/checkout.js"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                 />
 
                 <WatiWidget />

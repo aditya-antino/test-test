@@ -40,11 +40,12 @@ export default function RootProvider({ children }: { children: React.ReactNode }
             {loading && (
                 <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-white">
                     <Image
-                        className="pulse-logo"
+                        className="pulse-logo w-[250px] h-[250px]"
                         width={250}
                         height={250}
                         alt="logo"
                         src={logo}
+                        priority
                         unoptimized
                     />
                 </div>
