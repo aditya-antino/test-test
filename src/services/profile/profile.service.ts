@@ -133,7 +133,8 @@ export const useDeleteGSTDetails = () => {
     return useMutation({
         mutationFn: deleteGuestGST,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['gstDetails'] });
+            queryClient.setQueryData(['gst-details'], null);
+            queryClient.invalidateQueries({ queryKey: ['gst-details'] });
         },
     });
 };
