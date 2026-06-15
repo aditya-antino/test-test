@@ -398,18 +398,20 @@ const MyBookingsContent = () => {
                                             Download Booking Cancellation Invoice
                                         </DropdownMenuItem>
 
-                                        <DropdownMenuItem
-                                            className="py-2 px-3 text-sm font-medium hover:bg-gray-100"
-                                            onSelect={() =>
-                                                getCancellationInvoice(
-                                                    row.id,
-                                                    'guest_platform',
-                                                    true,
-                                                )
-                                            }
-                                        >
-                                            Download Platform Cancellation Invoice
-                                        </DropdownMenuItem>
+                                        {row?.Cancellations?.[0]?.cancelled_by_type !== 'guest' && (
+                                            <DropdownMenuItem
+                                                className="py-2 px-3 text-sm font-medium hover:bg-gray-100"
+                                                onSelect={() =>
+                                                    getCancellationInvoice(
+                                                        row.id,
+                                                        'guest_platform',
+                                                        true,
+                                                    )
+                                                }
+                                            >
+                                                Download Platform Cancellation Invoice
+                                            </DropdownMenuItem>
+                                        )}
                                         <DropdownMenuItem
                                             className="py-2 px-3 text-sm font-medium hover:bg-gray-100"
                                             onSelect={() =>
@@ -450,18 +452,20 @@ const MyBookingsContent = () => {
                                             Download GST Booking Cancellation Invoice
                                         </DropdownMenuItem>
 
-                                        <DropdownMenuItem
-                                            className="py-2 px-3 text-sm font-medium hover:bg-gray-100"
-                                            onSelect={() =>
-                                                getCancellationInvoice(
-                                                    row.id,
-                                                    'guest_platform_gst',
-                                                    true,
-                                                )
-                                            }
-                                        >
-                                            Download GST Platform Cancellation Invoice
-                                        </DropdownMenuItem>
+                                        {row?.Cancellations?.[0]?.cancelled_by_type !== 'guest' && (
+                                            <DropdownMenuItem
+                                                className="py-2 px-3 text-sm font-medium hover:bg-gray-100"
+                                                onSelect={() =>
+                                                    getCancellationInvoice(
+                                                        row.id,
+                                                        'guest_platform_gst',
+                                                        true,
+                                                    )
+                                                }
+                                            >
+                                                Download GST Platform Cancellation Invoice
+                                            </DropdownMenuItem>
+                                        )}
                                         <DropdownMenuItem
                                             className="py-2 px-3 text-sm font-medium hover:bg-gray-100"
                                             onSelect={() =>
@@ -598,6 +602,7 @@ const MyBookingsContent = () => {
             <MobileModal
                 isOpen={showModal}
                 isGst={selectedBookingForAction?.isGst}
+                cancelledByType={selectedBookingForAction?.Cancellations?.[0]?.cancelled_by_type}
                 onCancel={() => {
                     setIsCancellationModalOpen(true);
                     setShowModal(false);

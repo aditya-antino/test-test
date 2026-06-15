@@ -48,12 +48,20 @@ export const useEarningsAnalytics = () => {
         spaceId: selectedSpace ? String(selectedSpace) : undefined,
     });
 
+    const parseFormattedAmount = (value: string | number | undefined): number => {
+        if (value === undefined || value === null) return 0;
+        if (typeof value === 'number') return value;
+        const cleanStr = String(value).replace(/,/g, '');
+        const num = parseFloat(cleanStr);
+        return isNaN(num) ? 0 : num;
+    };
+
     const chartData = {
         labels: earningsDataResponse?.data?.data?.map((item: any) => item.label) ?? [],
         datasets: [
             {
                 label: 'Total Earnings',
-                data: earningsDataResponse?.data?.data?.map((item: any) => item.totalEarnings) ?? [],
+                data: earningsDataResponse?.data?.data?.map((item: any) => parseFormattedAmount(item.totalEarnings)) ?? [],
                 borderColor: '#EAB308',
                 backgroundColor: 'transparent',
                 tension: 0.3,
@@ -102,15 +110,18 @@ export const useEarningsAnalytics = () => {
         }
     };
 
-    const formatAmount = (value: number | string | undefined) => Number(value ?? 0).toFixed(2);
+    const formatAmount = (value: number | string | undefined) => {
+        const num = parseFormattedAmount(value);
+        return num.toFixed(2);
+    };
 
     const totalEarnings =
         earningsDataResponse?.data?.data?.reduce(
-            (acc: any, curr: any) => acc + Number(curr.totalEarnings || 0),
+            (acc: any, curr: any) => acc + parseFormattedAmount(curr.totalEarnings),
             0,
         ) ?? 0;
 
-    const totalPenalityAmount = Number(earningsDataResponse?.data?.data?.[0]?.penaltyAmount ?? 0);
+    const totalPenalityAmount = parseFormattedAmount(earningsDataResponse?.data?.data?.[0]?.penaltyAmount ?? 0);
 
     return {
         range,

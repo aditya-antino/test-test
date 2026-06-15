@@ -582,10 +582,11 @@ const GuestCancellationAmounts = ({
     const currentTotal = currentSubtotal + totalCurrentGuestCGST + totalCurrentGuestSGST;
 
     // 5. Calculate refund amount
+    const subtotalRefund = originalBaseAmount + (isCancelledByGuest ? 0 : originalPlatformFeeAmount) - (isCancelledByGuest ? 0 : discountAmount);
+
     let refundAmount = 0;
     if (guestRefundPercentage === 100) {
         if (isCancelledByGuest) {
-            const subtotalRefund = originalBaseAmount - discountAmount;
             refundAmount = subtotalRefund * 1.18;
         } else {
             refundAmount = originalTotal;
@@ -595,8 +596,6 @@ const GuestCancellationAmounts = ({
     }
     refundAmount = Math.max(0, refundAmount);
 
-    // For 100% refund view subtotal and GST refunds
-    const subtotalRefund = originalBaseAmount + (isCancelledByGuest ? 0 : originalPlatformFeeAmount) - discountAmount;
     const cgstRefund = subtotalRefund * 0.09;
     const sgstRefund = subtotalRefund * 0.09;
     const refundGSTItems = formatGSTForDisplay(
@@ -678,7 +677,7 @@ const GuestCancellationAmounts = ({
                             label="Platform Fee Refund"
                             value={isCancelledByGuest ? 0 : originalPlatformFeeAmount}
                         />
-                        {discountAmount > 0 && (
+                        {!isCancelledByGuest && discountAmount > 0 && (
                             <AmountRow
                                 label={`Admin Discount Refund${couponCode ? ` (${couponCode})` : ''}`}
                                 value={discountAmount}

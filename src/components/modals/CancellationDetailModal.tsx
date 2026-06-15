@@ -224,10 +224,11 @@ const CancellationDetailModal: React.FC<CancellationDetailModalProps> = ({
     const currentTotal = currentSubtotal + totalCurrentGuestCGST + totalCurrentGuestSGST;
 
     // Calculate refund amount:
+    const subtotalRefund = originalBaseAmount + (isCancelledByGuest ? 0 : originalPlatformFeeAmount) - (isCancelledByGuest ? 0 : discountAmount);
+
     let refundAmount = 0;
     if (guestRefundPercentage === 100) {
         if (isCancelledByGuest) {
-            const subtotalRefund = originalBaseAmount - discountAmount;
             refundAmount = subtotalRefund * 1.18;
         } else {
             refundAmount = originalTotal;
@@ -237,7 +238,6 @@ const CancellationDetailModal: React.FC<CancellationDetailModalProps> = ({
     }
     refundAmount = Math.max(0, refundAmount);
 
-    const subtotalRefund = originalBaseAmount + (isCancelledByGuest ? 0 : originalPlatformFeeAmount) - discountAmount;
     const cgstRefund = subtotalRefund * 0.09;
     const sgstRefund = subtotalRefund * 0.09;
     const refundGSTItems = formatGSTForDisplay(
@@ -574,7 +574,7 @@ const CancellationDetailModal: React.FC<CancellationDetailModalProps> = ({
                                 </Typography>
                             </div>
 
-                            {discountAmount > 0 && (
+                            {!isCancelledByGuest && discountAmount > 0 && (
                                 <div className="flex justify-between text-gray-600 mt-1">
                                     <Typography color="text-gray-600" size="sm" weight="font-medium">
                                         Admin Discount{couponCode ? ` (${couponCode})` : ''}

@@ -18,6 +18,7 @@ interface MobileModalProps {
     activeTab?: string;
     onAddReview?: any;
     bookingStatus?: unknown;
+    cancelledByType?: string;
 }
 
 export default function MobileModal({
@@ -36,6 +37,7 @@ export default function MobileModal({
     onAddReview,
     activeTab,
     bookingStatus,
+    cancelledByType,
 }: MobileModalProps) {
     if (!isOpen) return null;
 
@@ -129,14 +131,16 @@ export default function MobileModal({
                                             Download Booking Cancellation Invoice
                                         </button>
                                     </li>
-                                    <li>
-                                        <button
-                                            className="py-3 w-full text-left font-medium"
-                                            onClick={onPlatformInvoice}
-                                        >
-                                            Download Platform Cancellation Invoice
-                                        </button>
-                                    </li>
+                                    {cancelledByType !== 'guest' && (
+                                        <li>
+                                            <button
+                                                className="py-3 w-full text-left font-medium"
+                                                onClick={onPlatformInvoice}
+                                            >
+                                                Download Platform Cancellation Invoice
+                                            </button>
+                                        </li>
+                                    )}
                                     <li>
                                         <button
                                             className="py-3 w-full text-left font-medium"
@@ -165,14 +169,16 @@ export default function MobileModal({
                                         </button>
                                     </li>
 
-                                    <li>
-                                        <button
-                                            className="py-3 w-full text-left font-medium"
-                                            onClick={onPlatformGSTInvoice}
-                                        >
-                                            Download GST Platform Cancellation Invoice
-                                        </button>
-                                    </li>
+                                    {cancelledByType !== 'guest' && (
+                                        <li>
+                                            <button
+                                                className="py-3 w-full text-left font-medium"
+                                                onClick={onPlatformGSTInvoice}
+                                            >
+                                                Download GST Platform Cancellation Invoice
+                                            </button>
+                                        </li>
+                                    )}
                                     <li>
                                         <button
                                             className="py-3 w-full text-left font-medium"
