@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
@@ -32,7 +32,7 @@ export const useBookingReview = () => {
     const { bookingData, isInstantBooking } = useSelector((state: RootState) => state.booking);
     const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
     const [bookingId, setBookingId] = useState<number>(0);
-    const [calculatedTotalAmount, setCalculatedTotalAmount] = useState<number>(0);
+    const calculatedTotalAmountRef = useRef<number>(0);
 
     const [couponCode, setCouponCode] = useState<string>('');
     const [couponDiscountPer, setCouponDiscountPer] = useState<number>(0);
@@ -146,11 +146,11 @@ export const useBookingReview = () => {
         onSuccess: (data) => {
             const resBookingId = data?.data?.id;
             setBookingId(resBookingId);
+            // Use the ref value — it was set synchronously in handleInstantBookingPayment
+            // before the mutation was triggered, so it is always the freshly-calculated total.
             const razorpayPayload = {
                 bookingId: resBookingId,
-                amount: isInstantBooking
-                    ? calculatedTotalAmount || currentBookingData?.totalAmount || 0
-                    : currentBookingData?.totalAmount || 0,
+                amount: calculatedTotalAmountRef.current || currentBookingData?.totalAmount || 0,
                 currency: 'INR',
                 receipt: generateReceipt(resBookingId),
                 notes: { purpose: 'space booking' },
@@ -213,13 +213,19 @@ export const useBookingReview = () => {
         const bookingHours   = bookingMinutes / 60;
 
         // 2️⃣ Determine host‑configured duration discount
+        // Must mirror BookingReview.tsx UI logic exactly:
+        // - Only apply a tier if its percentage is > 0 (fall through to lower tier otherwise)
         let hostDiscountPerc = 0;
         const extra_discount_per = (spaceDetails.data?.SpaceListing as any)?.extra_discount_per;
         if (typeof extra_discount_per === 'object' && extra_discount_per !== null) {
-            if (bookingHours >= 12) hostDiscountPerc = parseFloat(String(extra_discount_per.twelve || '0'));
-            else if (bookingHours >= 8) hostDiscountPerc = parseFloat(String(extra_discount_per.eight || '0'));
-            else if (bookingHours >= 6) hostDiscountPerc = parseFloat(String(extra_discount_per.six || '0'));
-            else if (bookingHours >= 4) hostDiscountPerc = parseFloat(String(extra_discount_per.four || '0'));
+            const t12 = parseFloat(String(extra_discount_per.twelve || '0'));
+            const t8  = parseFloat(String(extra_discount_per.eight  || '0'));
+            const t6  = parseFloat(String(extra_discount_per.six    || '0'));
+            const t4  = parseFloat(String(extra_discount_per.four   || '0'));
+            if      (bookingHours >= 12 && t12 > 0) hostDiscountPerc = t12;
+            else if (bookingHours >= 8  && t8  > 0) hostDiscountPerc = t8;
+            else if (bookingHours >= 6  && t6  > 0) hostDiscountPerc = t6;
+            else if (bookingHours >= 4  && t4  > 0) hostDiscountPerc = t4;
         } else if (extra_discount_per) {
             // Legacy single‑value discount (applies at 6+ hours)
             if (bookingHours >= 6) hostDiscountPerc = parseFloat(String(extra_discount_per || '0'));
@@ -310,7 +316,9 @@ export const useBookingReview = () => {
         const pricing = calculatePricing();
         if (!pricing || !spaceId) return;
 
-        setCalculatedTotalAmount(pricing.totalAmount);
+        // Store synchronously via ref so onSuccess can read the correct value
+        // without waiting for a React state re-render cycle.
+        calculatedTotalAmountRef.current = pricing.totalAmount;
 
         const startDateTime = createBookingDatetime(
             currentBookingData.bookingDetails.date,
