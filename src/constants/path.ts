@@ -63,4 +63,7 @@ export const PATHS = {
     SOCIAL_LINKEDIN: 'https://linkedin.com',
     SOCIAL_FACEBOOK: 'https://www.facebook.com/share/17HhkX7TYt/?mibextid=wwXIfr',
     SOCIAL_YT: `https://youtube.com/@booksparespace?si=pMaW7V7d5cfpgoO9`,
+
+    // explore pages
+    EXPLORE_PAGE: (city: string, category: string) => `/explore/${city}/${category}`,
 };

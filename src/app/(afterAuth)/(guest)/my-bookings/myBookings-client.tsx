@@ -45,8 +45,6 @@ const MyBookingsContent = () => {
         bookings,
         loading,
         pagination,
-        showSuccessModal,
-        setShowSuccessModal,
         selectedSpace,
         setSelectedSpace,
         isCancellationDetails,
@@ -237,9 +235,13 @@ const MyBookingsContent = () => {
             className: 'text-[#B7B7B7]',
             render: (_: any, row: GuestBooking) => {
                 const isCancellationTab = activeStatusTab == 'cancelled';
-                const guestCancellationTotal = parseFloat(
-                    row?.Cancellations?.[0]?.refund_amount ?? 0,
-                );
+                // const guestCancellationTotal = parseFloat(
+                //     row?.Cancellations?.[0]?.refund_amount ?? 0,
+                // );
+                const guestCancellationTotal =
+                    row?.Cancellations?.[0]?.refund_amount
+                        ? parseFloat(row.Cancellations[0].refund_amount)
+                        : "N/A";
 
                 const totalAmount = isCancellationTab
                     ? guestCancellationTotal

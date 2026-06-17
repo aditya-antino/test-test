@@ -273,7 +273,7 @@ export const CancelReservationModal: React.FC<CancelBookingModalProps> = ({
                             placeholder={isLoadingReasons ? 'Loading...' : 'Select reason'}
                         />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[9999]">
                         {cancelReasons.map((r) => (
                             <SelectItem
                                 key={r.id}

@@ -39,7 +39,7 @@ export default function HeroHomeSection() {
                         Book by the hour. Flexible, affordable, and hassle-free.
                     </Typography>
                     {/* Search Bar */}
-                    <HomePageSearchBarTab className="absolute w-[95%] lg:w-[85%] max-w-6xl z-[40] top-[58%] left-1/2 -translate-x-1/2" />
+                    <HomePageSearchBarTab className="absolute w-[95%] lg:w-[85%] max-w-6xl z-[40] top-[62%] left-1/2 -translate-x-1/2" />
                 </div>
 
                 {/* Right Images */}
@@ -55,7 +55,7 @@ export default function HeroHomeSection() {
                     />
 
                     <Image
-                        src={heroImage03}
+                        src={heroImage02}
                         alt="Music production"
                         width={250}
                         height={800}
@@ -65,7 +65,7 @@ export default function HeroHomeSection() {
                     />
 
                     <Image
-                        src={heroImage02}
+                        src={heroImage03}
                         alt="Music production"
                         width={250}
                         height={250}

@@ -1761,6 +1761,7 @@ const BookButton = ({
     return (
         <div className="space-y-2">
             <Button
+                type="button"
                 onClick={handleBook}
                 disabled={isDisabled}
                 className={`flex justify-center items-center py-3 px-6 border rounded-full shadow-sm w-full transition-colors ${isDisabled
