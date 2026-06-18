@@ -44,6 +44,7 @@ export default function ExploreSpacesSection({
                                 showWishlist={isAuth}
                                 onClick={() => onSpaceClick(space.slug)}
                                 className="w-full h-full"
+                                isNotHomePage={false}
                             />
                         </div>
                     ))}

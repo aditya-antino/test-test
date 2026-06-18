@@ -255,7 +255,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                             color="text-gray-500"
                             className="truncate flex-1 min-w-0 max-w-[220px]"
                         >
-                            {[space?.area, space?.locality, space?.city].filter(Boolean).join(', ')}
+                            {Array.from(new Set([space?.area, space?.locality, space?.city].filter(Boolean))).join(', ')}
                         </Typography>
                     </div>
 

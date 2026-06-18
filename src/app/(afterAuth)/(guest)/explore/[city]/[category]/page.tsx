@@ -8,10 +8,7 @@ import { CATEGORY_BANNERS } from '@/constants/categoryBanners';
 export const dynamic = 'force-dynamic';
 
 const toSlug = (text: string) =>
-    text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+    text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 type Props = {
     params: Promise<{
@@ -101,53 +98,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
-async function getMetadata() {
-    try {
-        const response: any = await ServerGet(endpoints.GET_PUBLIC_CATEGORIES);
-        return response?.data ?? null;
-    } catch (error) {
-        return null;
-    }
-}
-
-async function getSpaceList(city: string, category: string, metadata: any) {
+async function getSpaceList(city: string, category: string) {
     try {
         const queryParams = new URLSearchParams();
-        queryParams.append('page', '1');
-        queryParams.append('limit', '20');
+        queryParams.append('city', city.replace(/-/g, ' ')); // e.g., "delhi"
+        queryParams.append('activity', category);            // e.g., "photography-studios"
+        queryParams.append('limit', '10');
 
-        if (category && metadata?.categories) {
-            const matchedCategoryIds = metadata.categories
-                .filter(
-                    (c: any) =>
-                        c.CategoryMaster?.name && toSlug(c.CategoryMaster.name) === category,
-                )
-                .map((c: any) => c.categoryId);
+        const apiUrl = `${endpoints.GET_EXPLORE_SPACES}?${queryParams.toString()}`;
 
-            if (matchedCategoryIds.length > 0) {
-                queryParams.append('categoryIds', matchedCategoryIds.join(','));
-            } else {
-                // Check if it's an activity if not found in categories
-                const matchedActivityIds = metadata.activities
-                    ?.filter((a: any) => a.activity && toSlug(a.activity) === category)
-                    ?.flatMap((a: any) => a.ids || [a.id]);
+        const response: any = await ServerGet(apiUrl);
 
-                if (matchedActivityIds && matchedActivityIds.length > 0) {
-                    queryParams.append('activityIds', matchedActivityIds.join(','));
-                }
-            }
-        }
-
-        // We use the home-spaces endpoint to get 'mostBookedSpaces' and 'recentlyAddedSpaces'
-        // 'city' here is the slug. We pass it as 'city' parameter since the endpoint supports it.
-        queryParams.append('city', city.replace(/-/g, ' '));
-
-        const response: any = await ServerGet(
-            `guest/home-spaces?${queryParams.toString()}`,
-        );
         return response?.data ?? response ?? null;
     } catch (error) {
-        console.error('Error fetching space list on server for explore page:', error);
+        console.error('[ExplorePage] Error fetching space list:', error);
         return null;
     }
 }
@@ -155,9 +119,7 @@ async function getSpaceList(city: string, category: string, metadata: any) {
 export default async function ExplorePage({ params }: Props) {
     const resolvedParams = await params;
     const { city, category } = resolvedParams;
-
-    const metadata = await getMetadata();
-    const initialSpaceData = await getSpaceList(city, category, metadata);
+    const initialSpaceData = await getSpaceList(city, category);
 
     return (
         <ExploreClient

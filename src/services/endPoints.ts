@@ -156,6 +156,7 @@ export const endpoints = {
     GUEST_INSTANT_BOOKING_ORDER: '/guest/instant-booking',
 
     GET_PUBLIC_CATEGORIES: `guest/search/what`,
+    GET_EXPLORE_SPACES: 'guest/explore',
 
     GET_BLOGS: '/blog',
     GET_BLOG_DETAILS: (slug: string) => `/blog/${slug}`,

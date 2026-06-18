@@ -40,7 +40,7 @@ export const EXPLORE_PAGE_BENEFITS = [
     },
 ];
 
-const placeholderImage = '/og-images/creative-spaces.png'; // Will reuse this for all as fallback
+const placeholderImage = '/og-images/creative-spaces.png';
 
 export interface GalleryCategory {
     title?: string;

@@ -15,17 +15,45 @@ export const useExplorePage = (initialSpaceData?: any) => {
     const spacesData = initialSpaceData;
     const spacesLoading = false;
 
+    // Map backend keys to what BookingCard expects
+    const mapSpaceToBookingCardFormat = (space: any) => {
+        if (!space) return space;
+        return {
+            ...space,
+            SpaceImages: space.SpaceImages || space.spaceImages || [],
+            price: space.price ?? (space.pricePerHour ? parseFloat(space.pricePerHour) : undefined),
+            rating: space.rating ?? (space.avgRating ? parseFloat(space.avgRating) : undefined),
+            seats: space.seats ?? space.capacity ?? 0,
+            category_name: space.category_name || space.category || '',
+            CategoryMaster: space.CategoryMaster || (space.category ? { name: space.category } : undefined),
+            computed_status: space.computed_status || space.status || 'active',
+            SpaceListing: space.SpaceListing || {
+                price_per_hour: space.pricePerHour || '0',
+                isRefundable: space.isRefundable ?? false,
+                instant_booking: space.instantBooking ?? false,
+            }
+        };
+    };
+
     // Use raw backend data directly without mappers, as BookingCard supports fallbacks internally
     const spaces = useMemo(() => {
-        return spacesData || [];
+        const list = Array.isArray(spacesData)
+            ? spacesData
+            : [
+                  ...(spacesData?.data?.mostBookedSpaces || spacesData?.mostBookedSpaces || []),
+                  ...(spacesData?.data?.recentlyAddedSpaces || spacesData?.recentlyAddedSpaces || []),
+              ];
+        return list.map(mapSpaceToBookingCardFormat);
     }, [spacesData]);
 
     const mostBooked = useMemo(() => {
-        return spacesData?.data?.mostBookedSpaces || spacesData?.mostBookedSpaces || [];
+        const list = spacesData?.data?.mostBookedSpaces || spacesData?.mostBookedSpaces || [];
+        return list.map(mapSpaceToBookingCardFormat);
     }, [spacesData]);
 
     const recentlyAdded = useMemo(() => {
-        return spacesData?.data?.recentlyAddedSpaces || spacesData?.recentlyAddedSpaces || [];
+        const list = spacesData?.data?.recentlyAddedSpaces || spacesData?.recentlyAddedSpaces || [];
+        return list.map(mapSpaceToBookingCardFormat);
     }, [spacesData]);
 
     const handleSpaceClick = (slug: string) => {
