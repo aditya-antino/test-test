@@ -4,6 +4,7 @@ import ExploreClient from './explore-client';
 import { ServerGet } from '@/services/serverApi';
 import { endpoints } from '@/services/endPoints';
 import { CATEGORY_BANNERS } from '@/constants/categoryBanners';
+import { formatCityName } from '@/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,8 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const resolvedParams = await params;
     const { city, category } = resolvedParams;
+    const normalizedCategory = (category || '').toLowerCase();
 
-    const formattedCity = formatTitle(city);
+    const formattedCity = formatCityName(city);
     const formattedCategory = formatTitle(category);
 
     const title = `${formattedCategory} in ${formattedCity} | Spare Space`;
@@ -48,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         const categories: any[] = categoriesRes?.data?.categories ?? [];
 
         const matched = categories.find(
-            (c: any) => c.CategoryMaster?.name && toSlug(c.CategoryMaster.name) === category,
+            (c: any) => c.CategoryMaster?.name && toSlug(c.CategoryMaster.name) === normalizedCategory,
         );
 
         if (matched?.CategoryMaster?.imgUrl) {
@@ -57,8 +59,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     } catch (_) {}
 
     if (ogImageUrl === `${baseUrl}/og-image.png`) {
-        if (category && CATEGORY_BANNERS[category]) {
-            const item = CATEGORY_BANNERS[category];
+        if (normalizedCategory && CATEGORY_BANNERS[normalizedCategory]) {
+            const item = CATEGORY_BANNERS[normalizedCategory];
             let localPath = '';
             if (item.ogImage) {
                 localPath = item.ogImage;

@@ -26,29 +26,45 @@ export default function ExploreSpacesSection({
     isAuth,
     onSpaceClick,
 }: ExploreSpacesSectionProps) {
-    const formattedCity = capitalize(city);
+    const formattedCity = city;
 
     const renderCarousel = (spaces: Space[], title: string) => {
         if (spaces.length === 0) return null;
+
+        const isSingle = spaces.length === 1;
 
         return (
             <div className="mt-8">
                 <Typography size="lg" weight="semibold" className="mb-4 pl-2">
                     {title}
                 </Typography>
-                <ArrowScrollWrapper arrowVariant="default">
-                    {spaces.map((space) => (
-                        <div key={space.id} className="min-w-[280px] sm:min-w-[320px] max-w-[320px] p-2">
+                {isSingle ? (
+                    <div className="flex justify-center w-full">
+                        <div className="min-w-[280px] sm:min-w-[320px] max-w-[320px] p-2">
                             <BookingCard
-                                space={space}
+                                space={spaces[0]}
                                 showWishlist={isAuth}
-                                onClick={() => onSpaceClick(space.slug)}
+                                onClick={() => onSpaceClick(spaces[0].slug)}
                                 className="w-full h-full"
                                 isNotHomePage={false}
                             />
                         </div>
-                    ))}
-                </ArrowScrollWrapper>
+                    </div>
+                ) : (
+                    <ArrowScrollWrapper arrowVariant="default">
+                        {spaces.map((space) => (
+                            <div key={space.id} className="min-w-[280px] sm:min-w-[320px] max-w-[320px] p-2">
+                                <BookingCard
+                                    space={space}
+                                    showWishlist={isAuth}
+                                    onClick={() => onSpaceClick(space.slug)}
+                                    className="w-full h-full"
+                                    isNotHomePage={false}
+                                />
+                            </div>
+                        ))}
+                    </ArrowScrollWrapper>
+                )}
             </div>
         );
     };

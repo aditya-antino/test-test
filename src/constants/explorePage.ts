@@ -116,6 +116,26 @@ export const EXPLORE_PAGE_GALLERY: Record<string, GalleryCategory> = {
             { name: 'Therapy Rooms', slug: 'therapy-rooms', image: placeholderImage },
         ],
     },
+    'wellness-workshops': {
+        title: 'Wellness Spaces for Every Practice',
+        whyBookTitle: 'Why Book Wellness Workshop Venues Through Spare Space?',
+        items: [
+            { name: 'Yoga Studios', slug: 'yoga-studios', image: placeholderImage },
+            { name: 'Meditation Rooms', slug: 'meditation-rooms', image: placeholderImage },
+            { name: 'Sound Healing', slug: 'sound-healing', image: placeholderImage },
+            { name: 'Therapy Rooms', slug: 'therapy-rooms', image: placeholderImage },
+        ],
+    },
+    'wellness-workshop': {
+        title: 'Wellness Spaces for Every Practice',
+        whyBookTitle: 'Why Book Wellness Workshop Venues Through Spare Space?',
+        items: [
+            { name: 'Yoga Studios', slug: 'yoga-studios', image: placeholderImage },
+            { name: 'Meditation Rooms', slug: 'meditation-rooms', image: placeholderImage },
+            { name: 'Sound Healing', slug: 'sound-healing', image: placeholderImage },
+            { name: 'Therapy Rooms', slug: 'therapy-rooms', image: placeholderImage },
+        ],
+    },
     exhibitions: {
         title: 'Exhibition Venues for Every Showcase',
         whyBookTitle: 'Why Book Exhibition Venues Through Spare Space?',
@@ -125,6 +145,27 @@ export const EXPLORE_PAGE_GALLERY: Record<string, GalleryCategory> = {
             { name: 'Product Launches', slug: 'product-launches', image: placeholderImage },
             { name: 'Trade Shows', slug: 'trade-shows', image: placeholderImage },
         ],
+    },
+    'event-venues': {
+        title: '',
+        whyBookTitle:'',
+        items: [
+
+        ]
+    },
+    'creative-spaces': {
+        title: '',
+        whyBookTitle:'',
+        items: [
+            
+        ]
+    },
+    'cyclorama-studios': {
+        title: '',
+        whyBookTitle:'',
+        items: [
+            
+        ]
     },
     DEFAULT: {
         items: [],
@@ -158,17 +199,390 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
             answer: 'Booking 1–2 weeks in advance is generally recommended, especially during weekends and peak production seasons.',
         },
     ],
-    podcast: [
+
+    'event-venues': [
         {
-            question: 'How much does it cost to rent a podcast studio in Delhi?',
-            answer: 'Cost vary depending on studio equipment,recording duration,production support,and location.',
+            question: 'What is the average cost of an event venue?',
+            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
+        },
+        {
+            question: 'Can I rent an event venue for a single day?',
+            answer: 'Yes, many event venues offer hourly, daily, and weekend booking options.',
+        },
+        {
+            question: 'Are event venues suitable for product launches?',
+            answer: 'Absolutely. Many venues are specifically designed for brand showcases and product launch events.',
+        },
+        {
+            question: 'Can organizers book event venues through Sparespace?',
+            answer: 'Yes, organizers, hosts, and corporations can find suitable event venues across different regions.',
+        },
+        {
+            question: 'What facilities are typically included in event venues?',
+            answer: 'Common amenities include presentation areas, lighting, internet, parking, security, and event support services.',
+        },
+        {
+            question: 'How far in advance should I book an event venue?',
+            answer: 'For large events or premium venues, booking 1-3 months in advance is recommended.',
+        },
+    ],
+    'event-venue': [
+        {
+            question: 'What is the average cost of an event venue?',
+            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
+        },
+        {
+            question: 'Can I rent an event venue for a single day?',
+            answer: 'Yes, many event venues offer hourly, daily, and weekend booking options.',
+        },
+        {
+            question: 'Are event venues suitable for product launches?',
+            answer: 'Absolutely. Many venues are specifically designed for brand showcases and product launch events.',
+        },
+        {
+            question: 'Can organizers book event venues through Sparespace?',
+            answer: 'Yes, organizers, hosts, and corporations can find suitable event venues across different regions.',
+        },
+        {
+            question: 'What facilities are typically included in event venues?',
+            answer: 'Common amenities include presentation areas, lighting, internet, parking, security, and event support services.',
+        },
+        {
+            question: 'How far in advance should I book an event venue?',
+            answer: 'For large events or premium venues, booking 1-3 months in advance is recommended.',
+        },
+    ],
+    'creative-spaces': [
+        {
+            question: 'What is the average cost of a creative space?',
+            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
+        },
+        {
+            question: 'Can I rent a creative space for a single day?',
+            answer: 'Yes, many creative spaces offer hourly, daily, and weekend booking options.',
+        },
+        {
+            question: 'Are creative spaces suitable for collaborative projects?',
+            answer: 'Absolutely. Many venues are specifically designed for content creation, brainstorming sessions, and creative workshops.',
+        },
+        {
+            question: 'Can creators book creative spaces through Sparespace?',
+            answer: 'Yes, artists, designers, and creators can find suitable creative spaces across different regions.',
+        },
+        {
+            question: 'What facilities are typically included in creative spaces?',
+            answer: 'Common amenities include workspaces, good lighting, internet, and collaborative environments.',
+        },
+        {
+            question: 'How far in advance should I book a creative space?',
+            answer: 'Booking 1-2 weeks in advance is generally recommended.',
+        },
+    ],
+    'creative-space': [
+        {
+            question: 'What is the average cost of a creative space?',
+            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
+        },
+        {
+            question: 'Can I rent a creative space for a single day?',
+            answer: 'Yes, many creative spaces offer hourly, daily, and weekend booking options.',
+        },
+        {
+            question: 'Are creative spaces suitable for collaborative projects?',
+            answer: 'Absolutely. Many venues are specifically designed for content creation, brainstorming sessions, and creative workshops.',
+        },
+        {
+            question: 'Can creators book creative spaces through Sparespace?',
+            answer: 'Yes, artists, designers, and creators can find suitable creative spaces across different regions.',
+        },
+        {
+            question: 'What facilities are typically included in creative spaces?',
+            answer: 'Common amenities include workspaces, good lighting, internet, and collaborative environments.',
+        },
+        {
+            question: 'How far in advance should I book a creative space?',
+            answer: 'Booking 1-2 weeks in advance is generally recommended.',
+        },
+    ],
+    'cyclorama-studios': [
+        {
+            question: 'How much does it cost to rent a cyclorama studio?',
+            answer: 'The cost depends on the studio size, location, equipment included, and booking duration.',
+        },
+        {
+            question: 'Can I rent a cyclorama studio for a single day?',
+            answer: 'Yes, many cyclorama studios offer hourly, half-day, and full-day rental options.',
+        },
+        {
+            question: 'Can I rent a cyclorama studio by the hour?',
+            answer: 'Yes, many cyclorama studios offer hourly, half-day, and full-day rental options.',
+        },
+        {
+            question: 'Are lighting equipment and backdrops included in cyclorama studios?',
+            answer: 'Many studios provide professional lighting setups, backdrops, and basic shooting equipment. Availability varies by venue.',
+        },
+        {
+            question: 'Can I book a cyclorama studio for product photography?',
+            answer: 'Absolutely. Several studios are specifically designed for e-commerce and product photography requirements.',
+        },
+        {
+            question: 'Do cyclorama studios provide changing rooms?',
+            answer: 'Many professional studios offer makeup rooms, changing areas, and preparation spaces for models and talent.',
+        },
+        {
+            question: 'How far in advance should I book a cyclorama studio?',
+            answer: 'Booking 1–2 weeks in advance is generally recommended, especially during weekends and peak production seasons.',
+        },
+    ],
+    'cyclorama': [
+        {
+            question: 'How much does it cost to rent a cyclorama studio?',
+            answer: 'The cost depends on the studio size, location, equipment included, and booking duration.',
+        },
+        {
+            question: 'Can I rent a cyclorama studio for a single day?',
+            answer: 'Yes, many cyclorama studios offer hourly, half-day, and full-day rental options.',
+        },
+        {
+            question: 'Can I rent a cyclorama studio by the hour?',
+            answer: 'Yes, many cyclorama studios offer hourly, half-day, and full-day rental options.',
+        },
+        {
+            question: 'Are lighting equipment and backdrops included in cyclorama studios?',
+            answer: 'Many studios provide professional lighting setups, backdrops, and basic shooting equipment. Availability varies by venue.',
+        },
+        {
+            question: 'Can I book a cyclorama studio for product photography?',
+            answer: 'Absolutely. Several studios are specifically designed for e-commerce and product photography requirements.',
+        },
+        {
+            question: 'Do cyclorama studios provide changing rooms?',
+            answer: 'Many professional studios offer makeup rooms, changing areas, and preparation spaces for models and talent.',
+        },
+        {
+            question: 'How far in advance should I book a cyclorama studio?',
+            answer: 'Booking 1–2 weeks in advance is generally recommended, especially during weekends and peak production seasons.',
+        },
+    ],
+    'exhibition': [
+        {
+            question: 'What is the average cost of an exhibition space?',
+            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
+        },
+        {
+            question: 'Can I rent an exhibition space for a single day?',
+            answer: 'Yes, many exhibition spaces offer hourly, daily, and weekend booking options.',
+        },
+        {
+            question: 'Are exhibition spaces suitable for product launches?',
+            answer: 'Absolutely. Many venues are specifically designed for brand showcases and product launch events.',
+        },
+        {
+            question: 'Can artists book exhibition spaces through Sparespace?',
+            answer: 'Yes, artists, galleries, and curators can find suitable exhibition spaces across different regions.',
+        },
+        {
+            question: 'What facilities are typically included in exhibition spaces?',
+            answer: 'Common amenities include display areas, lighting, internet, parking, security, and event support services.',
+        },
+        {
+            question: 'How far in advance should I book an exhibition space?',
+            answer: 'For large exhibitions or premium venues, booking 1-3 months in advance is recommended.',
+        },
+    ],
+    'exhibitions': [
+        {
+            question: 'What is the average cost of an exhibition space?',
+            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
+        },
+        {
+            question: 'Can I rent an exhibition space for a single day?',
+            answer: 'Yes, many exhibition spaces offer hourly, daily, and weekend booking options.',
+        },
+        {
+            question: 'Are exhibition spaces suitable for product launches?',
+            answer: 'Absolutely. Many venues are specifically designed for brand showcases and product launch events.',
+        },
+        {
+            question: 'Can artists book exhibition spaces through Sparespace?',
+            answer: 'Yes, artists, galleries, and curators can find suitable exhibition spaces across different regions.',
+        },
+        {
+            question: 'What facilities are typically included in exhibition spaces?',
+            answer: 'Common amenities include display areas, lighting, internet, parking, security, and event support services.',
+        },
+        {
+            question: 'How far in advance should I book an exhibition space?',
+            answer: 'For large exhibitions or premium venues, booking 1-3 months in advance is recommended.',
+        },
+    ],
+    'exhibition-spaces': [
+        {
+            question: 'What is the average cost of an exhibition space?',
+            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
+        },
+        {
+            question: 'Can I rent an exhibition space for a single day?',
+            answer: 'Yes, many exhibition spaces offer hourly, daily, and weekend booking options.',
+        },
+        {
+            question: 'Are exhibition spaces suitable for product launches?',
+            answer: 'Absolutely. Many venues are specifically designed for brand showcases and product launch events.',
+        },
+        {
+            question: 'Can artists book exhibition spaces through Sparespace?',
+            answer: 'Yes, artists, galleries, and curators can find suitable exhibition spaces across different regions.',
+        },
+        {
+            question: 'What facilities are typically included in exhibition spaces?',
+            answer: 'Common amenities include display areas, lighting, internet, parking, security, and event support services.',
+        },
+        {
+            question: 'How far in advance should I book an exhibition space?',
+            answer: 'For large exhibitions or premium venues, booking 1-3 months in advance is recommended.',
+        },
+    ],
+    'wellness-workshops': [
+        {
+            question: 'What is the average cost of a wellness workshop space?',
+            answer: 'Pricing depends on location, venue size, duration, and facilities available.',
+        },
+        {
+            question: 'Can I book a wellness workshop space for a few hours?',
+            answer: 'Yes, many wellness-friendly spaces offer hourly and half-day bookings.',
+        },
+        {
+            question: 'Are yoga and meditation workshops allowed in wellness workshop spaces?',
+            answer: 'Absolutely. Many listed spaces are suitable for yoga, meditation, breathwork, and wellness programs.',
+        },
+        {
+            question: 'Can I find outdoor wellness workshop spaces?',
+            answer: 'Yes, several venues offer garden, terrace, and open-air spaces for wellness events.',
+        },
+        {
+            question: 'What amenities should I look for in a wellness workshop space?',
+            answer: 'Natural light, ventilation, quiet surroundings, washrooms, parking, and sufficient floor space are among the most important factors.',
+        },
+        {
+            question: 'How far in advance should I book a wellness workshop space?',
+            answer: 'Booking 2-6 weeks in advance is generally recommended, especially for weekends.',
+        },
+    ],
+    'wellness-workshop': [
+        {
+            question: 'What is the average cost of a wellness workshop space?',
+            answer: 'Pricing depends on location, venue size, duration, and facilities available.',
+        },
+        {
+            question: 'Can I book a wellness workshop space for a few hours?',
+            answer: 'Yes, many wellness-friendly spaces offer hourly and half-day bookings.',
+        },
+        {
+            question: 'Are yoga and meditation workshops allowed in wellness workshop spaces?',
+            answer: 'Absolutely. Many listed spaces are suitable for yoga, meditation, breathwork, and wellness programs.',
+        },
+        {
+            question: 'Can I find outdoor wellness workshop spaces?',
+            answer: 'Yes, several venues offer garden, terrace, and open-air spaces for wellness events.',
+        },
+        {
+            question: 'What amenities should I look for in a wellness workshop space?',
+            answer: 'Natural light, ventilation, quiet surroundings, washrooms, parking, and sufficient floor space are among the most important factors.',
+        },
+        {
+            question: 'How far in advance should I book a wellness workshop space?',
+            answer: 'Booking 2-6 weeks in advance is generally recommended, especially for weekends.',
+        },
+    ],
+    'wellness': [
+        {
+            question: 'What is the average cost of a wellness workshop space?',
+            answer: 'Pricing depends on location, venue size, duration, and facilities available.',
+        },
+        {
+            question: 'Can I book a wellness workshop space for a few hours?',
+            answer: 'Yes, many wellness-friendly spaces offer hourly and half-day bookings.',
+        },
+        {
+            question: 'Are yoga and meditation workshops allowed in wellness workshop spaces?',
+            answer: 'Absolutely. Many listed spaces are suitable for yoga, meditation, breathwork, and wellness programs.',
+        },
+        {
+            question: 'Can I find outdoor wellness workshop spaces?',
+            answer: 'Yes, several venues offer garden, terrace, and open-air spaces for wellness events.',
+        },
+        {
+            question: 'What amenities should I look for in a wellness workshop space?',
+            answer: 'Natural light, ventilation, quiet surroundings, washrooms, parking, and sufficient floor space are among the most important factors.',
+        },
+        {
+            question: 'How far in advance should I book a wellness workshop space?',
+            answer: 'Booking 2-6 weeks in advance is generally recommended, especially for weekends.',
+        },
+    ],
+    'baithaks': [
+        {
+            question: 'What is a baithak venue?',
+            answer: 'A baithak venue is an intimate gathering space designed for cultural performances, discussions, music sessions, poetry readings, and community events.',
+        },
+        {
+            question: 'Can I host a live music performance in baithak venues?',
+            answer: 'Yes, many venues are suitable for classical music, ghazal nights, Sufi performances, and acoustic concerts.',
+        },
+        {
+            question: 'Are baithak spaces available for small private gatherings?',
+            answer: 'Absolutely. Many venues cater to intimate audiences ranging from 20 to 100 attendees.',
+        },
+        {
+            question: 'Can I book a baithak venue for a few hours?',
+            answer: 'Yes, several venues offer hourly and half-day rental options.',
+        },
+        {
+            question: 'What facilities are generally available in baithak spaces?',
+            answer: 'Most venues provide seating arrangements, sound systems, lighting, washrooms, and event support facilities.',
+        },
+        {
+            question: 'How early should I book a baithak space?',
+            answer: 'Booking 2-4 weeks in advance is recommended, especially for weekends and popular cultural venues.',
+        },
+    ],
+    'baithak': [
+        {
+            question: 'What is a baithak venue?',
+            answer: 'A baithak venue is an intimate gathering space designed for cultural performances, discussions, music sessions, poetry readings, and community events.',
+        },
+        {
+            question: 'Can I host a live music performance in baithak venues?',
+            answer: 'Yes, many venues are suitable for classical music, ghazal nights, Sufi performances, and acoustic concerts.',
+        },
+        {
+            question: 'Are baithak spaces available for small private gatherings?',
+            answer: 'Absolutely. Many venues cater to intimate audiences ranging from 20 to 100 attendees.',
+        },
+        {
+            question: 'Can I book a baithak venue for a few hours?',
+            answer: 'Yes, several venues offer hourly and half-day rental options.',
+        },
+        {
+            question: 'What facilities are generally available in baithak spaces?',
+            answer: 'Most venues provide seating arrangements, sound systems, lighting, washrooms, and event support facilities.',
+        },
+        {
+            question: 'How early should I book a baithak space?',
+            answer: 'Booking 2-4 weeks in advance is recommended, especially for weekends and popular cultural venues.',
+        },
+    ],
+    'podcast-studios': [
+        {
+            question: 'How much does it cost to rent a podcast studio?',
+            answer: 'Costs vary depending on studio equipment, recording duration, production support, and location.',
         },
         {
             question: 'Can I book a podcast studio by the hour?',
-            answer: 'Yes, many podcast studios offer hourly,half-day,and full-day rental options.',
+            answer: 'Yes, many podcast studios offer hourly, half-day, and full-day rental options.',
         },
         {
-            question: 'Are video podcast recording facilities available?',
+            question: 'Are video podcast recording facilities available in podcast studios?',
             answer: 'Yes, many studios provide multi-camera setups, professional lighting, and video production support.',
         },
         {
@@ -181,85 +595,33 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
         },
         {
             question: 'How far in advance should I book a podcast studio?',
-            answer: 'Booking 1–2 weeks in advance is generally recommended, especially for premium studios and weekend slots.',
+            answer: 'Booking 1-2 weeks in advance is generally recommended, especially for premium studios and weekend slots.',
         },
     ],
-    baithak: [
+    'podcast': [
         {
-            question: 'What is a baithak venue?',
-            answer: 'A baithak venue is an intimate gathering space designed for cultural performances, discussions, music sessions, poetry readings, and community events.',
+            question: 'How much does it cost to rent a podcast studio?',
+            answer: 'Costs vary depending on studio equipment, recording duration, production support, and location.',
         },
         {
-            question: 'Can I host a live music performance in these venues?',
-            answer: 'Yes, many venues are suitable for classical music, ghazal nights, Sufi performances, and acoustic concerts.',
+            question: 'Can I book a podcast studio by the hour?',
+            answer: 'Yes, many podcast studios offer hourly, half-day, and full-day rental options.',
         },
         {
-            question: 'Are baithak spaces available for small private gatherings?',
-            answer: 'Absolutely. Many venues cater to intimate audiences ranging from 20 to 100 attendees.',
+            question: 'Are video podcast recording facilities available in podcast studios?',
+            answer: 'Yes, many studios provide multi-camera setups, professional lighting, and video production support.',
         },
         {
-            question: 'Can I book a baithak venue for a few hours?',
-            answer: 'Yes, several venues offer hourly and half-day rental options.',
+            question: 'Do podcast studios provide microphones and recording equipment?',
+            answer: 'Most professional podcast studios include microphones, audio interfaces, headphones, and recording systems.',
         },
         {
-            question: 'What facilities are generally available?',
-            answer: 'Most venues provide seating arrangements, sound systems, lighting, washrooms, and event support facilities.',
+            question: 'Can beginners use podcast studios?',
+            answer: 'Absolutely. Many studios provide technical assistance and production support for first-time podcasters.',
         },
         {
-            question: 'How early should I book a baithak space in Delhi?',
-            answer: 'Booking 2-4 weeks in advance is recommended,especially for weekends and popular cultural venues.',
-        },
-    ],
-    wellness: [
-        {
-            question: 'What is the average cost of a wellness workshop space in Delhi?',
-            answer: 'Pricing depends on location, venue size, duration, and facilities available.',
-        },
-        {
-            question: 'Can I book a wellness venue for a few hours?',
-            answer: 'Yes, many wellness-friendly spaces offer hourly and half-day bookings.',
-        },
-        {
-            question: 'Are yoga and meditation workshops allowed in these venues?',
-            answer: 'Absolutely. Many listed spaces are suitable for yoga, meditation, breathwork, and wellness programs.',
-        },
-        {
-            question: 'Can I find outdoor wellness workshop venues in Delhi?',
-            answer: 'Yes, several venues offer garden, terrace, and open-air spaces for wellness events.',
-        },
-        {
-            question: 'What amenities should I look for in a wellness workshop venue?',
-            answer: 'Natural light, ventilation, quiet surroundings, washrooms, parking, and sufficient floor space are among the most important factors.',
-        },
-        {
-            question: 'How far in advance should I book a wellness workshop space?',
-            answer: 'Booking 2-6 weeks in advance is generally recommended,especially for weekends.',
-        },
-    ],
-    exhibitions: [
-        {
-            question: 'What is the average cost of an exhibition space in Delhi?',
-            answer: 'The cost varies depending on location, venue size, duration, and facilities provided.',
-        },
-        {
-            question: 'Can I rent an exhibition venue for a single day?',
-            answer: 'Yes, many exhibition spaces offer hourly, daily, and weekend booking options.',
-        },
-        {
-            question: 'Are exhibition spaces suitable for product launches?',
-            answer: 'Absolutely. Many venues are specifically designed for brand showcases and product launch events',
-        },
-        {
-            question: 'Can artists book exhibition venues through Sparespace?',
-            answer: 'Yes, artists, galleries, and curators can find suitable exhibition spaces across Delhi.',
-        },
-        {
-            question: 'What facilities are typically included in exhibition venues?',
-            answer: 'Common amenities include display areas, lighting, internet, parking, security, and event support services.',
-        },
-        {
-            question: 'How far in advance should I book an exhibition venue?',
-            answer: 'For large exhibitions or premium venues,booking 1-3 months in advance is recommended.',
+            question: 'How far in advance should I book a podcast studio?',
+            answer: 'Booking 1-2 weeks in advance is generally recommended, especially for premium studios and weekend slots.',
         },
     ],
     DEFAULT: [

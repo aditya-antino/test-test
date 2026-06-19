@@ -2,7 +2,6 @@ import React from 'react';
 import Image from 'next/image';
 import Typography from '@/components/ui/typoGraphy';
 import HomePageSearchBarTab from '@/components/homePage/HomePageSearchBarTab';
-import { capitalize } from '@/utils';
 
 interface CityHeroSectionProps {
     title: string;
@@ -20,7 +19,7 @@ export default function CityHeroSection({
     onSearch,
 }: CityHeroSectionProps) {
     const splitTitle = title.split(` in `);
-    const highlightedPart = splitTitle.length > 1 ? ` in ${capitalize(city)}` : '';
+    const highlightedPart = splitTitle.length > 1 ? ` in ${city}` : '';
     const firstPart = splitTitle[0];
 
     return (
@@ -28,7 +27,7 @@ export default function CityHeroSection({
             {/* Background Glow */}
             <div className="w-96 h-96 opacity-30 bg-amber-200 absolute z-50 -top-[15%] hidden md:block left-[9%] rounded-full blur-3xl" />
 
-            <div className="flex flex-col lg:flex-row gap-12 mb-12">
+            <div className="flex flex-col-reverse lg:flex-row gap-12 mb-12">
                 {/* Left Content */}
                 <div className="flex-1 md:mt-12 flex flex-col justify-center">
                     <div className="self-stretch">
@@ -59,8 +58,8 @@ export default function CityHeroSection({
                 </div>
 
                 {/* Right Image */}
-                <div className="hidden lg:flex flex-1 justify-end items-center relative min-h-[400px]">
-                    <div className="relative w-full max-w-[600px] h-[400px] rounded-3xl overflow-hidden shadow-xl">
+                <div className="flex flex-1 justify-center lg:justify-end items-center relative min-h-[250px] sm:min-h-[350px] lg:min-h-[400px]">
+                    <div className="relative w-full max-w-[600px] h-[250px] sm:h-[350px] lg:h-[400px] rounded-3xl overflow-hidden shadow-xl">
                         <Image
                             src={heroImageUrl}
                             alt={title}

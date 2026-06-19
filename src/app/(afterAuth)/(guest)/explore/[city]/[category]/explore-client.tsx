@@ -11,8 +11,7 @@ import {
 } from '@/components/explorePage';
 import Footer from '@/components/layout/footer';
 import { CATEGORY_BANNERS, DEFAULT_BANNER } from '@/constants/categoryBanners';
-import { capitalize } from '@/utils';
-
+import { capitalize, formatCityName } from '@/utils';
 import {
     baithakBanner,
     creativeSpacesBanner,
@@ -23,6 +22,7 @@ import {
     podcastBanner,
     wellnessBanner,
     workshopsBanner,
+    cycloramaBanner
 } from '@/assets/explore-page';
 import { EXPLORE_PAGE_FAQS, EXPLORE_PAGE_GALLERY } from '@/constants/explorePage';
 
@@ -30,6 +30,7 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
     baithaks: baithakBanner,
     baithak: baithakBanner,
     'creative-spaces': creativeSpacesBanner,
+    'creative-space': creativeSpacesBanner,
     'event-spaces': eventVenturesBanner,
     exhibitions: exhibitionBanner,
     'exhibition-spaces': exhibitionBanner,
@@ -39,7 +40,12 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
     'podcast-studios': podcastBanner,
     wellness: wellnessBanner,
     'wellness-workshops': wellnessBanner,
+    'wellness-workshop': wellnessBanner,
     workshops: workshopsBanner,
+    'event-venues': eventVenturesBanner,
+    'event-venue': eventVenturesBanner,
+    'cyclorama': cycloramaBanner,
+    'cyclorama-studios': cycloramaBanner,
 };
 
 interface ExploreClientProps {
@@ -64,19 +70,20 @@ export default function ExploreClient({
     } = useExplorePage(initialSpaceData);
 
     // Get config for this category or fallback
-    const galleryConfig = EXPLORE_PAGE_GALLERY[categorySlug] || EXPLORE_PAGE_GALLERY.DEFAULT;
+    const normalizedCategory = (categorySlug || '').toLowerCase();
+    const galleryConfig = EXPLORE_PAGE_GALLERY[normalizedCategory] || EXPLORE_PAGE_GALLERY.DEFAULT;
     const galleryItems = galleryConfig.items || [];
-    const faqs = EXPLORE_PAGE_FAQS[categorySlug] || EXPLORE_PAGE_FAQS.DEFAULT;
+    const faqs = EXPLORE_PAGE_FAQS[normalizedCategory] || EXPLORE_PAGE_FAQS.DEFAULT;
 
-    const bannerInfo = CATEGORY_BANNERS[categorySlug] || DEFAULT_BANNER;
+    const bannerInfo = CATEGORY_BANNERS[normalizedCategory] || DEFAULT_BANNER;
 
     // Format strings
-    const formattedCity = capitalize(citySlug.replace(/-/g, ' '));
-    const formattedCategory = capitalize(categorySlug.replace(/-/g, ' '));
+    const formattedCity = formatCityName(citySlug);
+    const formattedCategory = capitalize(normalizedCategory.replace(/-/g, ' '));
     const title = `${formattedCategory} in ${formattedCity}`;
 
     // First try mapping from our assets, then fallback to CategoryBanner ogImage, then default
-    const heroImageUrl = BANNER_IMAGE_MAP[categorySlug];
+    const heroImageUrl = BANNER_IMAGE_MAP[normalizedCategory];
 
     return (
         <div className="relative min-h-screen bg-white flex flex-col w-full gap-8 md:gap-16">

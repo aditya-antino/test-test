@@ -28,7 +28,13 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
     },
     'creative-spaces': {
         title: 'Creative Spaces',
-        description: 'Inspiring studios and creative hubs for artists, designers, and innovators. Bring your ideas to life with professional art studios, design workspaces, and collaborative creative environments.',
+        description: 'Discover and book inspiring creative spaces for content creation, brainstorming sessions, design workshops, photo shoots, collaborative projects, artistic expression, and innovative experiences.',
+        keywords: 'Artist studio space, creative workspace',
+        ogImage: '/og-images/creative-spaces.png'
+    },
+    'creative-space': {
+        title: 'Creative Spaces',
+        description: 'Discover and book inspiring creative spaces for content creation, brainstorming sessions, design workshops, photo shoots, collaborative projects, artistic expression, and innovative experiences.',
         keywords: 'Artist studio space, creative workspace',
         ogImage: '/og-images/creative-spaces.png'
     },
@@ -83,8 +89,20 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
         parentCategory: 'creative-spaces'
     },
     'exhibition': {
-        title: 'Exhibition Galleries',
-        description: 'Spacious, well-lit venues to showcase art, products, and creative installations. Professional gallery spaces with display systems, lighting, and curatorial support.',
+        title: 'Exhibition Spaces',
+        description: 'Discover and book premium exhibition spaces for art exhibitions, product launches, trade showcases, brand activations, pop-up events, cultural exhibitions, and corporate displays.',
+        keywords: 'Gallery space rental, art exhibition venue',
+        parentCategory: 'creative-spaces'
+    },
+    'exhibitions': {
+        title: 'Exhibition Spaces',
+        description: 'Discover and book premium exhibition spaces for art exhibitions, product launches, trade showcases, brand activations, pop-up events, cultural exhibitions, and corporate displays.',
+        keywords: 'Gallery space rental, art exhibition venue',
+        parentCategory: 'creative-spaces'
+    },
+    'exhibition-spaces': {
+        title: 'Exhibition Spaces',
+        description: 'Discover and book premium exhibition spaces for art exhibitions, product launches, trade showcases, brand activations, pop-up events, cultural exhibitions, and corporate displays.',
         keywords: 'Gallery space rental, art exhibition venue',
         parentCategory: 'creative-spaces'
     },
@@ -114,7 +132,13 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
     },
     'photography': {
         title: 'Photography Studios',
-        description: 'Natural light studios and professional setups for fashion, product, and portrait photography. Cycloramas, studio equipment, and styling areas for polished photo sessions.',
+        description: 'Discover and book professional photography studios for fashion shoots, product photography, e-commerce catalog shoots, portraits, brand campaigns, content creation, and commercial productions.',
+        keywords: 'Photography studio rental, professional photo studio',
+        parentCategory: 'creative-spaces'
+    },
+    'photography-studios': {
+        title: 'Photography Studios',
+        description: 'Discover and book professional photography studios for fashion shoots, product photography, e-commerce catalog shoots, portraits, brand campaigns, content creation, and commercial productions.',
         keywords: 'Photography studio rental, professional photo studio',
         parentCategory: 'creative-spaces'
     },
@@ -150,7 +174,13 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
     },
     'podcast': {
         title: 'Podcast Studios',
-        description: 'Acoustically treated rooms with professional vibes for podcast recordings and audio production. Soundproofed studios, mixing equipment, and podcast-optimized setups.',
+        description: 'Discover and book professional podcast studios for audio podcasts, video podcasts, interviews, webinars, content creation, brand storytelling, and creator collaborations.',
+        keywords: 'Podcast studio rental, recording studio',
+        parentCategory: 'creative-spaces'
+    },
+    'podcast-studios': {
+        title: 'Podcast Studios',
+        description: 'Discover and book professional podcast studios for audio podcasts, video podcasts, interviews, webinars, content creation, brand storytelling, and creator collaborations.',
         keywords: 'Podcast studio rental, recording studio',
         parentCategory: 'creative-spaces'
     },
@@ -275,8 +305,20 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
         parentCategory: 'outdoor-spaces'
     },
     'wellness': {
-        title: 'Wellness & Healing Spaces',
-        description: 'Tranquil environments designed for meditation, yoga retreats, and holistic wellness events. Serene atmospheres with spa facilities, nature elements, and mindfulness setup.',
+        title: 'Spaces for Wellness Workshops',
+        description: 'Discover and book peaceful wellness workshop spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
+        keywords: 'Yoga retreat venue, wellness space',
+        parentCategory: 'creative-spaces'
+    },
+    'wellness-workshops': {
+        title: 'Spaces for Wellness Workshops',
+        description: 'Discover and book peaceful wellness workshop spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
+        keywords: 'Yoga retreat venue, wellness space',
+        parentCategory: 'creative-spaces'
+    },
+    'wellness-workshop': {
+        title: 'Spaces for Wellness Workshops',
+        description: 'Discover and book peaceful wellness workshop spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
         keywords: 'Yoga retreat venue, wellness space',
         parentCategory: 'creative-spaces'
     },
@@ -285,6 +327,42 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
         description: 'Functional and inspiring spaces for teaching, learning, and collaborative creation. Equipped studios with workstations, demonstration areas, and interactive learning setups.',
         keywords: 'Workshop venue, training space',
         parentCategory: 'work-meeting-spaces'
+    },
+    'cyclorama-studios': {
+        title: 'Cyclorama Studios',
+        description: 'Discover and book professional cyclorama studios for photography, video production, commercials, product shoots, fashion campaigns, content creation, and e-commerce photography.',
+        keywords: 'Cyclorama studio rental, white scrim studio, infinity cove',
+        parentCategory: 'creative-spaces'
+    },
+    'cyclorama': {
+        title: 'Cyclorama Studios',
+        description: 'Discover and book professional cyclorama studios for photography, video production, commercials, product shoots, fashion campaigns, content creation, and e-commerce photography.',
+        keywords: 'Cyclorama studio rental, white scrim studio, infinity cove',
+        parentCategory: 'creative-spaces'
+    },
+    'event-venues': {
+        title: 'Event Venues',
+        description: 'Discover and book premium event venues on an hourly basis for corporate functions, private celebrations, networking events, workshops, launches, exhibitions, and creative gatherings.',
+        keywords: 'Event venue rental, product launch space',
+        parentCategory: 'event-spaces'
+    },
+    'event-venue': {
+        title: 'Event Venues',
+        description: 'Discover and book premium event venues on an hourly basis for corporate functions, private celebrations, networking events, workshops, launches, exhibitions, and creative gatherings.',
+        keywords: 'Event venue rental, product launch space',
+        parentCategory: 'event-spaces'
+    },
+    'baithaks': {
+        title: 'Spaces for Hosting Baithaks',
+        description: 'Discover and book intimate baithak venues for classical music performances, ghazal evenings, poetry sessions, storytelling events, Sufi gatherings, cultural programs, and private artistic performances.',
+        keywords: 'Baithak venue rental, intimate classical music space, ghazal evening space',
+        parentCategory: 'creative-spaces'
+    },
+    'baithak': {
+        title: 'Spaces for Hosting Baithaks',
+        description: 'Discover and book intimate baithak venues for classical music performances, ghazal evenings, poetry sessions, storytelling events, Sufi gatherings, cultural programs, and private artistic performances.',
+        keywords: 'Baithak venue rental, intimate classical music space, ghazal evening space',
+        parentCategory: 'creative-spaces'
     },
 };
 
