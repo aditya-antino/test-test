@@ -15,7 +15,7 @@ interface WhyBookSectionProps {
 
 const BenefitCard = ({ benefit }: { benefit: BenefitItem }) => {
     return (
-        <div className="flex flex-col items-center max-w-[180px] text-center">
+        <div className="flex flex-col items-center w-full max-w-[160px] sm:max-w-[180px] text-center">
             <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center mb-4 shadow-sm border border-gray-100">
                 <Image
                     src={benefit.image}
@@ -40,8 +40,8 @@ export default function WhyBookSection({ title }: WhyBookSectionProps) {
     return (
         <section className="py-16 px-4 md:px-16 bg-white">
             <div className="max-w-7xl mx-auto text-center">
-                <div className="flex justify-center mb-12">
-                    <Typography size="3xl" weight="font-bold" className="mb-12">
+                <div className="flex justify-center mb-8">
+                    <Typography size="3xl" weight="bold" align="center" className="mb-4">
                         {title.split('Sparespace').map((part, i, arr) => (
                             <React.Fragment key={i}>
                                 {part}
@@ -53,7 +53,9 @@ export default function WhyBookSection({ title }: WhyBookSectionProps) {
                     </Typography>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-8 md:gap-12">{benefitCards}</div>
+                <div className="grid grid-cols-2 gap-y-8 gap-x-4 justify-items-center max-w-[360px] mx-auto md:max-w-none md:flex md:flex-wrap md:justify-center md:gap-12">
+                    {benefitCards}
+                </div>
             </div>
         </section>
     );

@@ -35,17 +35,16 @@ export default function FAQSection({ faqs }: FAQSectionProps) {
     if (!faqs || faqs.length === 0) return null;
 
     return (
-        <section className="py-16 flex flex-col justify-center">
-            <div className="px-20">
-                <div className="flex items-center justify-center">
-                    <Typography
-                        size="3xl"
-                        weight="font-bold"
-                        className="text-center mb-18 text-gray-900"
-                    >
-                        Frequently Asked Questions
-                    </Typography>
-                </div>
+        <section className="py-16 px-4 md:px-16 bg-white">
+            <div className="max-w-4xl mx-auto w-full">
+                <Typography
+                    size="3xl"
+                    weight="bold"
+                    align="center"
+                    className="mb-12 text-gray-900"
+                >
+                    Frequently Asked Questions
+                </Typography>
                 <Accordion type="single" collapsible className="w-full">
                     {faqItems}
                 </Accordion>

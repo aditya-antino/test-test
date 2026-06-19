@@ -102,13 +102,13 @@ export default function ExploreClient({
 
             <WhyBookSection title={galleryConfig.whyBookTitle || `Why Book ${formattedCategory} Through Sparespace?`} />
 
-            {galleryItems.length > 0 && (
+            {/* {galleryItems.length > 0 && (
                 <CategoryGallery
                     title={galleryConfig.title || `${formattedCategory.split(' ')[0]} Types`}
                     items={galleryItems}
                     onItemClick={handleGalleryItemClick}
                 />
-            )}
+            )} */}
 
             <FAQSection faqs={faqs} />
 

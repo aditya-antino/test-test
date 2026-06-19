@@ -195,7 +195,7 @@ const HomePageSearchBarTab = ({
                 </div>
             </div>
 
-            <div className="flex flex-col md:hidden rounded-3xl mt-3 bg-white/80 shadow backdrop-blur-[32px]">
+            <div className="flex flex-col md:hidden w-full rounded-3xl mt-3 bg-white/80 shadow backdrop-blur-[32px]">
                 <Button
                     variant="ghost"
                     className="relative flex items-center gap-3 w-full px-6 py-4 border-b border-gray-100 text-left hover:bg-white/50 focus:bg-white/50 focus:outline-none transition-colors rounded-t-3xl h-auto font-normal justify-start"
