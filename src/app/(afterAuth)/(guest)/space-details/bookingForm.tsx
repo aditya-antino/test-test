@@ -166,8 +166,7 @@ const BookingHeader = ({
                         </span>
                     </div>
                     <div className="flex items-center gap-2 text-yellow-500 flex-wrap">
-                        <Star className="w-5 h-5"
-                            fill="currentColor" />
+                        <Star className="w-5 h-5" fill="currentColor" />
                         <span className="flex flex-row  items-center gap-2 text-gray-500 font-normal  text-xs md:text-sm font-poppins">
                             {parseFloat(spaceData?.avg_rating ?? '0').toFixed(1)}
                             {spaceData?.reviewCount && Number(spaceData?.reviewCount) > 0 && (
@@ -203,7 +202,7 @@ const BookingHeader = ({
                                         const discountVal = parseFloat(
                                             String(
                                                 extra_discount_per[
-                                                tier.key as keyof typeof extra_discount_per
+                                                    tier.key as keyof typeof extra_discount_per
                                                 ] || '0',
                                             ),
                                         );
@@ -441,8 +440,8 @@ const TimePickerDropdown = ({
                     ? timeData.fromHours
                     : timeData.fromMinutes
                 : field === 'hours'
-                    ? timeData.toHours
-                    : timeData.toMinutes;
+                  ? timeData.toHours
+                  : timeData.toMinutes;
 
         if (field === 'hours' && (currentValue === '00' || currentValue === '')) {
             onTimeChange(type, field, '');
@@ -456,8 +455,8 @@ const TimePickerDropdown = ({
                     ? timeData.fromHours
                     : timeData.fromMinutes
                 : field === 'hours'
-                    ? timeData.toHours
-                    : timeData.toMinutes;
+                  ? timeData.toHours
+                  : timeData.toMinutes;
 
         // If field is empty after blur, set to default
         if (currentValue === '') {
@@ -608,20 +607,22 @@ const TimePickerDropdown = ({
                                     <Button
                                         type="button"
                                         onClick={() => onTimeChange('from', 'period', 'AM')}
-                                        className={`px-3 rounded-none rounded-l-md font-semibold text-sm ${timeData.fromPeriod === 'AM'
+                                        className={`px-3 rounded-none rounded-l-md font-semibold text-sm ${
+                                            timeData.fromPeriod === 'AM'
                                                 ? 'bg-[#F6CD28] text-black hover:bg-yellow-500'
                                                 : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                                            }`}
+                                        }`}
                                     >
                                         AM
                                     </Button>
                                     <Button
                                         type="button"
                                         onClick={() => onTimeChange('from', 'period', 'PM')}
-                                        className={`px-3 rounded-none rounded-r-md font-semibold text-sm ${timeData.fromPeriod === 'PM'
+                                        className={`px-3 rounded-none rounded-r-md font-semibold text-sm ${
+                                            timeData.fromPeriod === 'PM'
                                                 ? 'bg-[#F6CD28] text-black hover:bg-yellow-500'
                                                 : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                                            }`}
+                                        }`}
                                     >
                                         PM
                                     </Button>
@@ -658,20 +659,22 @@ const TimePickerDropdown = ({
                                     <Button
                                         type="button"
                                         onClick={() => onTimeChange('to', 'period', 'AM')}
-                                        className={`px-3 rounded-none rounded-l-md font-semibold text-sm ${timeData.toPeriod === 'AM'
+                                        className={`px-3 rounded-none rounded-l-md font-semibold text-sm ${
+                                            timeData.toPeriod === 'AM'
                                                 ? 'bg-[#F6CD28] text-black hover:bg-yellow-500'
                                                 : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                                            }`}
+                                        }`}
                                     >
                                         AM
                                     </Button>
                                     <Button
                                         type="button"
                                         onClick={() => onTimeChange('to', 'period', 'PM')}
-                                        className={`px-3 rounded-none rounded-r-md font-semibold text-sm ${timeData.toPeriod === 'PM'
+                                        className={`px-3 rounded-none rounded-r-md font-semibold text-sm ${
+                                            timeData.toPeriod === 'PM'
                                                 ? 'bg-[#F6CD28] text-black hover:bg-yellow-500'
                                                 : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                                            }`}
+                                        }`}
                                     >
                                         PM
                                     </Button>
@@ -686,10 +689,11 @@ const TimePickerDropdown = ({
                         <Button
                             onClick={onApply}
                             disabled={isApplyDisabled}
-                            className={`px-6 ${isApplyDisabled
+                            className={`px-6 ${
+                                isApplyDisabled
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                     : 'bg-[#F6CD28] hover:bg-yellow-500 text-black'
-                                }`}
+                            }`}
                         >
                             Apply
                         </Button>
@@ -826,10 +830,11 @@ const BookingDetailRow = ({
                         if (!isDisabled) onEdit();
                     }}
                     disabled={isDisabled}
-                    className={`w-7 h-7 flex items-center justify-center transition-colors ${isDisabled
+                    className={`w-7 h-7 flex items-center justify-center transition-colors ${
+                        isDisabled
                             ? 'text-gray-200 cursor-not-allowed'
                             : 'text-gray-400 hover:text-gray-600'
-                        }`}
+                    }`}
                 >
                     <SquarePen
                         className={`w-5 h-5 cursor-pointer ${isDisabled ? 'text-gray-200' : 'text-gray-300'}`}
@@ -841,8 +846,9 @@ const BookingDetailRow = ({
                         if (!isDisabled) onEdit();
                     }}
                     disabled={isDisabled}
-                    className={`w-7 h-7 flex items-center justify-center transition-transform ${isDisabled ? 'cursor-not-allowed' : ''
-                        } ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-7 h-7 flex items-center justify-center transition-transform ${
+                        isDisabled ? 'cursor-not-allowed' : ''
+                    } ${isOpen ? 'rotate-180' : ''}`}
                 >
                     <ChevronDown
                         className={`w-5 h-5 cursor-pointer ${isDisabled ? 'text-gray-200' : 'text-gray-300'}`}
@@ -1692,8 +1698,9 @@ const MessageToHostSection = ({
             <div className="flex flex-col gap-2 h-[157px]">
                 <div className="flex flex-col gap-1 flex-1">
                     <div
-                        className={`relative flex-1 bg-white border rounded-2xl shadow-sm ${hasAnyNumber ? 'border-red-500' : 'border-gray-300'
-                            }`}
+                        className={`relative flex-1 bg-white border rounded-2xl shadow-sm ${
+                            hasAnyNumber ? 'border-red-500' : 'border-gray-300'
+                        }`}
                     >
                         <textarea
                             value={message}
@@ -1764,10 +1771,11 @@ const BookButton = ({
                 type="button"
                 onClick={handleBook}
                 disabled={isDisabled}
-                className={`flex justify-center items-center py-3 px-6 border rounded-full shadow-sm w-full transition-colors ${isDisabled
+                className={`flex justify-center items-center py-3 px-6 border rounded-full shadow-sm w-full transition-colors ${
+                    isDisabled
                         ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
                         : ' bg-[#F7CD29] md:bg-white border-[#F7CD29] md:border-gray-300 text-gray-700 hover:bg-[#F7CD29]'
-                    }`}
+                }`}
             >
                 <span className="font-semibold text-base leading-6 font-figtree">Book</span>
             </Button>

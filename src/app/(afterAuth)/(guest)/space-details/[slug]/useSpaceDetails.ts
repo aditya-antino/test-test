@@ -47,7 +47,8 @@ export const useSpaceDetails = (initialSpaceData?: any) => {
         if (slug) {
             router.prefetch(`/booking-review/${slug}`);
         }
-    }, [slug, router]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slug]);
 
     const { data: bookingDetails } = useGetGuestBookingDetails();
 
