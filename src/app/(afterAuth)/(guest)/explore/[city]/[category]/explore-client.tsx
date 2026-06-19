@@ -59,9 +59,9 @@ const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
 const CATEGORY_CTA_LABELS: Record<string, string> = {
     baithaks: 'Find Baithak Spaces',
     baithak: 'Find Baithak Spaces',
-    'wellness-workshops': 'Find Wellness Spaces',
-    'wellness-workshop': 'Find Wellness Spaces',
-    wellness: 'Find Wellness Spaces',
+    'wellness-workshops': 'Find Wellness Workshop Spaces',
+    'wellness-workshop': 'Find Wellness Workshop Spaces',
+    wellness: 'Find Wellness Workshop Spaces',
     'photography-studios': 'Find Photography Studios',
     'podcast-studios': 'Find Podcast Studios',
     'event-venues': 'Find Event Venues',
