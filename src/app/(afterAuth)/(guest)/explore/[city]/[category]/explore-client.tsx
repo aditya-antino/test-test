@@ -48,6 +48,14 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
     'cyclorama-studios': cycloramaBanner,
 };
 
+const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
+    baithaks: 'Spaces for Hosting Baithaks',
+    baithak: 'Spaces for Hosting Baithaks',
+    'wellness-workshops': 'Spaces for Wellness Workshops',
+    'wellness-workshop': 'Spaces for Wellness Workshops',
+    wellness: 'Spaces for Wellness Workshops',
+};
+
 interface ExploreClientProps {
     initialSpaceData?: any;
     citySlug: string;
@@ -67,11 +75,23 @@ export default function ExploreClient({
         handleSpaceClick,
         handleSearch,
         handleGalleryItemClick,
+        handleCtaClick,
     } = useExplorePage(initialSpaceData);
 
     // Get config for this category or fallback
     const normalizedCategory = (categorySlug || '').toLowerCase();
-    const galleryConfig = EXPLORE_PAGE_GALLERY[normalizedCategory] || EXPLORE_PAGE_GALLERY.DEFAULT;
+    
+    // Map alternative category slugs to their main config key in EXPLORE_PAGE_GALLERY
+    const galleryConfigKeyMap: Record<string, string> = {
+        'baithaks': 'baithak',
+        'podcast-studios': 'podcast',
+        'exhibition-spaces': 'exhibitions',
+        'exhibition': 'exhibitions',
+        'wellness-workshop': 'wellness-workshops',
+        'wellness': 'wellness-workshops',
+    };
+    const configKey = galleryConfigKeyMap[normalizedCategory] || normalizedCategory;
+    const galleryConfig = EXPLORE_PAGE_GALLERY[configKey] || EXPLORE_PAGE_GALLERY.DEFAULT;
     const galleryItems = galleryConfig.items || [];
     const faqs = EXPLORE_PAGE_FAQS[normalizedCategory] || EXPLORE_PAGE_FAQS.DEFAULT;
 
@@ -79,8 +99,18 @@ export default function ExploreClient({
 
     // Format strings
     const formattedCity = formatCityName(citySlug);
-    const formattedCategory = capitalize(normalizedCategory.replace(/-/g, ' '));
-    const title = `${formattedCategory} in ${formattedCity}`;
+    const formattedCategory = normalizedCategory
+        .split(/[\s-]+/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    
+    // Determine custom prefix from map, fallback to banner title, fallback to capitalized category
+    const titlePrefix = CATEGORY_TITLE_PREFIXES[normalizedCategory] || 
+        (CATEGORY_BANNERS[normalizedCategory] && CATEGORY_BANNERS[normalizedCategory].title !== DEFAULT_BANNER.title
+            ? CATEGORY_BANNERS[normalizedCategory].title
+            : formattedCategory);
+        
+    const title = `${titlePrefix} in ${formattedCity}`;
 
     // First try mapping from our assets, then fallback to CategoryBanner ogImage, then default
     const heroImageUrl = BANNER_IMAGE_MAP[normalizedCategory];
@@ -96,6 +126,7 @@ export default function ExploreClient({
                 heroImageUrl={heroImageUrl}
                 city={formattedCity}
                 onSearch={handleSearch}
+                onCtaClick={() => handleCtaClick(categorySlug)}
             />
 
             <ExploreSpacesSection

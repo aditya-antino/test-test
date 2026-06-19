@@ -42,14 +42,18 @@ export default function WhyBookSection({ title }: WhyBookSectionProps) {
             <div className="max-w-7xl mx-auto text-center">
                 <div className="flex justify-center mb-8">
                     <Typography size="3xl" weight="bold" align="center" className="mb-4">
-                        {title.split('Sparespace').map((part, i, arr) => (
-                            <React.Fragment key={i}>
-                                {part}
-                                {i < arr.length - 1 && (
-                                    <span className="text-[#F6CD28]">Sparespace</span>
-                                )}
-                            </React.Fragment>
-                        ))}
+                        {title.split(/(Sparespace|Spare Space)/i).map((part, i) => {
+                            const isMatch = /Sparespace|Spare Space/i.test(part);
+                            return (
+                                <React.Fragment key={i}>
+                                    {isMatch ? (
+                                        <span className="text-[#F6CD28]">{part}</span>
+                                    ) : (
+                                        part
+                                    )}
+                                </React.Fragment>
+                            );
+                        })}
                     </Typography>
                 </div>
 

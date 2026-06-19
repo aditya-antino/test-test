@@ -39,7 +39,7 @@ export default function ExploreSpacesSection({
                     {title}
                 </Typography>
                 {isSingle ? (
-                    <div className="flex justify-center w-full">
+                    <div className="flex justify-center md:justify-start w-full">
                         <div className="min-w-[280px] sm:min-w-[320px] max-w-[320px] p-2">
                             <BookingCard
                                 space={spaces[0]}

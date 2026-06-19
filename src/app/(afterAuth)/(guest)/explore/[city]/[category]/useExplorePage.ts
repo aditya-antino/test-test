@@ -85,6 +85,33 @@ export const useExplorePage = (initialSpaceData?: any) => {
         router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST}?activity=${slug}`);
     };
 
+    // Map explore frontend category slugs directly to backend category name slugs
+    // These must match toSlug(CategoryMaster.name) on the space-list page
+    const slugToCategoryMap: Record<string, string> = {
+        'photography-studios':  'creative-spaces',
+        'podcast-studios':      'creative-spaces',
+        'baithaks':             'event-spaces',
+        'baithak':              'event-spaces',
+        'wellness-workshops':   'fitness-wellness-spaces',
+        'wellness-workshop':    'fitness-wellness-spaces',
+        'wellness':             'fitness-wellness-spaces',
+        'exhibitions':          'event-spaces',
+        'exhibition':           'event-spaces',
+        'exhibition-spaces':    'event-spaces',
+        'cyclorama-studios':    'creative-spaces',
+        'cyclorama':            'creative-spaces',
+        'event-venues':         'event-spaces',
+        'event-venue':          'event-spaces',
+        'creative-spaces':      'creative-spaces',
+    };
+
+    const handleCtaClick = (categorySlug: string) => {
+        const mappedCategory = slugToCategoryMap[categorySlug] || categorySlug;
+        const params = new URLSearchParams();
+        if (mappedCategory) params.append('space', mappedCategory);
+        router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST || '/space-list'}?${params.toString()}`);
+    };
+
     return {
         spaces,
         mostBooked,
@@ -94,5 +121,6 @@ export const useExplorePage = (initialSpaceData?: any) => {
         handleSpaceClick,
         handleSearch,
         handleGalleryItemClick,
+        handleCtaClick,
     };
 };

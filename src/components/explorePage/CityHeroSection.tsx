@@ -9,6 +9,7 @@ interface CityHeroSectionProps {
     heroImageUrl: string | any;
     city: string;
     onSearch?: (searchParams: any) => void;
+    onCtaClick?: () => void;
 }
 
 export default function CityHeroSection({
@@ -17,6 +18,7 @@ export default function CityHeroSection({
     heroImageUrl,
     city,
     onSearch,
+    onCtaClick,
 }: CityHeroSectionProps) {
     const splitTitle = title.split(` in `);
     const highlightedPart = splitTitle.length > 1 ? ` in ${city}` : '';
@@ -51,7 +53,10 @@ export default function CityHeroSection({
 
                     {/* CTA Button (from design) - hidden on mobile if it conflicts with search bar, but let's show it */}
                     <div className="mt-8">
-                        <button className="bg-[#F7D13A] hover:bg-yellow-500 text-zinc-900 font-semibold px-6 py-3 rounded-full shadow-sm transition-colors duration-200">
+                        <button
+                            onClick={onCtaClick}
+                            className="bg-[#F7D13A] hover:bg-yellow-500 text-zinc-900 font-semibold px-6 py-3 rounded-full shadow-sm transition-colors duration-200"
+                        >
                             Find {firstPart}
                         </button>
                     </div>
