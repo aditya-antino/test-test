@@ -56,6 +56,27 @@ const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
     wellness: 'Spaces for Wellness Workshops',
 };
 
+const CATEGORY_CTA_LABELS: Record<string, string> = {
+    baithaks: 'Find Baithak Spaces',
+    baithak: 'Find Baithak Spaces',
+    'wellness-workshops': 'Find Wellness Spaces',
+    'wellness-workshop': 'Find Wellness Spaces',
+    wellness: 'Find Wellness Spaces',
+    'photography-studios': 'Find Photography Studios',
+    'podcast-studios': 'Find Podcast Studios',
+    'event-venues': 'Find Event Venues',
+    'event-venue': 'Find Event Venues',
+    'event-spaces': 'Find Event Spaces',
+    'creative-spaces': 'Find Creative Spaces',
+    'creative-space': 'Find Creative Spaces',
+    'cyclorama-studios': 'Find Cyclorama Studios',
+    cyclorama: 'Find Cyclorama Studios',
+    exhibitions: 'Find Exhibition Spaces',
+    'exhibition-spaces': 'Find Exhibition Spaces',
+    'residential-spaces': 'Find Residential Spaces',
+    workshops: 'Find Workshop Spaces',
+};
+
 interface ExploreClientProps {
     initialSpaceData?: any;
     citySlug: string;
@@ -115,6 +136,8 @@ export default function ExploreClient({
     // First try mapping from our assets, then fallback to CategoryBanner ogImage, then default
     const heroImageUrl = BANNER_IMAGE_MAP[normalizedCategory];
 
+    const ctaLabel = CATEGORY_CTA_LABELS[normalizedCategory];
+
     return (
         <div className="relative min-h-screen bg-white flex flex-col w-full gap-8 md:gap-16">
             <CityHeroSection
@@ -125,6 +148,7 @@ export default function ExploreClient({
                 }
                 heroImageUrl={heroImageUrl}
                 city={formattedCity}
+                ctaLabel={ctaLabel}
                 onSearch={handleSearch}
                 onCtaClick={() => handleCtaClick(categorySlug)}
             />

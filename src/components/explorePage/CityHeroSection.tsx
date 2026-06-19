@@ -8,6 +8,7 @@ interface CityHeroSectionProps {
     description: string;
     heroImageUrl: string | any;
     city: string;
+    ctaLabel?: string;
     onSearch?: (searchParams: any) => void;
     onCtaClick?: () => void;
 }
@@ -17,6 +18,7 @@ export default function CityHeroSection({
     description,
     heroImageUrl,
     city,
+    ctaLabel,
     onSearch,
     onCtaClick,
 }: CityHeroSectionProps) {
@@ -57,7 +59,7 @@ export default function CityHeroSection({
                             onClick={onCtaClick}
                             className="bg-[#F7D13A] hover:bg-yellow-500 text-zinc-900 font-semibold px-6 py-3 rounded-full shadow-sm transition-colors duration-200"
                         >
-                            Find {firstPart}
+                            {ctaLabel ?? `Find ${firstPart}`}
                         </button>
                     </div>
                 </div>
