@@ -116,7 +116,7 @@ export const EXPLORE_PAGE_GALLERY: Record<string, GalleryCategory> = {
             { name: 'Therapy Rooms', slug: 'therapy-rooms', image: placeholderImage },
         ],
     },
-    'wellness-workshops': {
+    'fitness-wellness': {
         title: 'Wellness Spaces for Every Practice',
         whyBookTitle: 'Why Book Wellness Workshop Venues Through Spare Space?',
         items: [
@@ -494,7 +494,7 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
             answer: 'Booking 1–2 weeks in advance is generally recommended, especially for weekends and peak periods.',
         },
     ],
-    'wellness-workshops': [
+    'fitness-wellness': [
         {
             question: 'What is the average cost of a wellness workshop space?',
             answer: 'Pricing depends on location, venue size, duration, and facilities available.',

@@ -92,7 +92,7 @@ export const useExplorePage = (initialSpaceData?: any) => {
         'podcast-studios':      'creative-spaces',
         'baithaks':             'event-spaces',
         'baithak':              'event-spaces',
-        'wellness-workshops':   'fitness-wellness-spaces',
+        'fitness-wellness':   'fitness-wellness-spaces',
         'wellness-workshop':    'fitness-wellness-spaces',
         'wellness':             'fitness-wellness-spaces',
         'exhibitions':          'event-spaces',

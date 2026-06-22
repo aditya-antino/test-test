@@ -310,7 +310,7 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
         keywords: 'Yoga retreat venue, wellness space',
         parentCategory: 'creative-spaces'
     },
-    'wellness-workshops': {
+    'fitness-wellness': {
         title: 'Fitness and Wellness Spaces',
         description: 'Discover and book peaceful fitness and wellness spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
         keywords: 'Yoga retreat venue, wellness space',

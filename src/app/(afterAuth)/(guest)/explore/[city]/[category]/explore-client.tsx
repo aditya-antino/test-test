@@ -39,7 +39,7 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
     podcast: podcastBanner,
     'podcast-studios': podcastBanner,
     wellness: wellnessBanner,
-    'wellness-workshops': wellnessBanner,
+    'fitness-wellness': wellnessBanner,
     'wellness-workshop': wellnessBanner,
     workshops: workshopsBanner,
     workshop: workshopsBanner,
@@ -52,7 +52,7 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
 const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
     baithaks: 'Spaces for Hosting Baithaks',
     baithak: 'Spaces for Hosting Baithaks',
-    'wellness-workshops': 'Fitness and Wellness Spaces',
+    'fitness-wellness': 'Fitness and Wellness Spaces',
     'wellness-workshop': 'Fitness and Wellness Spaces',
     wellness: 'Fitness and Wellness Spaces',
     workshops: 'Spaces for Workshops',
@@ -62,7 +62,7 @@ const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
 const CATEGORY_CTA_LABELS: Record<string, string> = {
     baithaks: 'Find Baithak Spaces',
     baithak: 'Find Baithak Spaces',
-    'wellness-workshops': 'Find Fitness & Wellness Spaces',
+    'fitness-wellness': 'Find Fitness & Wellness Spaces',
     'wellness-workshop': 'Find Fitness & Wellness Spaces',
     wellness: 'Find Fitness & Wellness Spaces',
     'photography-studios': 'Find Photography Studios',
@@ -112,8 +112,8 @@ export default function ExploreClient({
         'podcast-studios': 'podcast',
         'exhibition-spaces': 'exhibitions',
         'exhibition': 'exhibitions',
-        'wellness-workshop': 'wellness-workshops',
-        'wellness': 'wellness-workshops',
+        'wellness-workshop': 'fitness-wellness',
+        'wellness': 'fitness-wellness',
     };
     const configKey = galleryConfigKeyMap[normalizedCategory] || normalizedCategory;
     const galleryConfig = EXPLORE_PAGE_GALLERY[configKey] || EXPLORE_PAGE_GALLERY.DEFAULT;

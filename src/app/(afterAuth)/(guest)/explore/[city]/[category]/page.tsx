@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         'photography-studios':  '/og-images/photography_banner_image.jpg',
         'podcast-studios':      '/og-images/podcast_banner_image.png',
         'baithaks':             '/og-images/baithak_banner_image.jpg',
-        'wellness-workshops':   '/og-images/wellness_banner_image.webp',
+        'fitness-wellness':     '/og-images/wellness_banner_image.webp',
         'exhibitions':          '/og-images/exhibition_banner_image.jpg',
         'event-venues':         '/og-images/event_venues_banner_image.jpg',
         'workshops':            '/og-images/workshop_banner_image.jpg',
