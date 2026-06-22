@@ -1,5 +1,0 @@
-User-agent: *
-
-Disallow: /space-list
-
-Noindex: /space-list

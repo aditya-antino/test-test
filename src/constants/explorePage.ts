@@ -442,6 +442,58 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
             answer: 'For large exhibitions or premium venues, booking 1-3 months in advance is recommended.',
         },
     ],
+    'workshops': [
+        {
+            question: 'What is the average cost of a workshop space?',
+            answer: 'Pricing depends on location, venue size, duration, and facilities available. Hourly rates vary based on the amenities provided.',
+        },
+        {
+            question: 'Can I book a workshop space for a few hours?',
+            answer: 'Yes, many workshop spaces offer flexible hourly and half-day booking options to suit your schedule.',
+        },
+        {
+            question: 'What types of workshops can I host in these spaces?',
+            answer: 'You can host training sessions, skill-building programs, creative workshops, masterclasses, team learning events, community meetups, and professional development sessions.',
+        },
+        {
+            question: 'What amenities should I look for in a workshop space?',
+            answer: 'Look for good lighting, projector or screen, whiteboard, stable internet, comfortable seating, parking, and washroom facilities.',
+        },
+        {
+            question: 'Can I find workshop spaces for large groups?',
+            answer: 'Yes, venues are available in various capacities — from intimate 10-person sessions to large group workshops of 100 or more attendees.',
+        },
+        {
+            question: 'How far in advance should I book a workshop space?',
+            answer: 'Booking 1–2 weeks in advance is generally recommended, especially for weekends and peak periods.',
+        },
+    ],
+    'workshop': [
+        {
+            question: 'What is the average cost of a workshop space?',
+            answer: 'Pricing depends on location, venue size, duration, and facilities available. Hourly rates vary based on the amenities provided.',
+        },
+        {
+            question: 'Can I book a workshop space for a few hours?',
+            answer: 'Yes, many workshop spaces offer flexible hourly and half-day booking options to suit your schedule.',
+        },
+        {
+            question: 'What types of workshops can I host in these spaces?',
+            answer: 'You can host training sessions, skill-building programs, creative workshops, masterclasses, team learning events, community meetups, and professional development sessions.',
+        },
+        {
+            question: 'What amenities should I look for in a workshop space?',
+            answer: 'Look for good lighting, projector or screen, whiteboard, stable internet, comfortable seating, parking, and washroom facilities.',
+        },
+        {
+            question: 'Can I find workshop spaces for large groups?',
+            answer: 'Yes, venues are available in various capacities — from intimate 10-person sessions to large group workshops of 100 or more attendees.',
+        },
+        {
+            question: 'How far in advance should I book a workshop space?',
+            answer: 'Booking 1–2 weeks in advance is generally recommended, especially for weekends and peak periods.',
+        },
+    ],
     'wellness-workshops': [
         {
             question: 'What is the average cost of a wellness workshop space?',

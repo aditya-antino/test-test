@@ -43,31 +43,50 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const title = `${formattedCategory} in ${formattedCity} | Spare Space`;
     const description = `Discover and book professional ${formattedCategory.toLowerCase()} in ${formattedCity}. Book unique spaces on Spare Space.`;
 
+    const EXPLORE_OG_IMAGE_MAP: Record<string, string> = {
+        'photography-studios':  '/og-images/photography_banner_image.jpg',
+        'podcast-studios':      '/og-images/podcast_banner_image.png',
+        'baithaks':             '/og-images/baithak_banner_image.jpg',
+        'wellness-workshops':   '/og-images/wellness_banner_image.webp',
+        'exhibitions':          '/og-images/exhibition_banner_image.jpg',
+        'event-venues':         '/og-images/event_venues_banner_image.jpg',
+        'workshops':            '/og-images/workshop_banner_image.jpg',
+        'creative-spaces':      '/og-images/creative_spaces_banner_image.jpg',
+        'cyclorama-studios':    '/og-images/cyclorama_banner_image.png',
+    };
+
     let ogImageUrl = `${baseUrl}/og-image.png`;
 
-    try {
-        const categoriesRes: any = await ServerGet(endpoints.GET_PUBLIC_CATEGORIES);
-        const categories: any[] = categoriesRes?.data?.categories ?? [];
+    // 1st priority: use our hardcoded banner image map
+    if (EXPLORE_OG_IMAGE_MAP[normalizedCategory]) {
+        ogImageUrl = `${baseUrl}${EXPLORE_OG_IMAGE_MAP[normalizedCategory]}`;
+    } else {
+        // 2nd priority: try backend CategoryMaster.imgUrl
+        try {
+            const categoriesRes: any = await ServerGet(endpoints.GET_PUBLIC_CATEGORIES);
+            const categories: any[] = categoriesRes?.data?.categories ?? [];
 
-        const matched = categories.find(
-            (c: any) => c.CategoryMaster?.name && toSlug(c.CategoryMaster.name) === normalizedCategory,
-        );
+            const matched = categories.find(
+                (c: any) => c.CategoryMaster?.name && toSlug(c.CategoryMaster.name) === normalizedCategory,
+            );
 
-        if (matched?.CategoryMaster?.imgUrl) {
-            ogImageUrl = matched.CategoryMaster.imgUrl;
-        }
-    } catch (_) {}
-
-    if (ogImageUrl === `${baseUrl}/og-image.png`) {
-        if (normalizedCategory && CATEGORY_BANNERS[normalizedCategory]) {
-            const item = CATEGORY_BANNERS[normalizedCategory];
-            let localPath = '';
-            if (item.ogImage) {
-                localPath = item.ogImage;
-            } else if (item.parentCategory && CATEGORY_BANNERS[item.parentCategory]?.ogImage) {
-                localPath = CATEGORY_BANNERS[item.parentCategory].ogImage;
+            if (matched?.CategoryMaster?.imgUrl) {
+                ogImageUrl = matched.CategoryMaster.imgUrl;
             }
-            if (localPath) ogImageUrl = `${baseUrl}${localPath}`;
+        } catch (_) {}
+
+        // 3rd priority: fall back to categoryBanners.ts ogImage field
+        if (ogImageUrl === `${baseUrl}/og-image.png`) {
+            if (normalizedCategory && CATEGORY_BANNERS[normalizedCategory]) {
+                const item = CATEGORY_BANNERS[normalizedCategory];
+                let localPath = '';
+                if (item.ogImage) {
+                    localPath = item.ogImage;
+                } else if (item.parentCategory && CATEGORY_BANNERS[item.parentCategory]?.ogImage) {
+                    localPath = CATEGORY_BANNERS[item.parentCategory].ogImage;
+                }
+                if (localPath) ogImageUrl = `${baseUrl}${localPath}`;
+            }
         }
     }
 

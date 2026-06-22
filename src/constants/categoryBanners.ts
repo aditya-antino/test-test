@@ -305,27 +305,33 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
         parentCategory: 'outdoor-spaces'
     },
     'wellness': {
-        title: 'Spaces for Wellness Workshops',
-        description: 'Discover and book peaceful wellness workshop spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
+        title: 'Fitness and Wellness Spaces',
+        description: 'Discover and book peaceful fitness and wellness spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
         keywords: 'Yoga retreat venue, wellness space',
         parentCategory: 'creative-spaces'
     },
     'wellness-workshops': {
-        title: 'Spaces for Wellness Workshops',
-        description: 'Discover and book peaceful wellness workshop spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
+        title: 'Fitness and Wellness Spaces',
+        description: 'Discover and book peaceful fitness and wellness spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
         keywords: 'Yoga retreat venue, wellness space',
         parentCategory: 'creative-spaces'
     },
     'wellness-workshop': {
-        title: 'Spaces for Wellness Workshops',
-        description: 'Discover and book peaceful wellness workshop spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
+        title: 'Fitness and Wellness Spaces',
+        description: 'Discover and book peaceful fitness and wellness spaces for yoga sessions, meditation workshops, sound healing events, mindfulness programs, wellness retreats, and holistic health gatherings',
         keywords: 'Yoga retreat venue, wellness space',
         parentCategory: 'creative-spaces'
     },
+    'workshops': {
+        title: 'Spaces for Workshops',
+        description: 'Discover and book premium workshop spaces for training sessions, skill-building programs, creative workshops, masterclasses, team learning events, community meetups, and professional development sessions.',
+        keywords: 'Workshop spaces, training rooms, seminar spaces',
+        parentCategory: 'work-meeting-spaces'
+    },
     'workshop': {
-        title: 'Workshop Studios',
-        description: 'Functional and inspiring spaces for teaching, learning, and collaborative creation. Equipped studios with workstations, demonstration areas, and interactive learning setups.',
-        keywords: 'Workshop venue, training space',
+        title: 'Spaces for Workshops',
+        description: 'Discover and book premium workshop spaces for training sessions, skill-building programs, creative workshops, masterclasses, team learning events, community meetups, and professional development sessions.',
+        keywords: 'Workshop spaces, training rooms, seminar spaces',
         parentCategory: 'work-meeting-spaces'
     },
     'cyclorama-studios': {

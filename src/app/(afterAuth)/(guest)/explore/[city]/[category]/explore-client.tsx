@@ -42,6 +42,7 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
     'wellness-workshops': wellnessBanner,
     'wellness-workshop': wellnessBanner,
     workshops: workshopsBanner,
+    workshop: workshopsBanner,
     'event-venues': eventVenturesBanner,
     'event-venue': eventVenturesBanner,
     'cyclorama': cycloramaBanner,
@@ -51,17 +52,19 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
 const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
     baithaks: 'Spaces for Hosting Baithaks',
     baithak: 'Spaces for Hosting Baithaks',
-    'wellness-workshops': 'Spaces for Wellness Workshops',
-    'wellness-workshop': 'Spaces for Wellness Workshops',
-    wellness: 'Spaces for Wellness Workshops',
+    'wellness-workshops': 'Fitness and Wellness Spaces',
+    'wellness-workshop': 'Fitness and Wellness Spaces',
+    wellness: 'Fitness and Wellness Spaces',
+    workshops: 'Spaces for Workshops',
+    workshop: 'Spaces for Workshops',
 };
 
 const CATEGORY_CTA_LABELS: Record<string, string> = {
     baithaks: 'Find Baithak Spaces',
     baithak: 'Find Baithak Spaces',
-    'wellness-workshops': 'Find Wellness Workshop Spaces',
-    'wellness-workshop': 'Find Wellness Workshop Spaces',
-    wellness: 'Find Wellness Workshop Spaces',
+    'wellness-workshops': 'Find Fitness & Wellness Spaces',
+    'wellness-workshop': 'Find Fitness & Wellness Spaces',
+    wellness: 'Find Fitness & Wellness Spaces',
     'photography-studios': 'Find Photography Studios',
     'podcast-studios': 'Find Podcast Studios',
     'event-venues': 'Find Event Venues',
@@ -75,6 +78,7 @@ const CATEGORY_CTA_LABELS: Record<string, string> = {
     'exhibition-spaces': 'Find Exhibition Spaces',
     'residential-spaces': 'Find Residential Spaces',
     workshops: 'Find Workshop Spaces',
+    workshop: 'Find Workshop Spaces',
 };
 
 interface ExploreClientProps {
@@ -143,8 +147,9 @@ export default function ExploreClient({
             <CityHeroSection
                 title={title}
                 description={
-                    bannerInfo.description ||
-                    `Discover and book professional ${formattedCategory.toLowerCase()} in ${formattedCity}.`
+                    bannerInfo.description
+                        ? bannerInfo.description.replace('{city}', formattedCity.replace(/\s*NCR\s*$/i, ''))
+                        : `Discover and book professional ${formattedCategory.toLowerCase()} in ${formattedCity}.`
                 }
                 heroImageUrl={heroImageUrl}
                 city={formattedCity}

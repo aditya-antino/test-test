@@ -33,18 +33,16 @@ const FooterSection = React.memo(function FooterSection({
                     <h3 className="text-gray-800 text-sm font-bold text-center flex-1">{title}</h3>
                     <div className="w-6 h-6 flex items-center justify-center">
                         <ChevronDown
-                            className={`w-4 h-4 transition-transform duration-300 ease-in-out ${
-                                isOpen ? 'rotate-180' : ''
-                            }`}
+                            className={`w-4 h-4 transition-transform duration-300 ease-in-out ${isOpen ? 'rotate-180' : ''
+                                }`}
                         />
                     </div>
                 </button>
 
                 {/* Animated content container */}
                 <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                        isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                        }`}
                 >
                     <div className="pb-4">{children}</div>
                 </div>
@@ -67,6 +65,7 @@ const Footer = React.memo(function Footer() {
         support: true,
         legal: true,
         connect: true,
+        explore: true,
     });
 
     const toggleSection = useCallback((section: string) => {
@@ -239,6 +238,41 @@ const Footer = React.memo(function Footer() {
                                         </Link>
                                     </div>
                                 </FooterSection>
+
+                                <FooterSection title="Explore Spaces in Delhi NCR" sectionKey="explore" isOpen={openSections.explore} onToggle={toggleSection}>
+                                    <div className="flex flex-col gap-4 items-center animate-fade-in">
+                                        <Link
+                                            href="/explore/delhi-ncr/baithaks"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Baithak Venues
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/workshops"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Workshops
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/cyclorama-studios"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Cyclorama Studios
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/event-venues"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Event Venues
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/photography-studios"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Photography Studios
+                                        </Link>
+                                    </div>
+                                </FooterSection>
                             </div>
 
                             {/* Desktop grid layout */}
@@ -353,6 +387,42 @@ const Footer = React.memo(function Footer() {
                                             target="_blank"
                                         >
                                             Youtube
+                                        </Link>
+                                    </div>
+                                </FooterSection>
+
+                                {/* Explore Spaces in Delhi NCR */}
+                                <FooterSection title="Explore Spaces in Delhi NCR" sectionKey="explore" isOpen={openSections.explore} onToggle={toggleSection}>
+                                    <div className="flex flex-col gap-4">
+                                        <Link
+                                            href="/explore/delhi-ncr/baithaks"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Baithak Venues
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/workshops"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Workshops
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/cyclorama-studios"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Cyclorama Studios
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/event-venues"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Event Venues
+                                        </Link>
+                                        <Link
+                                            href="/explore/delhi-ncr/photography-studios"
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Photography Studios
                                         </Link>
                                     </div>
                                 </FooterSection>
