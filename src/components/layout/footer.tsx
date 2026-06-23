@@ -251,7 +251,7 @@ const Footer = React.memo(function Footer() {
                                             href="/explore/delhi-ncr/workshops"
                                             className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
                                         >
-                                            Workshops
+                                            Workshop Spaces
                                         </Link>
                                         <Link
                                             href="/explore/delhi-ncr/cyclorama-studios"
@@ -404,7 +404,7 @@ const Footer = React.memo(function Footer() {
                                             href="/explore/delhi-ncr/workshops"
                                             className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
                                         >
-                                            Workshops
+                                            Workshop Spaces
                                         </Link>
                                         <Link
                                             href="/explore/delhi-ncr/cyclorama-studios"
