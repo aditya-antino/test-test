@@ -7,7 +7,7 @@ import logo from '@/assets/logo.svg';
 import { CONTACT } from '@/constants/contact';
 import { PATHS } from '@/constants/path';
 
-interface FooterSectionProps {
+interface MobileFooterSectionProps {
     title: string;
     children: React.ReactNode;
     sectionKey: string;
@@ -15,13 +15,13 @@ interface FooterSectionProps {
     onToggle: (key: string) => void;
 }
 
-const FooterSection = React.memo(function FooterSection({
+const MobileFooterSection = React.memo(function MobileFooterSection({
     title,
     children,
     sectionKey,
     isOpen,
     onToggle,
-}: FooterSectionProps) {
+}: MobileFooterSectionProps) {
     return (
         <div className="w-full">
             {/* Mobile accordion header */}
@@ -30,7 +30,7 @@ const FooterSection = React.memo(function FooterSection({
                     onClick={() => onToggle(sectionKey)}
                     className="w-full flex justify-between items-center py-5 pl-6"
                 >
-                    <h3 className="text-gray-800 text-sm font-bold text-center flex-1">{title}</h3>
+                    <span className="text-gray-800 text-sm font-bold text-center flex-1">{title}</span>
                     <div className="w-6 h-6 flex items-center justify-center">
                         <ChevronDown
                             className={`w-4 h-4 transition-transform duration-300 ease-in-out ${isOpen ? 'rotate-180' : ''
@@ -49,7 +49,21 @@ const FooterSection = React.memo(function FooterSection({
 
                 <div className="w-full h-px bg-gray-300"></div>
             </div>
+        </div>
+    );
+});
 
+interface DesktopFooterSectionProps {
+    title: string;
+    children: React.ReactNode;
+}
+
+const DesktopFooterSection = React.memo(function DesktopFooterSection({
+    title,
+    children,
+}: DesktopFooterSectionProps) {
+    return (
+        <div className="w-full">
             {/* Desktop layout */}
             <div className="hidden lg:block flex-1">
                 <h3 className="text-gray-800 text-sm font-bold leading-5 mb-5">{title}</h3>
@@ -123,7 +137,7 @@ const Footer = React.memo(function Footer() {
                         <div className="w-full lg:w-[927px]">
                             {/* Mobile accordion layout */}
                             <div className="lg:hidden flex flex-col">
-                                <FooterSection title="Company" sectionKey="company" isOpen={openSections.company} onToggle={toggleSection}>
+                                <MobileFooterSection title="Company" sectionKey="company" isOpen={openSections.company} onToggle={toggleSection}>
                                     <div className="flex flex-col gap-4 items-center animate-fade-in">
                                         <Link
                                             href={PATHS.ABOUT}
@@ -131,12 +145,6 @@ const Footer = React.memo(function Footer() {
                                         >
                                             About Us
                                         </Link>
-                                        {/* <Link
-                                            href={PATHS.MISSION}
-                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
-                                        >
-                                            Our Mission
-                                        </Link> */}
                                         <Link
                                             href={PATHS.BLOG}
                                             className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
@@ -156,21 +164,9 @@ const Footer = React.memo(function Footer() {
                                             List your Space
                                         </Link>
                                     </div>
-                                </FooterSection>
+                                </MobileFooterSection>
 
-                                {/* <FooterSection title="Support" sectionKey="support">
-                                    <div className="flex flex-col gap-4 items-center animate-fade-in">
-                                        <Link
-                                            href={PATHS.FAQ}
-                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
-                                        >
-                                            FAQ
-                                        </Link>
-                                       
-                                    </div>
-                                </FooterSection> */}
-
-                                <FooterSection title="Support" sectionKey="legal" isOpen={openSections.legal} onToggle={toggleSection}>
+                                <MobileFooterSection title="Support" sectionKey="legal" isOpen={openSections.legal} onToggle={toggleSection}>
                                     <div className="flex flex-col gap-4 items-center animate-fade-in">
                                         <Link
                                             href={PATHS.TERMS}
@@ -197,9 +193,9 @@ const Footer = React.memo(function Footer() {
                                             Cookie Policy
                                         </Link> */}
                                     </div>
-                                </FooterSection>
+                                </MobileFooterSection>
 
-                                <FooterSection title="Connect with Us" sectionKey="connect" isOpen={openSections.connect} onToggle={toggleSection}>
+                                <MobileFooterSection title="Connect with Us" sectionKey="connect" isOpen={openSections.connect} onToggle={toggleSection}>
                                     <div className="flex flex-col gap-4 items-center animate-fade-in">
                                         <Link
                                             href={PATHS.SOCIAL_INSTAGRAM}
@@ -237,9 +233,9 @@ const Footer = React.memo(function Footer() {
                                             Youtube
                                         </Link>
                                     </div>
-                                </FooterSection>
+                                </MobileFooterSection>
 
-                                <FooterSection title="Explore Spaces in Delhi NCR" sectionKey="explore" isOpen={openSections.explore} onToggle={toggleSection}>
+                                <MobileFooterSection title="Explore Spaces in Delhi NCR" sectionKey="explore" isOpen={openSections.explore} onToggle={toggleSection}>
                                     <div className="flex flex-col gap-4 items-center animate-fade-in">
                                         <Link
                                             href="/explore/delhi-ncr/baithaks"
@@ -272,13 +268,13 @@ const Footer = React.memo(function Footer() {
                                             Photography Studios
                                         </Link>
                                     </div>
-                                </FooterSection>
+                                </MobileFooterSection>
                             </div>
 
                             {/* Desktop grid layout */}
                             <div className="hidden lg:flex lg:gap-10">
                                 {/* Company */}
-                                <FooterSection title="Company" sectionKey="company" isOpen={openSections.company} onToggle={toggleSection}>
+                                <DesktopFooterSection title="Company">
                                     <div className="flex flex-col gap-4">
                                         <Link
                                             href={PATHS.ABOUT}
@@ -311,23 +307,10 @@ const Footer = React.memo(function Footer() {
                                             List your Space
                                         </Link>
                                     </div>
-                                </FooterSection>
+                                </DesktopFooterSection>
 
                                 {/* Support */}
-                                {/* <FooterSection title="Support" sectionKey="support">
-                                    <div className="flex flex-col gap-4">
-                                        <Link
-                                            href={PATHS.FAQ}
-                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
-                                        >
-                                            FAQ
-                                        </Link>
-                                      
-                                    </div>
-                                </FooterSection> */}
-
-                                {/* Support */}
-                                <FooterSection title="Support" sectionKey="legal" isOpen={openSections.legal} onToggle={toggleSection}>
+                                <DesktopFooterSection title="Support">
                                     <div className="flex flex-col gap-4">
                                         <Link
                                             href={PATHS.TERMS}
@@ -348,10 +331,10 @@ const Footer = React.memo(function Footer() {
                                             Cancellation Policy
                                         </Link>
                                     </div>
-                                </FooterSection>
+                                </DesktopFooterSection>
 
                                 {/* Connect with Us */}
-                                <FooterSection title="Connect with Us" sectionKey="connect" isOpen={openSections.connect} onToggle={toggleSection}>
+                                <DesktopFooterSection title="Connect with Us">
                                     <div className="flex flex-col gap-4">
                                         <Link
                                             href={PATHS.SOCIAL_INSTAGRAM}
@@ -389,10 +372,10 @@ const Footer = React.memo(function Footer() {
                                             Youtube
                                         </Link>
                                     </div>
-                                </FooterSection>
+                                </DesktopFooterSection>
 
                                 {/* Explore Spaces in Delhi NCR */}
-                                <FooterSection title="Explore Spaces in Delhi NCR" sectionKey="explore" isOpen={openSections.explore} onToggle={toggleSection}>
+                                <DesktopFooterSection title="Explore Spaces in Delhi NCR">
                                     <div className="flex flex-col gap-4">
                                         <Link
                                             href="/explore/delhi-ncr/baithaks"
@@ -425,7 +408,7 @@ const Footer = React.memo(function Footer() {
                                             Photography Studios
                                         </Link>
                                     </div>
-                                </FooterSection>
+                                </DesktopFooterSection>
                             </div>
                         </div>
                     </div>

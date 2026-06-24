@@ -34,7 +34,7 @@ export default function CityHeroSection({
             <div className="flex flex-col-reverse lg:flex-row gap-12 mb-12">
                 {/* Left Content */}
                 <div className="flex-1 md:mt-12 flex flex-col justify-center">
-                    <div className="self-stretch">
+                    <h1 className="self-stretch">
                         <span className="text-zinc-800 text-4xl sm:text-5xl md:text-6xl font-bold font-['Figtree'] leading-snug sm:leading-tight md:leading-[64px]">
                             {firstPart}
                         </span>
@@ -43,7 +43,7 @@ export default function CityHeroSection({
                                 {highlightedPart}
                             </span>
                         )}
-                    </div>
+                    </h1>
                     <Typography
                         className="mt-4 max-w-lg"
                         color="text-gray-500"

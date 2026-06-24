@@ -41,7 +41,7 @@ export default function WhyBookSection({ title }: WhyBookSectionProps) {
         <section className="py-16 px-4 md:px-16 bg-white">
             <div className="max-w-7xl mx-auto text-center">
                 <div className="flex justify-center mb-8">
-                    <Typography size="3xl" weight="bold" align="center" className="mb-4">
+                    <Typography as="h2" size="3xl" weight="bold" align="center" className="mb-4">
                         {title.split(/(Sparespace|Spare Space)/i).map((part, i) => {
                             const isMatch = /Sparespace|Spare Space/i.test(part);
                             return (
