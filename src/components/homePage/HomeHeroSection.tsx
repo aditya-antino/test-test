@@ -12,7 +12,7 @@ export default function HeroHomeSection() {
             <div className="flex flex-col lg:flex-row gap-12">
                 {/* Left Content */}
                 <div className="flex-1 md:mt-12">
-                    <div className="self-stretch">
+                    <h1 className="self-stretch">
                         <span className="text-zinc-800 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-['Figtree'] leading-snug sm:leading-tight md:leading-[64px] lg:leading-[72px]">
                             Find the Perfect Space for{' '}
                         </span>
@@ -34,7 +34,7 @@ export default function HeroHomeSection() {
                         <span className="text-zinc-800 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-['Figtree'] leading-snug sm:leading-tight md:leading-[64px] lg:leading-[72px]">
                             .
                         </span>
-                    </div>
+                    </h1>
                     <Typography className="mt-4" color="text-gray-500" size="xl" weight="normal">
                         Book by the hour. Flexible, affordable, and hassle-free.
                     </Typography>
