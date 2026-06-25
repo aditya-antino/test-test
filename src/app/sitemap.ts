@@ -89,11 +89,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         fetchArticlesForSection('host', 'hosts'),
     ]);
 
+    // Explore / SEO landing pages
+    const exploreCities = ['delhi-ncr'];
+    const exploreCategories = [
+        'photography-studios',
+        'podcast-studios',
+        'baithaks',
+        'fitness-wellness',
+        'exhibitions',
+        'event-venues',
+        'workshops',
+        'creative-spaces',
+        'cyclorama-studios',
+    ];
+    const exploreRoutes: MetadataRoute.Sitemap = [];
+    exploreCities.forEach((city) => {
+        exploreCategories.forEach((category) => {
+            exploreRoutes.push({
+                url: `${baseUrl}/explore/${city}/${category}`,
+                lastModified: new Date().toISOString(),
+                priority: 0.8,
+                changeFrequency: 'weekly',
+            });
+        });
+    });
+
     dynamicRoutes = [
         ...spacesRoutes,
         ...blogsRoutes,
         ...guestArticleRoutes,
         ...hostArticleRoutes,
+        ...exploreRoutes,
     ];
 
     return [...staticRoutes, ...dynamicRoutes];

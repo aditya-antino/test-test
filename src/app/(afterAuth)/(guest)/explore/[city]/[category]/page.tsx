@@ -40,8 +40,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const formattedCity = formatCityName(city);
     const formattedCategory = formatTitle(category);
 
-    const title = `${formattedCategory} in ${formattedCity} | Spare Space`;
-    const description = `Discover and book professional ${formattedCategory.toLowerCase()} in ${formattedCity}. Book unique spaces on Spare Space.`;
+    const bannerInfo = CATEGORY_BANNERS[normalizedCategory];
+
+    const title = bannerInfo?.metaTitle
+        ? bannerInfo.metaTitle.replaceAll('{city}', formattedCity)
+        : `${formattedCategory} in ${formattedCity} | Spare Space`;
+        
+    const description = bannerInfo?.metaDescription
+        ? bannerInfo.metaDescription.replaceAll('{city}', formattedCity)
+        : `Discover and book professional ${formattedCategory.toLowerCase()} in ${formattedCity}. Book unique spaces on Spare Space.`;
 
     const EXPLORE_OG_IMAGE_MAP: Record<string, string> = {
         'photography-studios':  '/og-images/photography_banner_image.jpg',
