@@ -188,7 +188,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
                     <div className="space-y-1">
                         <div className="flex items-center gap-1 flex-wrap justify-center">
                             <span className="text-[#F6CD28] font-bold">
-                                {title}
+                                {isUploading ? 'Uploading...' : title}
                             </span>
                             <span className="text-gray-600">{subtitle}</span>
                             {isOptional && <span className="text-gray-400">({isOptional})</span>}
@@ -196,19 +196,13 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
                         <div className="text-gray-400 text-sm">{fileTypes}</div>
                     </div>
                 </label>
-
-                {isProcessing && (
-                    <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center space-y-3 z-10 transition-opacity duration-200">
-                        <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-[#F6CD28]"></div>
-                        <div className="text-sm font-bold text-gray-700">
-                            {isConverting ? 'Converting HEIC...' : 'Uploading image...'}
-                        </div>
-                        <div className="text-xs text-gray-400 px-4">
-                            Please wait...
-                        </div>
-                    </div>
-                )}
             </div>
+
+            {isUploading && !isConverting && (
+                <div className="text-center text-sm text-gray-600 font-extrabold">
+                    Uploading {multiple ? 'files' : 'file'}...
+                </div>
+            )}
         </div>
     );
 };
