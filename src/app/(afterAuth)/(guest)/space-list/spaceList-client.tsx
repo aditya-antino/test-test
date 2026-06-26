@@ -74,13 +74,13 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
         ? fetchedSpaces
         : (spacesData?.data?.records || []).map((space: any) => ({
               ...space,
-              price: parseFloat(space.pricePerHour) || 0,
-              rating: parseFloat(space.avgRating) || 0,
-              reviews: parseInt(space.reviewCount) || 0,
-              seats: space.capacity,
-              discountAmount: space.discountAmount || 0,
-              isWishlist: space.isWishlist,
-              isRefundable: space.isRefundable,
+              price: parseFloat(space?.pricePerHour) || 0,
+              rating: parseFloat(space?.avgRating) || 0,
+              reviews: parseInt(space?.reviewCount) || 0,
+              seats: space?.capacity || 0,
+              discountAmount: space?.discountAmount || 0,
+              isWishlist: space?.isWishlist || false,
+              isRefundable: space?.isRefundable || false,
           }));
 
     const categories = categoriesData?.data?.categories || [];
@@ -211,16 +211,16 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                     {/* Right container: Map */}
                     <div className="hidden lg:block lg:col-span-2 sticky top-4 min-h-[450px]">
                         <SpaceMap
-                            spaces={spacesDataRaw.map((space) => ({
-                                id: space.id,
-                                title: space.title,
-                                slug: space.slug,
-                                location: space.location,
-                                pricePerHour: space.pricePerHour,
+                            spaces={spacesDataRaw.map((space: any) => ({
+                                id: space?.id,
+                                title: space?.title,
+                                slug: space?.slug,
+                                location: space?.location,
+                                pricePerHour: space?.pricePerHour,
                                 discountAmount:
-                                    space.discountAmount ?? space.SpaceListing?.discountAmount ?? 0,
+                                    space?.discountAmount ?? space?.SpaceListing?.discountAmount ?? 0,
                                 isRefundable:
-                                    space.isRefundable ?? space.SpaceListing?.isRefundable ?? false,
+                                    space?.isRefundable ?? space?.SpaceListing?.isRefundable ?? false,
                             }))}
                             onSpaceClick={handleSpaceClick}
                             className="h-full"
@@ -278,20 +278,20 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                     <div className="relative w-full h-full max-w-4xl max-h-[90vh] bg-transparent rounded-2xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl mt-10">
                         <div className="w-full h-full rounded-2xl overflow-hidden">
                             <SpaceMap
-                                spaces={spacesDataRaw.map((space) => ({
-                                    id: space.id,
-                                    title: space.title,
-                                    slug: space.slug,
-                                    location: space.location,
-                                    pricePerHour: space.pricePerHour,
-                                    image: space.spaceImages?.[0] || '',
+                                spaces={spacesDataRaw.map((space: any) => ({
+                                    id: space?.id,
+                                    title: space?.title,
+                                    slug: space?.slug,
+                                    location: space?.location,
+                                    pricePerHour: space?.pricePerHour,
+                                    image: space?.spaceImages?.[0] || '',
                                     discountAmount:
-                                        space.discountAmount ??
-                                        space.SpaceListing?.discountAmount ??
+                                        space?.discountAmount ??
+                                        space?.SpaceListing?.discountAmount ??
                                         0,
                                     isRefundable:
-                                        space.isRefundable ??
-                                        space.SpaceListing?.isRefundable ??
+                                        space?.isRefundable ??
+                                        space?.SpaceListing?.isRefundable ??
                                         false,
                                 }))}
                                 onSpaceClick={handleSpaceClick}

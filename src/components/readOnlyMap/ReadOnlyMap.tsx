@@ -61,8 +61,13 @@ export default function ReadOnlyMap({
   useEffect(() => {
     if (!isLoaded || !window.google?.maps || !mapRef.current) return;
 
+    const safeCoordinates = {
+      lat: Number(coordinates?.lat),
+      lng: Number(coordinates?.lng),
+    };
+
     const map = new google.maps.Map(mapRef.current, {
-      center: coordinates,
+      center: safeCoordinates,
       zoom: initialZoom, // try to respect prop at construction
       minZoom,
       maxZoom,
@@ -92,7 +97,7 @@ export default function ReadOnlyMap({
     // Yellow circle in meters — scales with zoom automatically
     circleRef.current = new google.maps.Circle({
       map,
-      center: coordinates,
+      center: safeCoordinates,
       radius: radiusMeters,
       strokeColor: '#FFC107',
       strokeOpacity: 0.95,
@@ -129,9 +134,13 @@ export default function ReadOnlyMap({
   // --- keep center in sync ---
   useEffect(() => {
     if (!mapInstance.current) return;
-    mapInstance.current.setCenter(coordinates);
-    if (circleRef.current) circleRef.current.setCenter(coordinates);
-  }, [coordinates.lat, coordinates.lng]);
+    const safeCoordinates = {
+      lat: Number(coordinates?.lat),
+      lng: Number(coordinates?.lng),
+    };
+    mapInstance.current.setCenter(safeCoordinates);
+    if (circleRef.current) circleRef.current.setCenter(safeCoordinates);
+  }, [coordinates?.lat, coordinates?.lng]);
 
 
   useEffect(() => {

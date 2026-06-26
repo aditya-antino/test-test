@@ -167,7 +167,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
 
             // Resolve by name if ids is empty (for static activities)
             const matchedActivity = activitiesData?.data?.activities?.find(
-                (a) => a.activity.toLowerCase() === active.name.toLowerCase(),
+                (a) => a.activity && active.name && a.activity.toLowerCase() === active.name.toLowerCase(),
             );
             if (matchedActivity) {
                 return (matchedActivity as any).ids || [matchedActivity.id];

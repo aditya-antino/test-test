@@ -349,6 +349,7 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
 
         // Initialize map with same configuration as PlacesSearchMap
         const initMap = () => {
+            if (mapInstanceRef.current) return;
             // Default center (Gurgaon - same as PlacesSearchMap)
             const defaultCenter = { lat: 28.4595, lng: 77.0266 };
 
@@ -409,6 +410,8 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
             (space) =>
                 space.location?.coordinates &&
                 space.location.coordinates.length === 2 &&
+                !isNaN(Number(space.location.coordinates[0])) &&
+                !isNaN(Number(space.location.coordinates[1])) &&
                 (space.location.pricePerHour || space.pricePerHour),
         );
 
@@ -418,9 +421,11 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
 
         validSpaces.forEach((space) => {
             const [lng, lat] = space.location.coordinates!;
+            const numLat = Number(lat);
+            const numLng = Number(lng);
             // Round coordinates to avoid floating point precision issues
-            const roundedLat = Math.round(lat / TOLERANCE) * TOLERANCE;
-            const roundedLng = Math.round(lng / TOLERANCE) * TOLERANCE;
+            const roundedLat = Math.round(numLat / TOLERANCE) * TOLERANCE;
+            const roundedLng = Math.round(numLng / TOLERANCE) * TOLERANCE;
             const locationKey = `${roundedLat},${roundedLng}`;
 
             if (!spacesByLocation.has(locationKey)) {
@@ -433,6 +438,8 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
         spacesByLocation.forEach((spacesAtLocation, locationKey) => {
             const firstSpace = spacesAtLocation[0];
             const [lng, lat] = firstSpace.location.coordinates!;
+            const numLat = Number(lat);
+            const numLng = Number(lng);
             const rawPrice = firstSpace.location.pricePerHour || firstSpace.pricePerHour || '0';
             const spaceCount = spacesAtLocation.length;
 
@@ -472,7 +479,7 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
 
                 const marker = new window.google.maps.Marker({
                     map: mapInstanceRef.current,
-                    position: { lat, lng },
+                    position: { lat: numLat, lng: numLng },
                     title:
                         spaceCount > 1 ? `${spaceCount} spaces at this location` : firstSpace.title,
                     icon: defaultIcon,
@@ -501,7 +508,11 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
             const bounds = new window.google.maps.LatLngBounds();
             spacesByLocation.forEach((spacesAtLocation) => {
                 const [lng, lat] = spacesAtLocation[0].location.coordinates!;
-                bounds.extend({ lat, lng });
+                const numLat = Number(lat);
+                const numLng = Number(lng);
+                if (isFinite(numLat) && isFinite(numLng)) {
+                    bounds.extend({ lat: numLat, lng: numLng });
+                }
             });
             mapInstanceRef.current.fitBounds(bounds);
         } else if (spaces.length > 0 && window.google && window.google.maps) {

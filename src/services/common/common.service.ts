@@ -20,6 +20,7 @@ export const useUploadImage = (
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
+                timeout: 180000, // 3 minutes timeout for upload
             });
         },
         ...options,
@@ -40,6 +41,7 @@ export const useUploadImageWithWatermark = (
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
+                    timeout: 180000, // 3 minutes timeout for watermark upload
                 },
             );
         },

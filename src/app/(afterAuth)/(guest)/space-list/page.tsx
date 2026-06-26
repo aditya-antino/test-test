@@ -35,35 +35,37 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
             .join(' ');
     };
 
-    // Next.js 15: searchParams is now a Promise
     const params = await searchParams;
     const space = params.space;
     const activity = params.activity;
 
-    const formattedSpace = formatTitle(space);
-    const formattedActivity = formatTitle(activity);
+    const rawSpace = Array.isArray(space) ? space[0] : space;
+    const rawActivity = Array.isArray(activity) ? activity[0] : activity;
+
+    const formattedSpace = formatTitle(rawSpace);
+    const formattedActivity = formatTitle(rawActivity);
 
     let title = 'Browse Spaces | Spare Space';
     let description = 'Explore unique spaces for events, meetings, and activities.';
 
-    if (space && activity) {
+    if (rawSpace && rawActivity) {
         title = `${formattedSpace} for ${formattedActivity} | Spare Space`;
         description = `Explore ${formattedSpace} for ${formattedActivity}. Book unique spaces on Spare Space.`;
-    } else if (space) {
+    } else if (rawSpace) {
         title = `${formattedSpace} | Spare Space`;
         description = `Explore ${formattedSpace} for various activities. Book your perfect space.`;
-    } else if (activity) {
+    } else if (rawActivity) {
         title = `Spaces for ${formattedActivity} | Spare Space`;
         description = `Find spaces perfect for ${formattedActivity}. Discover and book instantly.`;
     }
 
     let ogImageUrl = `${baseUrl}/og-image.png`;
 
-    if (space) {
+    if (rawSpace) {
         try {
             const categoriesRes: any = await ServerGet(endpoints.GET_PUBLIC_CATEGORIES);
             const categories: any[] = categoriesRes?.data?.categories ?? [];
-            const firstSlug = space.split(',')[0];
+            const firstSlug = rawSpace.split(',')[0];
 
             const matched = categories.find(
                 (c: any) => c.CategoryMaster?.name && toSlug(c.CategoryMaster.name) === firstSlug,
@@ -78,7 +80,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     }
 
     if (ogImageUrl === `${baseUrl}/og-image.png`) {
-        const categoryKey = activity || space;
+        const categoryKey = rawActivity || rawSpace;
         if (categoryKey && CATEGORY_BANNERS[categoryKey]) {
             const item = CATEGORY_BANNERS[categoryKey];
             let localPath = '';
@@ -136,7 +138,9 @@ async function getSpaceList(searchParams: any, metadata: any) {
         params.append('limit', '10');
 
         if (searchParams.space && metadata?.categories) {
-            const spaceSlugs = searchParams.space.split(',');
+            const rawSpace = searchParams.space;
+            const spaceVal = Array.isArray(rawSpace) ? rawSpace[0] : rawSpace;
+            const spaceSlugs = spaceVal.split(',');
             const matchedCategoryIds = metadata.categories
                 .filter(
                     (c: any) =>
@@ -151,7 +155,9 @@ async function getSpaceList(searchParams: any, metadata: any) {
         }
 
         if (searchParams.activity && metadata?.activities) {
-            const activitySlugs = searchParams.activity.split(',');
+            const rawActivity = searchParams.activity;
+            const activityVal = Array.isArray(rawActivity) ? rawActivity[0] : rawActivity;
+            const activitySlugs = activityVal.split(',');
             const matchedActivityIds = metadata.activities
                 .filter((a: any) => a.activity && activitySlugs.includes(toSlug(a.activity)))
                 .flatMap((a: any) => a.ids || [a.id]);
