@@ -140,7 +140,7 @@ export default function ReadOnlyMap({
     };
     mapInstance.current.setCenter(safeCoordinates);
     if (circleRef.current) circleRef.current.setCenter(safeCoordinates);
-  }, [coordinates?.lat, coordinates?.lng]);
+  }, [coordinates?.lat, coordinates?.lng, isLoaded]);
 
 
   useEffect(() => {
@@ -155,7 +155,7 @@ export default function ReadOnlyMap({
     if (typeof initialZoom === 'number') {
       mapInstance.current.setZoom(initialZoom);
     }
-  }, [initialZoom, autoFitToCircle]);
+  }, [initialZoom, autoFitToCircle, isLoaded]);
 
   return (
     <div className="p-4">

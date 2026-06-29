@@ -86,6 +86,18 @@ export default function PlacesSearchMap({
             draggable: !isDisabled,
         });
 
+        // Add drag listener if draggable
+        if (!isDisabled && setCoordinates) {
+            marker.current.addListener('dragend', (e: google.maps.MapMouseEvent) => {
+                if (e.latLng) {
+                    const dragLat = e.latLng.lat();
+                    const dragLng = e.latLng.lng();
+                    setCoordinates({ lat: dragLat, lng: dragLng });
+                    setMarker(e.latLng, 'Dragged Location', '', '', null, 'drag');
+                }
+            });
+        }
+
         // Center map
         map.panTo({ lat, lng });
 
@@ -202,29 +214,7 @@ export default function PlacesSearchMap({
             setMarker(coordinates, 'Location', '', '', null, 'click', false);
             mapInstance.current.setCenter({ lat: coordinates.lat, lng: coordinates.lng });
         }
-    }, [coordinates?.lat, coordinates?.lng]); // Only depend on lat/lng values
-
-    // Handle marker drag (only if not disabled)
-    useEffect(() => {
-        if (marker.current && !isDisabled) {
-            const dragListener = marker.current.addListener(
-                'dragend',
-                (e: google.maps.MapMouseEvent) => {
-                    if (e.latLng && setCoordinates) {
-                        const lat = e.latLng.lat();
-                        const lng = e.latLng.lng();
-                        setCoordinates({ lat, lng });
-                        setMarker(e.latLng, 'Dragged Location', '', '', null, 'drag');
-                    }
-                },
-            );
-
-            // Cleanup listener
-            return () => {
-                window.google.maps.event.removeListener(dragListener);
-            };
-        }
-    }, [isDisabled, setCoordinates]);
+    }, [coordinates?.lat, coordinates?.lng, isLoaded]); // Depend on coordinates and map loaded state
 
     return (
         <div className="p-4">

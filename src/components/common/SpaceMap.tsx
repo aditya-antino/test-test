@@ -341,62 +341,54 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
     const markersRef = useRef<any[]>([]);
     const [selectedSpaces, setSelectedSpaces] = useState<SpaceLocation[]>([]);
     const [currentSpaceIndex, setCurrentSpaceIndex] = useState<number>(0);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     const { data: bookingDetails } = useGetGuestBookingDetails();
 
+    // -------- Wait for Google Maps to Load (loaded globally by layout.tsx) ----------
     useEffect(() => {
-        if (!mapRef.current) return;
+        let retryCount = 0;
+        const maxRetries = 100; // 10 seconds max wait time
 
-        // Initialize map with same configuration as PlacesSearchMap
-        const initMap = () => {
-            if (mapInstanceRef.current) return;
-            // Default center (Gurgaon - same as PlacesSearchMap)
-            const defaultCenter = { lat: 28.4595, lng: 77.0266 };
-
-            // Create map instance with same settings as PlacesSearchMap
+        const checkGoogleMaps = () => {
             if (window.google && window.google.maps) {
-                mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-                    center: defaultCenter,
-                    zoom: 13,
-                    mapTypeControl: false,
-                    fullscreenControl: true,
-                    streetViewControl: false,
-                    draggable: true,
-                    zoomControl: true,
-                    scrollwheel: true,
-                    disableDoubleClickZoom: false,
-                    mapTypeId: window.google.maps.MapTypeId.ROADMAP,
-                    styles: [
-                        {
-                            featureType: 'poi',
-                            elementType: 'labels',
-                            stylers: [{ visibility: 'off' }],
-                        },
-                    ],
-                });
+                setIsLoaded(true);
+            } else if (retryCount < maxRetries) {
+                retryCount++;
+                setTimeout(checkGoogleMaps, 100);
             }
         };
-
-        // Load Google Maps if not already loaded
-        if (!window.google) {
-            const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-            if (existingScript) {
-                existingScript.addEventListener('load', initMap);
-            } else {
-                const script = document.createElement('script');
-                const key =
-                    process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY ||
-                    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`;
-                script.async = true;
-                script.defer = true;
-                script.onload = initMap;
-                document.head.appendChild(script);
-            }
-        } else {
-            initMap();
-        }
+        checkGoogleMaps();
     }, []);
+
+    // -------- Initialize Map Once Loaded ----------
+    useEffect(() => {
+        if (!isLoaded || !mapRef.current || mapInstanceRef.current) return;
+
+        const defaultCenter = { lat: 28.4595, lng: 77.0266 };
+
+        if (window.google && window.google.maps) {
+            mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+                center: defaultCenter,
+                zoom: 13,
+                mapTypeControl: false,
+                fullscreenControl: true,
+                streetViewControl: false,
+                draggable: true,
+                zoomControl: true,
+                scrollwheel: true,
+                disableDoubleClickZoom: false,
+                mapTypeId: window.google.maps.MapTypeId.ROADMAP,
+                styles: [
+                    {
+                        featureType: 'poi',
+                        elementType: 'labels',
+                        stylers: [{ visibility: 'off' }],
+                    },
+                ],
+            });
+        }
+    }, [isLoaded]);
 
     useEffect(() => {
         if (!mapInstanceRef.current || !spaces.length) return;
@@ -520,7 +512,7 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
             mapInstanceRef.current.setCenter({ lat: 28.4595, lng: 77.0266 });
             mapInstanceRef.current.setZoom(13);
         }
-    }, [spaces, onSpaceClick, bookingDetails]);
+    }, [spaces, onSpaceClick, bookingDetails, isLoaded]);
 
     const handleCloseBookingCard = () => {
         setSelectedSpaces([]);
