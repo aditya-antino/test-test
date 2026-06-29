@@ -345,7 +345,7 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
 
     const { data: bookingDetails } = useGetGuestBookingDetails();
 
-    // -------- Wait for Google Maps to Load (loaded globally by layout.tsx) ----------
+    // Wait for Google Maps to Load (loaded globally by layout.tsx)
     useEffect(() => {
         let retryCount = 0;
         const maxRetries = 100; // 10 seconds max wait time
@@ -361,7 +361,7 @@ const SpaceMap: React.FC<SpaceMapProps> = ({ spaces, onSpaceClick, className }) 
         checkGoogleMaps();
     }, []);
 
-    // -------- Initialize Map Once Loaded ----------
+    // Initialize Map Once Loaded
     useEffect(() => {
         if (!isLoaded || !mapRef.current || mapInstanceRef.current) return;
 

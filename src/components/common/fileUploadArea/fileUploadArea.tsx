@@ -1,6 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Upload } from 'lucide-react';
+import UploadProgressModal from './UploadProgressModal';
 import { useUploadImage, useUploadImageWithWatermark } from '@/services';
 import { toast } from 'react-toastify';
 import { handleApiError } from '@/hooks/handleApiError';
@@ -32,11 +33,35 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
 }) => {
     const [isUploading, setIsUploading] = useState(false);
     const [isConverting, setIsConverting] = useState(false);
+    const [fakePercent, setFakePercent] = useState(0);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    useEffect(() => {
+        if (isUploading && !isConverting) {
+            setFakePercent(0);
+
+            intervalRef.current = setInterval(() => {
+                setFakePercent((prev) => {
+                    if (prev >= 90) return prev; // Hold at 90 until API responds
+                    const step = Math.floor(Math.random() * 5) + 1;
+                    return Math.min(prev + step, 90);
+                });
+            }, Math.floor(Math.random() * 400) + 400);
+        }
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
+    }, [isUploading, isConverting]);
 
     const uploadImageMutation = useUploadImage({
         onError: () => {
             console.error('Upload failed');
             setIsUploading(false);
+            setFakePercent(0);
         },
     });
 
@@ -44,6 +69,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
         onError: () => {
             console.error('Upload failed');
             setIsUploading(false);
+            setFakePercent(0);
         },
     });
 
@@ -138,6 +164,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
             if (processedFiles.length === 0) {
                 toast.error('No valid files to upload');
                 setIsUploading(false);
+                setFakePercent(0);
                 e.target.value = '';
                 return;
             }
@@ -145,6 +172,16 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
             const formData = new FormData();
             processedFiles.forEach((file) => formData.append('files', file));
             const res = await uploadMutation.mutateAsync(formData);
+
+            // Success: snap to 100%, brief pause, then close modal
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+            setFakePercent(100);
+
+            await new Promise((resolve) => setTimeout(resolve, 600));
+
             const uploadedUrls =
                 res.data && Array.isArray(res.data) ? res.data.map((f: any) => f.url) : [];
 
@@ -156,54 +193,55 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({
         } finally {
             setIsUploading(false);
             setIsConverting(false);
+            setFakePercent(0);
         }
     };
 
     const isProcessing = isUploading || isConverting;
+    const showModal = isUploading && !isConverting;
 
     return (
-        <div className="space-y-4">
-            <div className="border-2 h-60 overflow-hidden w-80 border-dashed border-gray-300 rounded-lg items-center justify-center flex flex-col text-center hover:border-gray-400 transition-colors relative">
-                <input
-                    type="file"
-                    accept={
-                        allowedExtensions
-                            ? allowedExtensions.map((ext) => `.${ext}`).join(',')
-                            : 'image/*,.pdf,.heic,.heif'
-                    }
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    id={`file-upload-${fieldName}`}
-                    multiple={multiple}
-                    disabled={isProcessing}
-                />
+        <>
+            {/* Full-screen upload progress modal */}
+            {showModal && <UploadProgressModal percent={fakePercent} multiple={multiple} />}
 
-                <label
-                    htmlFor={`file-upload-${fieldName}`}
-                    className={`cursor-pointer flex flex-col items-center ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
-                        <Upload className="w-6 h-6 text-gray-400" />
-                    </div>
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-1 flex-wrap justify-center">
-                            <span className="text-[#F6CD28] font-bold">
-                                {isUploading ? 'Uploading...' : title}
-                            </span>
-                            <span className="text-gray-600">{subtitle}</span>
-                            {isOptional && <span className="text-gray-400">({isOptional})</span>}
+            <div className="space-y-4">
+                <div className="border-2 h-60 overflow-hidden w-80 border-dashed border-gray-300 rounded-lg items-center justify-center flex flex-col text-center hover:border-gray-400 transition-colors relative">
+                    <input
+                        type="file"
+                        accept={
+                            allowedExtensions
+                                ? allowedExtensions.map((ext) => `.${ext}`).join(',')
+                                : 'image/*,.pdf,.heic,.heif'
+                        }
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id={`file-upload-${fieldName}`}
+                        multiple={multiple}
+                        disabled={isProcessing}
+                    />
+
+                    <label
+                        htmlFor={`file-upload-${fieldName}`}
+                        className={`cursor-pointer flex flex-col items-center ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
+                            <Upload className="w-6 h-6 text-gray-400" />
                         </div>
-                        <div className="text-gray-400 text-sm">{fileTypes}</div>
-                    </div>
-                </label>
-            </div>
-
-            {isUploading && !isConverting && (
-                <div className="text-center text-sm text-gray-600 font-extrabold">
-                    Uploading {multiple ? 'files' : 'file'}...
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-1 flex-wrap justify-center">
+                                <span className="text-[#F6CD28] font-bold">
+                                    {isUploading ? 'Uploading...' : title}
+                                </span>
+                                <span className="text-gray-600">{subtitle}</span>
+                                {isOptional && <span className="text-gray-400">({isOptional})</span>}
+                            </div>
+                            <div className="text-gray-400 text-sm">{fileTypes}</div>
+                        </div>
+                    </label>
                 </div>
-            )}
-        </div>
+            </div>
+        </>
     );
 };
 
