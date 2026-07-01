@@ -23,12 +23,12 @@ interface BankDetailsFormProps {
 
 export default function BankDetailsForm({ data, onChange, isEdit = true }: BankDetailsFormProps) {
     const values: Required<BankDetailsData> = {
-        type: data.type ?? 'current',
-        accountNumber: data.accountNumber ?? '',
-        confirmAccountNumber: data.confirmAccountNumber ?? '',
-        bankName: data.bankName ?? '',
-        ifscCode: data.ifscCode ?? '',
-        accountHolderName: data.accountHolderName ?? '',
+        type: data?.type ?? 'current',
+        accountNumber: data?.accountNumber ?? '',
+        confirmAccountNumber: data?.confirmAccountNumber ?? '',
+        bankName: data?.bankName ?? '',
+        ifscCode: data?.ifscCode ?? '',
+        accountHolderName: data?.accountHolderName ?? '',
     };
     return (
         <div className="space-y-4 pt-4">

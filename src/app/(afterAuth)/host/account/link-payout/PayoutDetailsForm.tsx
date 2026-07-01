@@ -34,16 +34,16 @@ export const PayoutDetailsForm: React.FC<PayoutDetailsFormProps> = ({
 }) => {
     const values: PayoutDetailsData = {
         accountType: data?.accountType ||  'personal',
-        businessName: data.businessName ?? '',
-        firstName: data.firstName ?? '',
-        lastName: data.lastName ?? '',
-        email: data.email ?? '',
-        dob: data.dob ?? '',
-        countryOfBirth: data.countryOfBirth ?? '',
-        citizenship: data.citizenship ?? '',
-        phoneNumber: data.phoneNumber ?? '',
-        countryCode: data.countryCode ?? '91',
-        contactName: data.contactName ?? '',
+        businessName: data?.businessName ?? '',
+        firstName: data?.firstName ?? '',
+        lastName: data?.lastName ?? '',
+        email: data?.email ?? '',
+        dob: data?.dob ?? '',
+        countryOfBirth: data?.countryOfBirth ?? '',
+        citizenship: data?.citizenship ?? '',
+        phoneNumber: data?.phoneNumber ?? '',
+        countryCode: data?.countryCode ?? '91',
+        contactName: data?.contactName ?? '',
     };
 
     const handleAccountTypeChange = (type: 'personal' | 'business') => {

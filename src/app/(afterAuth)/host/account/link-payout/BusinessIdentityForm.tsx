@@ -62,13 +62,19 @@ export default function BusinessIdentityForm({
     /* -------------------- Derived data -------------------- */
 
     const panDoc = useMemo(
-        () => kycDocRes.data.find((doc: any) => doc.type === KYC_TYPES.PAN),
-        [kycDocRes.data],
+        () =>
+            Array.isArray(kycDocRes?.data)
+                ? kycDocRes.data.find((doc: any) => doc.type === KYC_TYPES.PAN)
+                : undefined,
+        [kycDocRes?.data],
     );
 
     const gstDoc = useMemo(
-        () => kycDocRes.data.find((doc: any) => doc.type === KYC_TYPES.GSTIN),
-        [kycDocRes.data],
+        () =>
+            Array.isArray(kycDocRes?.data)
+                ? kycDocRes.data.find((doc: any) => doc.type === KYC_TYPES.GSTIN)
+                : undefined,
+        [kycDocRes?.data],
     );
 
 

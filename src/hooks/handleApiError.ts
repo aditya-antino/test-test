@@ -41,6 +41,19 @@ export const handleApiError = (error): void => {
         }
     }
 
+    if (isValidErrorMessage(data?.error) && typeof data.error === 'string') {
+        toast.error(capitalizeWord(data.error));
+        return;
+    }
+
+    if (data?.error && typeof data.error === 'object') {
+        const nestedMsg = data.error.message || data.error.msg || data.error.error;
+        if (isValidErrorMessage(nestedMsg) && typeof nestedMsg === 'string') {
+            toast.error(capitalizeWord(nestedMsg));
+            return;
+        }
+    }
+
     if (isValidErrorMessage(data?.message)) {
         toast.error(capitalizeWord(data.message));
         return;

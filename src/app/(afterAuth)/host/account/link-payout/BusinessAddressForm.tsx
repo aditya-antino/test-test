@@ -25,11 +25,11 @@ export default function BusinessAddressForm({
 }: BusinessAddressFormProps) {
     const values: Required<BusinessAddressData> = {
         line1: data.line1 ?? '',
-        line2: data.line2 ?? '',
-        city: data.city ?? '',
-        state: data.state ?? '',
-        pincode: data.pincode ?? '',
-        country: data.country ?? '',
+        line2: data?.line2 ?? '',
+        city: data?.city ?? '',
+        state: data?.state ?? '',
+        pincode: data?.pincode ?? '',
+        country: data?.country ?? '',
     };
 
     return (

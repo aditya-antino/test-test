@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
     Accordion,
     AccordionItem,
@@ -21,6 +21,7 @@ import { handleApiError } from '@/hooks/handleApiError';
 import { Pencil, Save, X } from 'lucide-react';
 import { handleVerifyApiError } from '@/hooks/handleVerifyApiError';
 import Link from 'next/link';
+import { ErrorState } from '@/components/common';
 
 interface FormData {
     payoutDetails: {
@@ -130,8 +131,10 @@ export default function LinkPayout() {
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const isSavingRef = useRef(false);
 
-    const { data: payoutData, refetch: refetchPayoutDetails } = useGetPayoutDetails();
+    const { data: payoutData, refetch: refetchPayoutDetails, isError } = useGetPayoutDetails();
     const payOutDetails = payoutData?.data;
 
     const { mutate: payoutDetailsAPI, isPending: isSubmitting } = usePayoutDetails({
@@ -139,8 +142,14 @@ export default function LinkPayout() {
             toast.success(data?.message || 'Payout details saved successfully');
             setIsEditMode(false);
             refetchPayoutDetails();
+            isSavingRef.current = false;
+            setIsSaving(false);
         },
-        onError: (err) => handleApiError(err),
+        onError: (err) => {
+            handleApiError(err);
+            isSavingRef.current = false;
+            setIsSaving(false);
+        },
     });
 
     useEffect(() => {
@@ -353,17 +362,24 @@ export default function LinkPayout() {
     };
 
     const handleSave = () => {
+        if (isSavingRef.current || isSubmitting) return;
         if (!validateForm()) return;
 
         try {
+            isSavingRef.current = true;
+            setIsSaving(true);
             const payload = buildPayload();
             payoutDetailsAPI(payload);
         } catch (error) {
+            isSavingRef.current = false;
+            setIsSaving(false);
             handleVerifyApiError(error);
         }
     };
 
     const handleCancel = () => {
+        isSavingRef.current = false;
+        setIsSaving(false);
         if (payOutDetails) {
             const payload = {
                 payoutDetails: {
@@ -417,7 +433,7 @@ export default function LinkPayout() {
                 <PayoutDetailsForm
                     data={formData.payoutDetails}
                     onChange={(values) => updateSection('payoutDetails', values)}
-                    isEdit={isEditMode}
+                    isEdit={isEditMode && !isSubmitting && !isSaving}
                 />
             ),
         },
@@ -428,7 +444,7 @@ export default function LinkPayout() {
                 <BusinessAddressForm
                     data={formData.businessAddress}
                     onChange={(values) => updateSection('businessAddress', values)}
-                    isEdit={isEditMode}
+                    isEdit={isEditMode && !isSubmitting && !isSaving}
                 />
             ),
         },
@@ -440,7 +456,7 @@ export default function LinkPayout() {
                     isAccountTypePersonal={formData?.payoutDetails?.accountType === 'personal'}
                     data={formData.businessIdentity}
                     onChange={(values) => updateSection('businessIdentity', values)}
-                    isEdit={isEditMode}
+                    isEdit={isEditMode && !isSubmitting && !isSaving}
                     refetch={refetchPayoutDetails}
                 />
             ),
@@ -452,7 +468,7 @@ export default function LinkPayout() {
                 <BankDetailsForm
                     data={formData.bankDetails}
                     onChange={(values) => updateSection('bankDetails', values)}
-                    isEdit={isEditMode}
+                    isEdit={isEditMode && !isSubmitting && !isSaving}
                 />
             ),
         },
@@ -464,6 +480,18 @@ export default function LinkPayout() {
                 <div className="flex justify-center items-center h-64">
                     <Loader size={40} />
                 </div>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="max-w-2xl mx-auto py-10">
+                <ErrorState
+                    title="Failed to load payout details"
+                    description="We couldn't fetch your payout details. Please check your connection and try again."
+                    onRetry={() => refetchPayoutDetails()}
+                />
             </div>
         );
     }
@@ -515,6 +543,7 @@ export default function LinkPayout() {
                         <Checkbox
                             id="terms"
                             checked={termsAccepted}
+                            disabled={isSubmitting || isSaving}
                             onCheckedChange={(checked) => setTermsAccepted(!!checked)}
                         />
                         <Label htmlFor="terms" className="text-sm">
@@ -534,6 +563,7 @@ export default function LinkPayout() {
                     <div className="flex gap-4">
                         <Button
                             onClick={handleCancel}
+                            disabled={isSubmitting || isSaving}
                             variant="outline"
                             className="flex-1 flex items-center justify-center gap-2"
                         >
@@ -542,10 +572,10 @@ export default function LinkPayout() {
                         </Button>
                         <Button
                             onClick={handleSave}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || isSaving}
                             className="flex-1 flex items-center justify-center gap-2"
                         >
-                            {isSubmitting ? (
+                            {isSubmitting || isSaving ? (
                                 <>
                                     <Loader size={16} />
                                     Saving...
