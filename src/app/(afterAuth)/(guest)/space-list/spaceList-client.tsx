@@ -109,7 +109,9 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                 ) : (
                     (() => {
                         const slug = mainHeading ? toSlug(mainHeading) : '';
-                        const bannerContent = CATEGORY_BANNERS[slug] || DEFAULT_BANNER;
+                        // On the space-list page, use the 'creative-space' banner (not 'creative-spaces')
+                        const resolvedSlug = slug === 'creative-spaces' ? 'creative-space' : slug;
+                        const bannerContent = CATEGORY_BANNERS[resolvedSlug] || DEFAULT_BANNER;
                         return <CategoryBanner content={bannerContent} />;
                     })()
                 )}
