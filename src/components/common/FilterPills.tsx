@@ -154,7 +154,14 @@ const FilterPill = (props: FilterPillProps) => {
             {rightIcon ?? <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
           </PillBtn>
         </PopoverTrigger>
-        <PopoverContent className={cn("rounded-xl", props.contentClassName)}>{resolvedContent}</PopoverContent>
+        <PopoverContent 
+          align={props.align ?? "start"} 
+          side={props.side ?? "bottom"} 
+          sideOffset={8} 
+          className={cn("rounded-xl", props.contentClassName)}
+        >
+          {resolvedContent}
+        </PopoverContent>
       </Popover>
     );
   }
@@ -179,7 +186,12 @@ const FilterPill = (props: FilterPillProps) => {
           {rightIcon ?? <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
         </PillBtn>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className={cn("rounded-lg min-w-[220px]", props.contentClassName)}>
+      <DropdownMenuContent 
+        align={props.align ?? "start"} 
+        side={props.side ?? "bottom"} 
+        sideOffset={8} 
+        className={cn("rounded-lg min-w-[220px]", props.contentClassName)}
+      >
         {multiple
           ? options.map((o) => (
               <DropdownMenuCheckboxItem
@@ -195,17 +207,24 @@ const FilterPill = (props: FilterPillProps) => {
                 {o.label}
               </DropdownMenuCheckboxItem>
             ))
-          : options.map((o) => (
-              <DropdownMenuItem
-                key={o.value}
-                onClick={() => {
-                  setValue(o.value);
-                  (props as SingleSelectProps).onChange?.(o.value);
-                }}
-              >
-                {o.label}
-              </DropdownMenuItem>
-            ))}
+          : options.map((o) => {
+              const isSelected = o.value === value;
+              return (
+                <DropdownMenuItem
+                  key={o.value}
+                  onClick={() => {
+                    setValue(o.value);
+                    (props as SingleSelectProps).onChange?.(o.value);
+                  }}
+                  className={cn(
+                    "cursor-pointer transition-colors",
+                    isSelected && "bg-primary-tint4 text-primary-p3 font-semibold focus:bg-primary-tint4 focus:text-primary-p3"
+                  )}
+                >
+                  {o.label}
+                </DropdownMenuItem>
+              );
+            })}
       </DropdownMenuContent>
     </DropdownMenu>
   );

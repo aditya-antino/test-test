@@ -140,22 +140,27 @@ export function Header({ userName = '-' }: HeaderProps) {
     }, [isHostMode, router]);
 
     const handleLogout = useCallback(() => {
-        if (!performLogout || !dispatch || !router) return;
+        if (!dispatch || !router) return;
 
+        // Clear all local state immediately — do NOT wait for the API.
+        // This prevents the case where an expired/invalid token causes the
+        // logout API call itself to fail, leaving the user permanently stuck.
+        dispatch(logout());
+        try {
+            localStorage.clear();
+            sessionStorage.clear();
+        } catch (error) {
+            console.error('Error clearing storage:', error);
+        }
+        setIsHostMode(false);
+        toast.success('Successfully logged out');
+        router.push('/login');
+
+        // Best-effort: ask the server to invalidate the session token.
+        // We don't block on this — the user is already logged out locally.
         performLogout(undefined, {
-            onSuccess: () => {
-                dispatch(logout());
-                try {
-                    localStorage.clear();
-                    sessionStorage.clear();
-                } catch (error) {
-                    console.error('Error clearing storage:', error);
-                }
-                setIsHostMode(false);
-                toast.success('Successfully logged out');
-                router.push('/login');
-            },
-            onError: handleApiError,
+            onSuccess: () => {},
+            onError: () => {},
         });
     }, [performLogout, dispatch, router]);
 

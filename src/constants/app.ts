@@ -14,3 +14,4 @@ export const DATE_FORMATS = {
 
 export const SLOT_HEIGHT = 64;
 export const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+export const DEFAULT_AUTHOR_PICTURE = 'https://sparespace-fe-objects.s3.ap-south-1.amazonaws.com/auth-uploads/API_KEY_AUTH/1777983164037-keykvodcg.png';

@@ -6,6 +6,16 @@ import Link from 'next/link';
 import fallbackImage from '@/assets/Login.png';
 import { Button } from '@/components/ui/button';
 
+function stripHtml(html: string) {
+    if (!html) return '';
+    return html
+        .replace(/<\/p>|<\/div>|<\/h[1-6]>|<br\s*\/?>|<\/li>|<\/td>|<\/tr>/gi, ' ')
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 interface Post {
     id: number;
     slug?: string;
@@ -52,10 +62,9 @@ function BlogCard({ post }: { post: Post }) {
                     />
                 </Link>
 
-                <div
-                    className="text-gray-600 text-sm sm:text-base leading-relaxed mb-4 line-clamp-3 flex-1"
-                    dangerouslySetInnerHTML={{ __html: post?.description || post?.excerpt || '' }}
-                />
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-4 line-clamp-3 flex-1">
+                    {stripHtml(post?.description || post?.excerpt || '')}
+                </p>
 
                 <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50/0">
                     <Link

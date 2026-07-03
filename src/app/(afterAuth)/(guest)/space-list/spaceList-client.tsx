@@ -125,29 +125,88 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                 <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-between md:items-center w-full">
                     <div className="flex gap-3 overflow-x-auto scrollbar-hide py-1 pl-1">
                         <FilterPill
-                            triggerMode="custom"
-                            placeholder="Price"
-                            custom={{
-                                type: 'price',
-                                value: {
-                                    min: appliedFilters.minPrice,
-                                    max: appliedFilters.maxPrice,
-                                },
-                                onApply: (newPrice) => {
-                                    setAppliedFilters((prev) => ({
-                                        ...prev,
-                                        minPrice: newPrice.min,
-                                        maxPrice: newPrice.max,
-                                    }));
-                                },
+                            key={appliedFilters.range || 'none'}
+                            triggerMode="dropdown"
+                            placeholder={
+                                appliedFilters.range === 'low-to-high'
+                                    ? 'Price: Low to High'
+                                    : appliedFilters.range === 'high-to-low'
+                                    ? 'Price: High to Low'
+                                    : 'Price'
+                            }
+                            leftIcon={<Tag className="h-4 w-4" />}
+                            rightIcon={
+                                appliedFilters.range ? (
+                                    <span
+                                        onPointerDown={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                        }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            setAppliedFilters((prev) => ({
+                                                ...prev,
+                                                range: undefined,
+                                                minPrice: undefined,
+                                                maxPrice: undefined,
+                                            }));
+                                        }}
+                                        className="hover:bg-black/10 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    >
+                                        <X className="h-3 w-3 text-primary-p3" />
+                                    </span>
+                                ) : undefined
+                            }
+                            defaultValue={appliedFilters.range}
+                            options={[
+                                { label: 'Low to High', value: 'low-to-high' },
+                                { label: 'High to Low', value: 'high-to-low' },
+                            ]}
+                            onChange={(val) => {
+                                setAppliedFilters((prev) => ({
+                                    ...prev,
+                                    range: val === 'low-to-high' || val === 'high-to-low' ? val : undefined,
+                                    minPrice: undefined,
+                                    maxPrice: undefined,
+                                }));
                             }}
-                            className="flex-shrink-0 px-2"
+                            className={`flex-shrink-0 px-2 transition-all ${
+                                appliedFilters.range
+                                    ? 'bg-primary-tint4 border-primary-p1 text-primary-p3 font-semibold hover:bg-primary-tint4'
+                                    : ''
+                            }`}
                         />
 
                         <FilterPill
                             triggerMode="custom"
-                            placeholder="Attendees"
+                            placeholder={
+                                appliedFilters.attendees
+                                    ? `Attendees: ${appliedFilters.attendees}`
+                                    : 'Attendees'
+                            }
                             leftIcon={<Users className="h-4 w-4" />}
+                            rightIcon={
+                                appliedFilters.attendees ? (
+                                    <span
+                                        onPointerDown={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                        }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            setAppliedFilters((prev) => ({
+                                                ...prev,
+                                                attendees: undefined,
+                                            }));
+                                        }}
+                                        className="hover:bg-black/10 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    >
+                                        <X className="h-3 w-3 text-primary-p3" />
+                                    </span>
+                                ) : undefined
+                            }
                             custom={{
                                 type: 'attendees',
                                 value: appliedFilters.attendees,
@@ -158,7 +217,11 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                                     }));
                                 },
                             }}
-                            className="flex-shrink-0"
+                            className={`flex-shrink-0 transition-all ${
+                                appliedFilters.attendees
+                                    ? 'bg-primary-tint4 border-primary-p1 text-primary-p3 font-semibold hover:bg-primary-tint4'
+                                    : ''
+                            }`}
                         />
 
                         <FilterPill

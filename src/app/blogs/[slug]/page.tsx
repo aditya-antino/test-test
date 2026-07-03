@@ -8,6 +8,7 @@ import { ServerGet } from '@/services/serverApi';
 import { endpoints } from '@/services/endPoints';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { DEFAULT_AUTHOR_PICTURE } from '@/constants';
 
 async function getBlogPost(slug: string) {
     try {
@@ -175,15 +176,19 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                         {post.author?.node?.avatar?.url ? (
                             <Image
                                 src={post.author.node.avatar.url}
-                                alt={post.author.node.name}
+                                alt={post.author.node.name || "Author"}
                                 width={48}
                                 height={48}
-                                className="rounded-full border-2 border-[#F7CD29]"
+                                className="rounded-full border-2 border-[#F7CD29] object-cover w-12 h-12"
                             />
                         ) : (
-                            <div className="w-12 h-12 rounded-full bg-[#F7CD29] flex items-center justify-center">
-                                <User className="w-6 h-6 text-[#2D2D2D]" />
-                            </div>
+                            <Image
+                                src={DEFAULT_AUTHOR_PICTURE}
+                                alt={post.author?.node?.name || post.author || "Spare Space"}
+                                width={48}
+                                height={48}
+                                className="rounded-full border-2 border-[#F7CD29] object-cover bg-white w-12 h-12"
+                            />
                         )}
                         <div>
                             <p className="font-bold text-[#2D2D2D]">
@@ -222,8 +227,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                       prose-blockquote:border-l-4 prose-blockquote:border-[#F7CD29]
                       prose-strong:font-black prose-img:rounded-xl prose-img:shadow-lg"
                         dangerouslySetInnerHTML={{
-                            __html:
-                                post.description || post.content || '<p>No content available.</p>',
+                            __html: post.description || post.content || '<p>No content available.</p>',
                         }}
                     />
 

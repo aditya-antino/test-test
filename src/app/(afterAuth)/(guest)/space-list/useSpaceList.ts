@@ -37,6 +37,7 @@ interface FilterState {
     endTime?: string;
     cityId?: number | string;
     categoryIds?: number[];
+    range?: string;
 }
 
 export const useSpaceList = (initialSpaceData?: any) => {
@@ -105,6 +106,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
             minPrice: appliedFilters.minPrice || undefined,
             maxPrice: appliedFilters.maxPrice || undefined,
             instantBooking: appliedFilters.instantBooking || undefined,
+            range: appliedFilters.range || undefined,
             page: currentPage,
             limit: limit,
         };
@@ -300,6 +302,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
             const maxPrice = searchParams.get('maxPrice');
             const attendees = searchParams.get('attendees');
             const instant = searchParams.get('instant');
+            const range = searchParams.get('range');
 
             setAppliedFilters(prev => ({
                 ...prev,
@@ -307,6 +310,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
                 maxPrice: maxPrice ? parseFloat(maxPrice) : prev.maxPrice,
                 attendees: attendees ? parseInt(attendees) : prev.attendees,
                 instantBooking: instant === 'true' ? true : prev.instantBooking,
+                range: range || prev.range,
             }));
 
             setInitializedFromUrl(true);
@@ -403,6 +407,10 @@ export const useSpaceList = (initialSpaceData?: any) => {
             if (params.get('instant') !== 'true') { params.set('instant', 'true'); changed = true; }
         } else if (params.has('instant')) { params.delete('instant'); changed = true; }
 
+        if (appliedFilters.range) {
+            if (params.get('range') !== appliedFilters.range) { params.set('range', appliedFilters.range); changed = true; }
+        } else if (params.has('range')) { params.delete('range'); changed = true; }
+
         if (changed) {
             router.replace(`?${params.toString()}`, { scroll: false });
         }
@@ -453,6 +461,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
             maxPrice: undefined,
             attendees: undefined,
             categoryIds: [],
+            range: undefined,
         }));
     };
 
