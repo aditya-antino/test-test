@@ -9,8 +9,6 @@ import {
     useGetSpaceTypes,
     useGetAmenities,
     useGetActivities,
-    useGetSpaceGuestList,
-    useAfterAuthGetSpaceGuestList,
     useGetPublicCategories,
 } from '@/services';
 import { getPlacesData } from '@/services/guest/categories.services';
@@ -40,6 +38,8 @@ interface FilterState {
     range?: string;
 }
 
+const LIMIT = 10;
+
 export const useSpaceList = (initialSpaceData?: any) => {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -65,10 +65,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
     });
 
     const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
-    const [isMapDialogOpen, setIsMapDialogOpen] = useState(false);
     const [filterSections, setFilterSections] = useState<FilterSection[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [limit] = useState(10);
 
     const { data: categoriesData, isLoading: categoriesLoading } = useGetPublicCategories();
     const { data: spaceTypesData, isLoading: spaceTypesLoading } = useGetSpaceTypes();
@@ -107,23 +104,10 @@ export const useSpaceList = (initialSpaceData?: any) => {
             maxPrice: appliedFilters.maxPrice || undefined,
             instantBooking: appliedFilters.instantBooking || undefined,
             range: appliedFilters.range || undefined,
-            page: currentPage,
-            limit: limit,
+            limit: LIMIT,
         };
-    }, [appliedFilters, currentPage, limit]);
+    }, [appliedFilters]);
 
-    const guestListQuery = useGetSpaceGuestList(filterParams, { 
-        enabled: !isAuth,
-        initialData: !isAuth && initialSpaceData ? { success: true, data: initialSpaceData } : undefined
-    });
-    const afterAuthGuestListQuery = useAfterAuthGetSpaceGuestList(filterParams, { 
-        enabled: isAuth,
-        initialData: isAuth && initialSpaceData ? { success: true, data: initialSpaceData } : undefined
-    });
-
-    const spacesData = isAuth ? afterAuthGuestListQuery.data : guestListQuery.data;
-    const spacesLoading = isAuth ? afterAuthGuestListQuery.isLoading : guestListQuery.isLoading;
-    const refetch = isAuth ? afterAuthGuestListQuery.refetch : guestListQuery.refetch;
 
     useEffect(() => {
         const sections: FilterSection[] = [];
@@ -167,7 +151,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
         const resolvedActivityIds = selectedActivities.flatMap((active) => {
             if (active.ids && active.ids.length > 0) return active.ids;
 
-            // Resolve by name if ids is empty (for static activities)
             const matchedActivity = activitiesData?.data?.activities?.find(
                 (a) => a.activity && active.name && a.activity.toLowerCase() === active.name.toLowerCase(),
             );
@@ -184,7 +167,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
             cityId: selectedPlace?.id,
             date: selectedDateFromStore ? new Date(selectedDateFromStore) : undefined,
         }));
-        setCurrentPage(1);
     }, [
         selectedCategories,
         selectedActivities,
@@ -198,8 +180,31 @@ export const useSpaceList = (initialSpaceData?: any) => {
         if (initializedFromUrl) return;
         if (categoriesLoading || activitiesLoading) return;
 
+        // Slug aliases: when these are detected in the URL, silently rewrite to the canonical slug
+        const SPACE_SLUG_ALIASES: Record<string, string> = {
+            'creative-spaces':    'photo-film-studio',
+            'work-meeting-spaces': 'workshop-area',
+        };
+
         const syncFromUrl = async () => {
-            const spaceParam = searchParams.get('space');
+            const rawSpaceParam = searchParams.get('space');
+
+            // Remap aliased slugs → canonical slugs and update the URL in place
+            let spaceParam = rawSpaceParam;
+            if (rawSpaceParam) {
+                const remapped = rawSpaceParam
+                    .split(',')
+                    .map((s) => SPACE_SLUG_ALIASES[s] ?? s)
+                    .join(',');
+
+                if (remapped !== rawSpaceParam) {
+                    spaceParam = remapped;
+                    const newParams = new URLSearchParams(searchParams.toString());
+                    newParams.set('space', remapped);
+                    router.replace(`?${newParams.toString()}`, { scroll: false });
+                }
+            }
+
             const activityParam = searchParams.get('activity');
             const locationParam = searchParams.get('location');
             const dateParam = searchParams.get('date');
@@ -207,7 +212,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
             if (activityParam && activitiesData?.data?.activities) {
                 const activitySlugs = activityParam.split(',');
 
-                // Primary activities
                 const matchedActivities = activitiesData.data.activities
                     .filter((a: any) => a.activity && activitySlugs.includes(toSlug(a.activity)))
                     .map((a: any) => ({
@@ -219,11 +223,9 @@ export const useSpaceList = (initialSpaceData?: any) => {
                     dispatch(setSelectedActivities(matchedActivities));
                 }
 
-                // Drawer activities & Amenities
                 const drawerActivityIds = activitiesData.data.activities
                     .filter((a: any) => a.activity && activitySlugs.includes(toSlug(a.activity)))
                     .flatMap((a: any) => a.ids || [a.id]);
-
 
                 setAppliedFilters(prev => ({
                     ...prev,
@@ -247,7 +249,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
             if (spaceParam && categoriesData?.data?.categories) {
                 const spaceSlugs = spaceParam.split(',');
 
-                // Primary Categories
                 const matchedCategories = categoriesData.data.categories
                     .filter((c: any) => c.CategoryMaster?.name && spaceSlugs.includes(toSlug(c.CategoryMaster.name)))
                     .map((c: any) => ({
@@ -259,7 +260,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
                     dispatch(setSelectedCategories(matchedCategories));
                 }
 
-                // Space Types
                 let spaceTypeIds: number[] = [];
                 if (spaceTypesData?.data?.spaceTypes) {
                     spaceTypeIds = spaceTypesData.data.spaceTypes
@@ -297,7 +297,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
                 }
             }
 
-            // Secondary filters
             const minPrice = searchParams.get('minPrice');
             const maxPrice = searchParams.get('maxPrice');
             const attendees = searchParams.get('attendees');
@@ -326,7 +325,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
         const params = new URLSearchParams(searchParams.toString());
         let changed = false;
 
-        // Categories + Space Types
         const categoryNames = selectedCategories.map((c: any) => c.item?.name).filter(Boolean);
         const spaceTypeNames: string[] = [];
         if (spaceTypesData?.data?.spaceTypes) {
@@ -343,7 +341,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
             if (params.has('space')) { params.delete('space'); changed = true; }
         }
 
-        // Activities + Amenities
         const activityNames = selectedActivities.map((a: any) => a.name).filter(Boolean);
         const drawerActivityNames: string[] = [];
         if (activitiesData?.data?.activities) {
@@ -360,7 +357,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
             if (params.has('activity')) { params.delete('activity'); changed = true; }
         }
 
-        // Amenities
         const amenityNames: string[] = [];
         if (amenitiesData?.data?.amenities) {
             appliedFilters.amenityIds.forEach(id => {
@@ -390,7 +386,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
             if (params.has('date')) { params.delete('date'); changed = true; }
         }
 
-        // Secondary filters
         if (appliedFilters.minPrice) {
             if (params.get('minPrice') !== String(appliedFilters.minPrice)) { params.set('minPrice', String(appliedFilters.minPrice)); changed = true; }
         } else if (params.has('minPrice')) { params.delete('minPrice'); changed = true; }
@@ -415,10 +410,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
             router.replace(`?${params.toString()}`, { scroll: false });
         }
     }, [selectedCategories, selectedActivities, selectedPlace, selectedDateFromStore, appliedFilters, searchParams, router, initializedFromUrl]);
-
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [currentPage]);
 
     const handleSearchBarSearch = ({
         date,
@@ -448,7 +439,6 @@ export const useSpaceList = (initialSpaceData?: any) => {
 
             return nextFilters;
         });
-        setCurrentPage(1);
     };
 
     const clearFilters = () => {
@@ -501,43 +491,22 @@ export const useSpaceList = (initialSpaceData?: any) => {
         return selected;
     }, [appliedFilters.spaceTypeIds, appliedFilters.activityIds, appliedFilters.amenityIds, spaceTypesData, activitiesData, amenitiesData]);
 
-    const spaces = useMemo(() => {
-        return (spacesData?.data?.records || []).map((space) => ({
-            ...space,
-            price: parseFloat(space.pricePerHour) || 0,
-            rating: parseFloat(space.avgRating) || 0,
-            reviews: parseInt(space.reviewCount) || 0,
-            seats: space.capacity,
-            discountAmount: space.discountAmount || 0,
-            isWishlist: space.isWishlist,
-            isRefundable: space.isRefundable,
-        }));
-    }, [spacesData]);
-
     return {
         appliedFilters,
         setAppliedFilters,
         isFilterDrawerOpen,
         setIsFilterDrawerOpen,
-        isMapDialogOpen,
-        setIsMapDialogOpen,
         filterSections,
-        currentPage,
-        setCurrentPage,
-        limit,
+        limit: LIMIT,
         categoriesData,
         categoriesLoading,
         isSectionsLoading,
         activitiesLoading,
-        spacesData,
-        spacesLoading,
-        refetch,
         isAuth,
-        spaces,
+        filterParams,
         handleSearchBarSearch,
         clearFilters,
         router,
-        spacesDataRaw: spacesData?.data?.records || [],
         selectedCategories,
         selectedActivities,
         drawerSelected,

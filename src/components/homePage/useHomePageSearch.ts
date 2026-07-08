@@ -196,7 +196,7 @@ export const useHomePageSearch = (isSearchPage = false, onSearch?: any) => {
             } else if (selectedActivities.length > 0) {
                 return selectedActivities[0].name;
             }
-            return searchVal || 'Enter your activity';
+            return searchVal || 'Enter your category';
         } else {
             return placesSearchVal || 'Enter name of city';
         }

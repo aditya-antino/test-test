@@ -1,29 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import HomePageSearchBarTab from '@/components/homePage/HomePageSearchBarTab';
-import BookingCard from '@/components/common/bookingCard/bookingCard';
 import Footer from '@/components/layout/footer';
 import { PATHS } from '@/constants/path';
-import { Users, Filter, X, MapPin, Tag } from 'lucide-react';
+import { Users, Filter, X, Tag } from 'lucide-react';
 import FilterPill from '@/components/common/FilterPills';
-import SpaceMap from '@/components/common/SpaceMap';
-import FiltersDrawerGeneric from '@/components/common/FilterDrawer';
 import { SkeletonCardGrid, BannerSkeleton } from '@/components/skeletons';
-import { EmptyState, ProudlyNotAi } from '@/components/common';
-import Pagination from '@/components/ui/CustomPagination';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { ProudlyNotAi } from '@/components/common';
+import FiltersDrawerGeneric from '@/components/common/FilterDrawer';
 import { useSpaceList, toSlug } from './useSpaceList';
-import { useGetGuestBookingDetails } from '@/services';
 import CategoryBanner from '@/components/common/CategoryBanner';
-import { CATEGORY_BANNERS, DEFAULT_BANNER, BannerContent } from '@/constants/categoryBanners';
+import { CATEGORY_BANNERS, DEFAULT_BANNER } from '@/constants/categoryBanners';
+import MobileSpaceList from './MobileSpaceList';
+import DesktopSpaceList from './DesktopSpaceList';
+import { useRouter } from 'next/navigation';
 
 const transformCategoryData = (categories: any) => {
-    if (!Array.isArray(categories)) {
-        return [];
-    }
-
+    if (!Array.isArray(categories)) return [];
     return categories.map((item: any) => ({
         id: String(item.categoryId),
         name: item?.CategoryMaster?.name ?? '',
@@ -40,76 +34,97 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
         setAppliedFilters,
         isFilterDrawerOpen,
         setIsFilterDrawerOpen,
-        isMapDialogOpen,
-        setIsMapDialogOpen,
         filterSections,
-        currentPage,
-        setCurrentPage,
-        limit,
         categoriesData,
         categoriesLoading,
         isSectionsLoading,
-        spacesData: fetchedSpacesData,
-        spacesLoading,
         isAuth,
-        spaces: fetchedSpaces,
+        filterParams,
         handleSearchBarSearch,
         clearFilters,
-        router,
         activitiesLoading,
-        spacesDataRaw: fetchedSpacesDataRaw,
         selectedCategories,
         selectedActivities,
         drawerSelected,
     } = useSpaceList(initialSpaceData);
 
-    const spacesData = fetchedSpacesData || initialSpaceData;
+    // Viewport detection — null = SSR/hydration guard, avoids flash
+    const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
-    // We also need to map the raw spaces from our initial data if fetchedSpacesData is missing
-    const spacesDataRaw = fetchedSpacesDataRaw?.length
-        ? fetchedSpacesDataRaw
-        : spacesData?.data?.records || [];
-
-    const spaces = fetchedSpaces?.length
-        ? fetchedSpaces
-        : (spacesData?.data?.records || []).map((space: any) => ({
-              ...space,
-              price: parseFloat(space?.pricePerHour) || 0,
-              rating: parseFloat(space?.avgRating) || 0,
-              reviews: parseInt(space?.reviewCount) || 0,
-              seats: space?.capacity || 0,
-              discountAmount: space?.discountAmount || 0,
-              isWishlist: space?.isWishlist || false,
-              isRefundable: space?.isRefundable || false,
-          }));
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 1024);
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const categories = categoriesData?.data?.categories || [];
 
-    const mainHeading = React.useMemo(() => {
+    const mainHeading = useMemo(() => {
         const space = selectedCategories?.[0]?.item?.name || '';
         const activity = selectedActivities?.[0]?.name || '';
         return space || activity || '';
     }, [selectedActivities, selectedCategories]);
 
-    const handleSpaceClick = (slug: string) => {
-        router.push(`${PATHS.GUEST_SPACE_DETAILS}/${slug}`);
+    // Stable reference — prevents sub-components from re-rendering on unrelated parent state changes
+    const router = useRouter();
+    const handleSpaceClick = useCallback(
+        (slug: string) => {
+            router.push(`${PATHS.GUEST_SPACE_DETAILS}/${slug}`);
+        },
+        [router],
+    );
+
+    const renderListings = () => {
+        // SSR / hydration guard: show skeleton until viewport is known
+        if (isMobile === null) {
+            return (
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 pt-6">
+                    <div className="lg:col-span-2">
+                        <SkeletonCardGrid count={2} gridClassName="grid-cols-1 md:grid-cols-2" />
+                    </div>
+                    <div className="hidden lg:block lg:col-span-2 min-h-[450px]">
+                        <div className="w-full h-full bg-gray-100 animate-pulse rounded-2xl" />
+                    </div>
+                </div>
+            );
+        }
+
+        if (isMobile) {
+            return (
+                <MobileSpaceList
+                    filterParams={filterParams}
+                    isAuth={isAuth}
+                    handleSpaceClick={handleSpaceClick}
+                    clearFilters={clearFilters}
+                />
+            );
+        }
+
+        return (
+            <DesktopSpaceList
+                filterParams={filterParams}
+                isAuth={isAuth}
+                handleSpaceClick={handleSpaceClick}
+                clearFilters={clearFilters}
+            />
+        );
     };
 
     return (
         <div className="relative min-h-screen">
-            {/* Search Bar - Always Visible */}
+            {/* Search Bar */}
             <div className="flex flex-col items-center mx-auto my-4 w-full max-w-6xl px-4">
                 <HomePageSearchBarTab isSearchPage onSearch={handleSearchBarSearch} />
             </div>
 
-            {/* Dynamic Hero Banner for Space/Activity */}
+            {/* Dynamic Category Banner */}
             <div className="w-full max-w-6xl mx-auto px-4 md:my-6">
                 {categoriesLoading || activitiesLoading ? (
                     <BannerSkeleton />
                 ) : (
                     (() => {
                         const slug = mainHeading ? toSlug(mainHeading) : '';
-                        // On the space-list page, use the 'creative-space' banner (not 'creative-spaces')
                         const resolvedSlug = slug === 'creative-spaces' ? 'creative-space' : slug;
                         const bannerContent = CATEGORY_BANNERS[resolvedSlug] || DEFAULT_BANNER;
                         return <CategoryBanner content={bannerContent} />;
@@ -117,15 +132,17 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                 )}
             </div>
 
+            {/* Mobile ProudlyNotAI pill */}
             <div className="flex md:hidden px-4 w-full justify-start items-center border-b pb-4 mb-2">
                 <ProudlyNotAi variant="pill" popoverAlign="right" />
             </div>
 
-            {/* Main container with filters + listings on left, map on right */}
+            {/* Filters + Listings */}
             <div className="px-4 md:px-16">
-                {/* all 3 Filters together */}
+                {/* Filters Row */}
                 <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-between md:items-center w-full">
                     <div className="flex gap-3 overflow-x-auto scrollbar-hide py-1 pl-1">
+                        {/* Price Sort Pill */}
                         <FilterPill
                             key={appliedFilters.range || 'none'}
                             triggerMode="dropdown"
@@ -180,6 +197,7 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                             }`}
                         />
 
+                        {/* Attendees Pill */}
                         <FilterPill
                             triggerMode="custom"
                             placeholder={
@@ -226,6 +244,7 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                             }`}
                         />
 
+                        {/* Generic Filter Drawer Trigger */}
                         <FilterPill
                             triggerMode="external"
                             placeholder="Filter"
@@ -235,144 +254,17 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                         />
                     </div>
 
-                    {/* Proudly Not AI Filter Pill Badge & Info Popover */}
-                    <div className="hidden md:block ">
+                    {/* ProudlyNotAI desktop pill */}
+                    <div className="hidden md:block">
                         <ProudlyNotAi variant="pill" popoverAlign="left" />
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-4 pt-6 items-stretch">
-                    {/* Left container: 2 Listings */}
-                    <div className="lg:col-span-2">
-                        {/* First 2 Listings */}
-                        {spacesLoading ? (
-                            <SkeletonCardGrid
-                                count={2}
-                                gridClassName="grid-cols-1 md:grid-cols-2"
-                            />
-                        ) : spaces.length === 0 ? (
-                            <EmptyState
-                                title="No spaces found"
-                                description="We couldn't find any spaces matching your criteria. Try adjusting your filters or search location."
-                                actionLabel="Clear Filters"
-                                onAction={clearFilters}
-                            />
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full justify-items-center">
-                                {spaces.slice(0, 2).map((spaceItem) => (
-                                    <BookingCard
-                                        key={spaceItem.id}
-                                        showWishlist={isAuth}
-                                        space={spaceItem as any}
-                                        // bookDetail={bookingDetails}
-                                        onClick={() => handleSpaceClick(spaceItem.slug)}
-                                        className="w-full"
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Right container: Map */}
-                    <div className="hidden lg:block lg:col-span-2 sticky top-4 min-h-[450px]">
-                        <SpaceMap
-                            spaces={spacesDataRaw.map((space: any) => ({
-                                id: space?.id,
-                                title: space?.title,
-                                slug: space?.slug,
-                                location: space?.location,
-                                pricePerHour: space?.pricePerHour,
-                                discountAmount:
-                                    space?.discountAmount ?? space?.SpaceListing?.discountAmount ?? 0,
-                                isRefundable:
-                                    space?.isRefundable ?? space?.SpaceListing?.isRefundable ?? false,
-                            }))}
-                            onSpaceClick={handleSpaceClick}
-                            className="h-full"
-                        />
-                    </div>
-                </div>
+                {/* Conditional Mobile / Desktop listing */}
+                {renderListings()}
             </div>
 
-            {/* 4 col listings */}
-            {spacesLoading ? (
-                <div className="px-4 md:px-16 py-4">
-                    <SkeletonCardGrid
-                        count={4}
-                        gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-                    />
-                </div>
-            ) : (
-                spaces.length > 2 && (
-                    <div className="px-4 md:px-16 pt-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
-                            {spaces.slice(2).map((spaceItem) => (
-                                <BookingCard
-                                    key={spaceItem.id}
-                                    showWishlist={isAuth}
-                                    space={spaceItem as any}
-                                    onClick={() => handleSpaceClick(spaceItem.slug)}
-                                    className="w-full"
-                                    // bookDetail={bookingDetails}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )
-            )}
-
-            <div className="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-                <button
-                    onClick={() => setIsMapDialogOpen(true)}
-                    className="bg-primary-p1 hover:bg-primary-p2 text-gray-800 font-semibold py-4 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 border border-primary-p1"
-                >
-                    <MapPin className="h-5 w-5" />
-                    <span>Show Map</span>
-                </button>
-            </div>
-
-            <Dialog open={isMapDialogOpen} onOpenChange={setIsMapDialogOpen}>
-                <DialogContent className="max-w-none w-full h-full m-0 flex items-center justify-center p-4 bg-transparent border-none outline-none shadow-none">
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-                    <button
-                        onClick={() => setIsMapDialogOpen(false)}
-                        className="absolute top-2 right-2 z-50 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-2 shadow-lg border border-gray-200 hover:scale-110 transition-all duration-200"
-                    >
-                        <X className="h-5 w-5 text-gray-700" />
-                    </button>
-                    <div className="relative w-full h-full max-w-4xl max-h-[90vh] bg-transparent rounded-2xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl mt-10">
-                        <div className="w-full h-full rounded-2xl overflow-hidden">
-                            <SpaceMap
-                                spaces={spacesDataRaw.map((space: any) => ({
-                                    id: space?.id,
-                                    title: space?.title,
-                                    slug: space?.slug,
-                                    location: space?.location,
-                                    pricePerHour: space?.pricePerHour,
-                                    image: space?.spaceImages?.[0] || '',
-                                    discountAmount:
-                                        space?.discountAmount ??
-                                        space?.SpaceListing?.discountAmount ??
-                                        0,
-                                    isRefundable:
-                                        space?.isRefundable ??
-                                        space?.SpaceListing?.isRefundable ??
-                                        false,
-                                }))}
-                                onSpaceClick={handleSpaceClick}
-                                className="w-full h-full rounded-2xl"
-                            />
-                        </div>
-
-                        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-                            <Button onClick={() => setIsMapDialogOpen(false)} variant="default">
-                                Show Listings
-                            </Button>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-
+            {/* Filter Drawer */}
             <FiltersDrawerGeneric
                 sections={filterSections}
                 optionCols={2}
@@ -401,18 +293,6 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                 }}
             />
 
-            {!spacesLoading && spaces.length > 0 && spacesData?.data?.count && (
-                <div className="px-4 py-8 md:py-12">
-                    <Pagination
-                        limit={limit}
-                        count={spacesData.data.count}
-                        currentPage={currentPage}
-                        onPageChange={(page) => {
-                            setCurrentPage(page);
-                        }}
-                    />
-                </div>
-            )}
             <Footer />
         </div>
     );

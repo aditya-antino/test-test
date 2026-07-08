@@ -90,11 +90,19 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
         keywords: 'Event venue rental, product launch space',
         ogImage: '/og-images/event-spaces.png'
     },
-    'work-meeting-spaces': {
-        title: 'Work & Meeting Spaces',
+    'workshop-area': {
+        title: 'Workshop Areas',
         description: 'Professional meeting rooms for workshops, team collaboration, and business meetings. Equipped with high-speed internet, AV systems, and breakout areas for productive sessions.',
         keywords: 'Meeting room rental, office space for meetings',
         ogImage: '/og-images/work-meeting-spaces.png'
+    },
+    'fitness-wellness-spaces': {
+        title: 'Fitness & Wellness Spaces',
+        description: 'Discover peaceful venues for yoga workshops, meditation sessions, and wellness retreats. Find fully equipped studios, calm spaces, and holistic environments designed for wellness activities.',
+        keywords: 'Yoga studio rental, wellness workshop space, meditation venue',
+        metaTitle: 'Book Fitness & Wellness Spaces in Delhi NCR | Spare Space',
+        metaDescription: 'Book fitness and wellness spaces across Delhi, Noida & Gurgaon. Discover yoga studios, dance spaces, community halls, and creative venues on Spare Space.',
+        ogImage: '/og-images/fitness-wellness-spaces.png'
     },
     'creative-space': {
         title: 'Creative Spaces',
@@ -113,6 +121,11 @@ export const CATEGORY_BANNERS: Record<string, BannerContent> = {
         description: 'Breathtaking open-air venues for garden parties, outdoor shoots, and team retreats. Natural backdrops with landscaping, terraces, and refreshing environments for outdoor events.',
         keywords: 'Outdoor event venue, garden party space',
         ogImage: '/og-images/outdoor-spaces.png'
+    },
+    'photo-film-studio': {
+        title: 'Photo & Film Studio',
+        description: 'Inspiring studios and creative hubs for artists, designers, and innovators. Bring your ideas to life with professional art studios, design workspaces, and collaborative creative environments.',
+        keywords: 'Artist studio space, creative workspace',
     },
 };
 

@@ -494,6 +494,32 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
             answer: 'Booking 1–2 weeks in advance is generally recommended, especially for weekends and peak periods.',
         },
     ],
+    'fitness-wellness-spaces': [
+        {
+            question: 'What is the average cost of a wellness workshop space?',
+            answer: 'Pricing depends on location, venue size, duration, and facilities available.',
+        },
+        {
+            question: 'Can I book a wellness workshop space for a few hours?',
+            answer: 'Yes, many wellness-friendly spaces offer hourly and half-day bookings.',
+        },
+        {
+            question: 'Are yoga and meditation workshops allowed in wellness workshop spaces?',
+            answer: 'Absolutely. Many listed spaces are suitable for yoga, meditation, breathwork, and wellness programs.',
+        },
+        {
+            question: 'Can I find outdoor wellness workshop spaces?',
+            answer: 'Yes, several venues offer garden, terrace, and open-air spaces for wellness events.',
+        },
+        {
+            question: 'What amenities should I look for in a wellness workshop space?',
+            answer: 'Natural light, ventilation, quiet surroundings, washrooms, parking, and sufficient floor space are among the most important factors.',
+        },
+        {
+            question: 'How far in advance should I book a wellness workshop space?',
+            answer: 'Booking 2-6 weeks in advance is generally recommended, especially for weekends.',
+        },
+    ],
     'fitness-wellness': [
         {
             question: 'What is the average cost of a wellness workshop space?',

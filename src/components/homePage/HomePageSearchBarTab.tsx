@@ -76,7 +76,7 @@ const HomePageSearchBarTab = ({
                             value={searchVal}
                             onChange={handleSearchValChange}
                             onFocus={() => handleDesktopInputFocus('category')}
-                            placeholder="Enter your activity"
+                            placeholder="Enter your category"
                             className="border-none placeholder:text-sm rounded-none shadow-none outline-0 bg-transparent p-0 h-auto text-sm text-slate-700 placeholder:text-black focus-visible:ring-0"
                         />
 
@@ -276,7 +276,7 @@ const HomePageSearchBarTab = ({
             {isMobile && activeMobileInput === 'category' && (
                 <MobileSearchModal
                     title="What are you planning?"
-                    placeholder="Search activities..."
+                    placeholder="Search categories..."
                     searchVal={searchVal}
                     onSearchValChange={handleSearchValChange}
                     onClose={handleCloseMobileModal}

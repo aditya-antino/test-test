@@ -41,6 +41,7 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
     wellness: wellnessBanner,
     'fitness-wellness': wellnessBanner,
     'wellness-workshop': wellnessBanner,
+    'fitness-wellness-spaces': wellnessBanner,
     workshops: workshopsBanner,
     workshop: workshopsBanner,
     'event-venues': eventVenturesBanner,
@@ -55,6 +56,7 @@ const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
     'fitness-wellness': 'Fitness and Wellness Spaces',
     'wellness-workshop': 'Fitness and Wellness Spaces',
     wellness: 'Fitness and Wellness Spaces',
+    'fitness-wellness-spaces': 'Fitness and Wellness Spaces',
     workshops: 'Spaces for Workshops',
     workshop: 'Spaces for Workshops',
 };
@@ -65,6 +67,7 @@ const CATEGORY_CTA_LABELS: Record<string, string> = {
     'fitness-wellness': 'Find Fitness & Wellness Spaces',
     'wellness-workshop': 'Find Fitness & Wellness Spaces',
     wellness: 'Find Fitness & Wellness Spaces',
+    'fitness-wellness-spaces': 'Find Fitness & Wellness Spaces',
     'photography-studios': 'Find Photography Studios',
     'podcast-studios': 'Find Podcast Studios',
     'event-venues': 'Find Event Venues',
@@ -114,13 +117,14 @@ export default function ExploreClient({
         'exhibition': 'exhibitions',
         'wellness-workshop': 'fitness-wellness',
         'wellness': 'fitness-wellness',
+        'fitness-wellness-spaces': 'fitness-wellness',
     };
     const configKey = galleryConfigKeyMap[normalizedCategory] || normalizedCategory;
     const galleryConfig = EXPLORE_PAGE_GALLERY[configKey] || EXPLORE_PAGE_GALLERY.DEFAULT;
     const galleryItems = galleryConfig.items || [];
     const faqs = EXPLORE_PAGE_FAQS[normalizedCategory] || EXPLORE_PAGE_FAQS.DEFAULT;
 
-    const bannerInfo = CATEGORY_BANNERS[normalizedCategory] || DEFAULT_BANNER;
+    const bannerInfo = CATEGORY_BANNERS[normalizedCategory] || CATEGORY_BANNERS[configKey] || DEFAULT_BANNER;
 
     // Format strings
     const formattedCity = formatCityName(citySlug);

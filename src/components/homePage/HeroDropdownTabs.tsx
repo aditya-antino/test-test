@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Tabs } from '@/components/ui/tabs';
 import { getCategoriesData } from '@/services/guest/categories.services';
 import { handleApiError } from '@/hooks/handleApiError';
 import { RootState } from '@/store/store';
 import { setSelectedCategories, setSelectedActivities } from '@/store/slice/homePageSearchSlice';
-import { useGetActivities } from '@/services';
 import { cn } from '@/lib/utils';
 
 type Item = {
@@ -35,7 +34,6 @@ function ShimmerList() {
 
 const tabsData = [
     { label: 'Spaces', value: 'spaces' },
-    { label: 'Activities', value: 'activities' },
 ];
 
 export default function HeroSpacesDropdown({
@@ -46,18 +44,15 @@ export default function HeroSpacesDropdown({
 }: HeroDropdownTabsProps) {
     const dispatch = useDispatch();
 
-    const { selectedCategories, selectedActivities } = useSelector(
+    const { selectedCategories } = useSelector(
         (state: RootState) => state.homeSearchData,
     );
 
     const selectedCategory = selectedCategories.length ? selectedCategories[0] : undefined;
-    const selectedActivity = selectedActivities.length ? selectedActivities[0] : undefined;
 
-    const [activeTab, setActiveTab] = useState<'spaces' | 'activities'>('spaces');
+    const [activeTab] = useState<'spaces'>('spaces');
     const [spaces, setSpaces] = useState<Item[]>([]);
     const [loading, setLoading] = useState(false);
-
-    const { data: activitiesData, isLoading: activitiesLoading } = useGetActivities();
 
     useEffect(() => {
         fetchSpaces();
@@ -86,56 +81,42 @@ export default function HeroSpacesDropdown({
         }
     }
 
-    function getData() {
-        if (activeTab === 'spaces') return spaces;
-        if (activeTab === 'activities') {
-            return (
-                activitiesData?.data?.activities?.map((item: any) => ({
-                    // Use the first ID as primary, but keep full ids array
-                    id: String(item.ids[0]),
-                    name: item.activity,
-                    ids: item.ids,
-                })) || []
-            );
-        }
-        return [];
-    }
-
     function handleSelect(item: Item) {
-        onSelect(item, activeTab);
-
-        if (activeTab === 'spaces') {
-            dispatch(setSelectedActivities([]));
-            dispatch(setSelectedCategories([{ item, type: activeTab }]));
-        } else if (activeTab === 'activities') {
-            dispatch(setSelectedCategories([]));
-            dispatch(
-                setSelectedActivities([
-                    {
-                        name: item.name,
-                        // Use all backend IDs for this activity
-                        ids: item.ids || [Number(item.id)],
-                    },
-                ]),
-            );
-        }
-
+        onSelect(item, 'spaces');
+        dispatch(setSelectedActivities([]));
+        dispatch(setSelectedCategories([{ item, type: 'spaces' }]));
         onClose();
     }
 
-    function handleTabChange(tab: string) {
-        setActiveTab(tab as 'spaces' | 'activities');
+    function handleTabChange() {
+        // Single tab, no-op
     }
 
+    // Determine if the user is actively typing a search term, 
+    // or if the search value is just the name of the currently selected category.
+    const isEditingSearch = useMemo(() => {
+        if (!searchVal.trim()) return false;
+        if (!selectedCategory) return true;
+        return searchVal.trim().toLowerCase() !== selectedCategory.item.name.toLowerCase();
+    }, [searchVal, selectedCategory]);
+
+    const filteredSpaces = useMemo(() => {
+        return spaces.filter((item) =>
+            isEditingSearch
+                ? item.name.toLowerCase().includes(searchVal.toLowerCase())
+                : true
+        );
+    }, [spaces, searchVal, isEditingSearch]);
+
     function RenderOptions() {
-        const data = getData();
+        if (filteredSpaces.length === 0) {
+            return <p className="text-sm text-gray-500 p-3">No spaces found</p>;
+        }
+
         return (
             <div className="p-2">
-                {data.map((item) => {
-                    const isSelected =
-                        activeTab === 'spaces'
-                            ? selectedCategory?.item?.id === item.id
-                            : selectedActivity?.name === item.name;
+                {filteredSpaces.map((item) => {
+                    const isSelected = selectedCategory?.item?.id === item.id;
                     const isMatch =
                         searchVal.trim() &&
                         item.name.toLowerCase().includes(searchVal.toLowerCase());
@@ -184,20 +165,21 @@ export default function HeroSpacesDropdown({
                 variant="underline"
                 className="mb-3 sticky top-0 bg-white z-10"
             />
-
-            {loading || activitiesLoading ? (
+            {loading ? (
                 <ShimmerList />
-            ) : getData().length > 0 ? (
+            ) : spaces.length > 0 ? (
                 <div>
                     {searchVal && (
                         <div className="text-sm text-gray-500 mb-2 px-3">
-                            Showing all {activeTab}, highlighting matches for {searchVal}
+                            {isEditingSearch
+                                ? `Showing spaces matching "${searchVal}"`
+                                : `Showing all spaces, highlighting matches for "${searchVal}"`}
                         </div>
                     )}
                     <RenderOptions />
                 </div>
             ) : (
-                <p className="text-sm text-gray-500">No {activeTab} found</p>
+                <p className="text-sm text-gray-500">No spaces found</p>
             )}
         </div>
     );

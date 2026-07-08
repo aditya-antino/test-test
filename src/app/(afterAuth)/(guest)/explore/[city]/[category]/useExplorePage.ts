@@ -88,8 +88,8 @@ export const useExplorePage = (initialSpaceData?: any) => {
     // Map explore frontend category slugs directly to backend category name slugs
     // These must match toSlug(CategoryMaster.name) on the space-list page
     const slugToCategoryMap: Record<string, string> = {
-        'photography-studios':  'creative-spaces',
-        'podcast-studios':      'creative-spaces',
+        'photography-studios':  'photo-film-studio',
+        'podcast-studios':      'photo-film-studio',
         'baithaks':             'event-spaces',
         'baithak':              'event-spaces',
         'fitness-wellness':   'fitness-wellness-spaces',
@@ -98,11 +98,12 @@ export const useExplorePage = (initialSpaceData?: any) => {
         'exhibitions':          'event-spaces',
         'exhibition':           'event-spaces',
         'exhibition-spaces':    'event-spaces',
-        'cyclorama-studios':    'creative-spaces',
-        'cyclorama':            'creative-spaces',
+        'cyclorama-studios':    'photo-film-studio',
+        'cyclorama':            'photo-film-studio',
         'event-venues':         'event-spaces',
         'event-venue':          'event-spaces',
-        'creative-spaces':      'creative-spaces',
+        'creative-spaces':      'photo-film-studio',
+        'workshops':            'workshop-area',
     };
 
     const handleCtaClick = (categorySlug: string) => {

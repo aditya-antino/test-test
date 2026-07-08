@@ -398,6 +398,54 @@ export const useAfterAuthGetSpaceGuestList = (params?: any, options?: { enabled?
     });
 };
 
+// Infinite scroll variant — unauthenticated
+export const useInfiniteGetSpaceGuestList = (
+    params?: any,
+    options?: { enabled?: boolean },
+) => {
+    return useInfiniteQuery<{ data: { count: number; records: Array<Space> } }>({
+        queryKey: ['get-space-guest-list-infinite', params],
+        queryFn: async ({ pageParam = 1 }) => {
+            const response = await Get(endpoints.GUEST_SPACE_LIST, {
+                params: { ...params, page: pageParam },
+            });
+            return response as { data: { count: number; records: Array<Space> } };
+        },
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages) => {
+            const count = lastPage?.data?.count || 0;
+            const loadedCount = allPages.flatMap((p) => p?.data?.records || []).length;
+            if (loadedCount >= count) return undefined;
+            return allPages.length + 1;
+        },
+        enabled: options?.enabled !== false,
+    });
+};
+
+// Infinite scroll variant — authenticated
+export const useInfiniteAfterAuthGetSpaceGuestList = (
+    params?: any,
+    options?: { enabled?: boolean },
+) => {
+    return useInfiniteQuery<{ data: { count: number; records: Array<Space> } }>({
+        queryKey: ['get-auth-space-guest-list-infinite', params],
+        queryFn: async ({ pageParam = 1 }) => {
+            const response = await Get(endpoints.GUEST_SPACE_LIST_AUTH, {
+                params: { ...params, page: pageParam },
+            });
+            return response as { data: { count: number; records: Array<Space> } };
+        },
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages) => {
+            const count = lastPage?.data?.count || 0;
+            const loadedCount = allPages.flatMap((p) => p?.data?.records || []).length;
+            if (loadedCount >= count) return undefined;
+            return allPages.length + 1;
+        },
+        enabled: options?.enabled !== false && params !== undefined,
+    });
+};
+
 export const useInfiniteGetRecommendedSpaces = (
     spaceId?: string | number,
     limit: number = 5,
