@@ -116,7 +116,7 @@ const DesktopSpaceList = ({
 
             {/* Remaining listings below the map row */}
             {spacesLoading ? (
-                <div className="px-4 md:px-16 py-4">
+                <div className="py-4">
                     <SkeletonCardGrid
                         count={4}
                         gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
@@ -124,7 +124,7 @@ const DesktopSpaceList = ({
                 </div>
             ) : (
                 spaces.length > 2 && (
-                    <div className="px-4 md:px-16 pt-4">
+                    <div className="pt-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
                             {spaces.slice(2).map((spaceItem) => (
                                 <BookingCard
