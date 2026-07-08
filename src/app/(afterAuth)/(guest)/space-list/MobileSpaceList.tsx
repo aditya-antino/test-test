@@ -7,7 +7,7 @@ import { SkeletonCardGrid } from '@/components/skeletons';
 import { EmptyState } from '@/components/common';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { MapPin, X, Loader2 } from 'lucide-react';
+import { MapPin, X, Loader2, ChevronUp } from 'lucide-react';
 import {
     useInfiniteGetSpaceGuestList,
     useInfiniteAfterAuthGetSpaceGuestList,
@@ -21,6 +21,10 @@ const MobileSpaceList = ({
     clearFilters,
 }: SpaceListSectionProps) => {
     const [isMapDialogOpen, setIsMapDialogOpen] = useState(false);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const guestListQuery = useInfiniteGetSpaceGuestList(filterParams, { enabled: !isAuth });
     const afterAuthGuestListQuery = useInfiniteAfterAuthGetSpaceGuestList(filterParams, {
@@ -98,8 +102,15 @@ const MobileSpaceList = ({
 
             {/* End of results */}
             {!spacesLoading && !hasNextPage && spaces.length > 0 && (
-                <div className="flex justify-center items-center py-8">
+                <div className="flex flex-col justify-center items-center py-8 gap-3">
                     <p className="text-sm text-gray-400">You've seen all available spaces</p>
+                    <button
+                        onClick={scrollToTop}
+                        className="bg-transparent hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-6 rounded-full border border-gray-300 hover:border-gray-400 transition-all duration-200 text-sm active:scale-95 flex items-center gap-1.5 shadow-sm"
+                    >
+                        <ChevronUp className="h-4 w-4 text-gray-500" />
+                        <span>Scroll to Top</span>
+                    </button>
                 </div>
             )}
 
