@@ -182,8 +182,10 @@ export const useSpaceList = (initialSpaceData?: any) => {
 
         // Slug aliases: when these are detected in the URL, silently rewrite to the canonical slug
         const SPACE_SLUG_ALIASES: Record<string, string> = {
-            'creative-spaces':    'photo-film-studio',
+            'creative-spaces':     'photo-film-studio',
             'work-meeting-spaces': 'workshop-area',
+            'workshops':           'workshop-area',
+            'workshop':            'workshop-area',
         };
 
         const syncFromUrl = async () => {

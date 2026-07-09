@@ -163,6 +163,12 @@ const Footer = React.memo(function Footer() {
                                         >
                                             List your Space
                                         </Link>
+                                        <Link
+                                            href={PATHS.CONTACT_US}
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Contact Us
+                                        </Link>
                                     </div>
                                 </MobileFooterSection>
 
@@ -305,6 +311,12 @@ const Footer = React.memo(function Footer() {
                                             className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
                                         >
                                             List your Space
+                                        </Link>
+                                        <Link
+                                            href={PATHS.CONTACT_US}
+                                            className="text-gray-600 text-sm font-normal leading-5 hover:text-gray-800 transition-colors duration-200"
+                                        >
+                                            Contact Us
                                         </Link>
                                     </div>
                                 </DesktopFooterSection>

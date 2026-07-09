@@ -51,6 +51,7 @@ export const PATHS = {
     HELP: '/help',
     FAQ: '/faq',
     CONTACT: '/contact',
+    CONTACT_US: '/contact-us',
     SITEMAP: '/sitemap',
     TERMS: '/terms',
     PRIVACY: '/privacy',
