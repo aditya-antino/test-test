@@ -21,10 +21,10 @@ const MobileSpaceList = ({
     clearFilters,
 }: SpaceListSectionProps) => {
     const [isMapDialogOpen, setIsMapDialogOpen] = useState(false);
-
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isBottomVisible, setIsBottomVisible] = useState(false);
+    const bottomRef = useRef<HTMLDivElement | null>(null);
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
 
     const guestListQuery = useInfiniteGetSpaceGuestList(filterParams, { enabled: !isAuth });
     const afterAuthGuestListQuery = useInfiniteAfterAuthGetSpaceGuestList(filterParams, {
@@ -47,7 +47,25 @@ const MobileSpaceList = ({
         [allRecords],
     );
 
-    const sentinelRef = useRef<HTMLDivElement | null>(null);
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 300);
+            
+            if (bottomRef.current && !hasNextPage) {
+                const rect = bottomRef.current.getBoundingClientRect();
+                setIsBottomVisible(rect.top <= window.innerHeight);
+            } else {
+                setIsBottomVisible(false);
+            }
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [hasNextPage]);
 
     useEffect(() => {
         const sentinel = sentinelRef.current;
@@ -63,6 +81,8 @@ const MobileSpaceList = ({
         observer.observe(sentinel);
         return () => observer.disconnect();
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    const showFloatingScrollToTop = isScrolled && !(isBottomVisible && !hasNextPage);
 
     return (
         <>
@@ -101,24 +121,38 @@ const MobileSpaceList = ({
             )}
 
             {/* End of results */}
-            {!spacesLoading && !hasNextPage && spaces.length > 0 && (
-                <div className="flex flex-col justify-center items-center py-8 gap-3">
-                    <p className="text-sm text-gray-400">You've seen all available spaces</p>
-                    <button
-                        onClick={scrollToTop}
-                        className="bg-transparent hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-6 rounded-full border border-gray-300 hover:border-gray-400 transition-all duration-200 text-sm active:scale-95 flex items-center gap-1.5 shadow-sm"
-                    >
-                        <ChevronUp className="h-4 w-4 text-gray-500" />
-                        <span>Scroll to Top</span>
-                    </button>
-                </div>
-            )}
+            <div ref={bottomRef}>
+                {!spacesLoading && !hasNextPage && spaces.length > 0 && (
+                    <div className="flex flex-col justify-center items-center py-8 gap-3">
+                        <p className="text-sm text-gray-400">You've seen all available spaces</p>
+                        <button
+                            onClick={scrollToTop}
+                            className="bg-transparent hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-6 rounded-full border border-gray-300 hover:border-gray-400 transition-all duration-200 text-sm active:scale-95 flex items-center gap-1.5 shadow-sm"
+                        >
+                            <ChevronUp className="h-4 w-4 text-gray-500" />
+                            <span>Scroll to Top</span>
+                        </button>
+                    </div>
+                )}
+            </div>
 
-            {/* Floating Map Button — co-located here, not in parent */}
-            <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+            {/* Floating Container for Map and Scroll to Top buttons */}
+            <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 pointer-events-none">
+                <button
+                    onClick={scrollToTop}
+                    className={`pointer-events-auto bg-white hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-6 rounded-full border border-gray-300 hover:border-gray-400 shadow-md flex items-center gap-1.5 text-sm active:scale-95 transition-all duration-300 transform ${
+                        showFloatingScrollToTop
+                            ? 'opacity-100 translate-y-0'
+                            : 'opacity-0 translate-y-4 pointer-events-none'
+                    }`}
+                >
+                    <ChevronUp className="h-4 w-4 text-gray-500" />
+                    <span>Scroll to Top</span>
+                </button>
+
                 <button
                     onClick={() => setIsMapDialogOpen(true)}
-                    className="bg-primary-p1 hover:bg-primary-p2 text-gray-800 font-semibold py-4 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 border border-primary-p1"
+                    className="pointer-events-auto bg-primary-p1 hover:bg-primary-p2 text-gray-800 font-semibold py-4 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 border border-primary-p1"
                 >
                     <MapPin className="h-5 w-5" />
                     <span>Show Map</span>
