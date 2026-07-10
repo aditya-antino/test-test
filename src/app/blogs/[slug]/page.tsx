@@ -209,7 +209,8 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                                 alt={post.title}
                                 width={1200}
                                 height={500}
-                                className="w-full h-[400px] lg:h-[500px] object-cover rounded-2xl shadow-lg"
+                                className="w-full h-auto rounded-2xl shadow-lg"
+                                priority
                             />
                         </div>
                     )}
@@ -225,7 +226,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                       prose-p:text-[#2D2D2D] prose-p:leading-relaxed prose-p:text-lg
                       prose-a:text-[#D89D03] hover:prose-a:text-[#C98D02]
                       prose-blockquote:border-l-4 prose-blockquote:border-[#F7CD29]
-                      prose-strong:font-black prose-img:rounded-xl prose-img:shadow-lg"
+                      prose-strong:font-black prose-img:rounded-xl prose-img:shadow-lg prose-img:!h-auto prose-img:max-w-full"
                         dangerouslySetInnerHTML={{
                             __html: post.description || post.content || '<p>No content available.</p>',
                         }}
