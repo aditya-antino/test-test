@@ -114,9 +114,9 @@ const ContactUs = () => {
                                 <span className="text-[#F7D13A]">Talk</span>
                             </h1>
                             <p className="text-gray-500 text-lg leading-relaxed mb-2 max-w-md">
-                                Whether you&apos;re looking for the right space, want to list your
-                                property, or simply have a question - we&apos;re here to help.
-                                Our team is ready to assist you every step of the way.
+                                Looking for the right space, thinking of listing your own, or have a question?
+                                <br />
+                                We&apos;re here to help you find what you need and get you started.
                             </p>
                             <p className="text-gray-400 text-sm">
                                 Get in touch, and we&apos;ll respond as soon as possible.
@@ -270,6 +270,7 @@ const ContactUs = () => {
 
                     <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-xl">
                         Own an Event Venue, Photography Studio, Workshop Area, or any other Creative Space?
+                        <br />
                         List your space on Spare Space and get discovered by people looking to book spaces like yours.
                     </p>
 
