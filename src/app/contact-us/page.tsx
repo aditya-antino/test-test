@@ -20,7 +20,8 @@ import { postContactUSQuery } from '@/services/contactus.services';
 import { handleApiError } from '@/hooks/handleApiError';
 import { aboutUsImage, hostIllustration } from '@/assets/landingImages';
 import { PATHS } from '@/constants/path';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const BUDGET_OPTIONS = [
     { label: '₹1,500 – ₹3,000', value: '1500-3000' },
@@ -30,14 +31,13 @@ const BUDGET_OPTIONS = [
 ];
 
 const SPACE_CATEGORIES = [
-    'Photography Studio',
-    'Event Venue',
-    'Workshop / Training Room',
-    'Coworking Space',
-    'Meeting Room',
-    'Podcast / Recording Studio',
-    'Warehouse / Industrial',
-    'Other',
+    'Resedential Spaces',
+    'Event Spaces',
+    'Workshop Area',
+    'Photo & Film Studio',
+    'Fitness & Wellness Spaces',
+    'Dining Spaces',
+    'Outdoor Spaces',
 ];
 
 const ContactUs = () => {
@@ -74,13 +74,17 @@ const ContactUs = () => {
         const payload = {
             name: `${formData.firstName} ${formData.lastName}`.trim(),
             email: formData.email,
-            message: `Category: ${formData.category || 'N/A'} | Budget: ${formData.budget || 'N/A'} | Message: ${formData.message}`,
+            category: formData.category,
+            budget: formData.budget,
+            message: formData.message,
         };
 
         try {
             const response = await postContactUSQuery(payload);
-            if (response.status === 200) {
+            if (response.status === 200 || response.data?.success) {
                 setSubmitStatus('success');
+                const successMsg = response.data?.data?.message || response.data?.message || 'Thank you for contacting us! We will get back to you soon.';
+                toast.success(successMsg);
                 setFormData({ firstName: '', lastName: '', email: '', category: '', budget: '', message: '' });
             }
         } catch (error) {
@@ -229,7 +233,7 @@ const ContactUs = () => {
                                 {/* Message */}
                                 <Textarea
                                     name="message"
-                                    label="Any message for us"
+                                    label="Any message for us (optional)"
                                     value={formData.message}
                                     onChange={handleInputChange}
                                     placeholder="Tell us a bit about what you're looking for..."
@@ -239,9 +243,16 @@ const ContactUs = () => {
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full h-12 text-base font-semibold"
+                                    className="w-full h-12 text-base font-semibold flex items-center justify-center gap-2"
                                 >
-                                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="h-5 w-5 animate-spin" />
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        'Send Message'
+                                    )}
                                 </Button>
                             </form>
                         </div>
@@ -258,9 +269,8 @@ const ContactUs = () => {
                     </h2>
 
                     <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-xl">
-                        Own a warehouse, industrial property, commercial space, or storage
-                        facility? Partner with Spare Space and connect with businesses
-                        actively looking for space.
+                        Own an Event Venue, Photography Studio, Workshop Area, or any other Creative Space?
+                        List your space on Spare Space and get discovered by people looking to book spaces like yours.
                     </p>
 
                     <Link href={PATHS.LIST_YOUR_SPACE}>
