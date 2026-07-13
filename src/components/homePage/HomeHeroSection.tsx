@@ -38,6 +38,12 @@ export default function HeroHomeSection() {
                     <Typography className="mt-4" color="text-gray-500" size="xl" weight="normal">
                         Book by the hour. Flexible, affordable, and hassle-free.
                     </Typography>
+                    <div className="my-3 flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary-tint4 text-primary-p3 border border-primary-tint1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary-p2" />
+                            Now Live in Delhi NCR
+                        </span>
+                    </div>
                     {/* Search Bar */}
                     <HomePageSearchBarTab className="absolute w-[95%] lg:w-[85%] max-w-6xl z-[40] top-[62%] left-1/2 -translate-x-1/2" />
                 </div>

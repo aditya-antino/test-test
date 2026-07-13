@@ -150,6 +150,19 @@ const MobileNavigation = function MobileNavigation({
     const accountOptions = isHostMode ? HOST_ACCOUNT_OPTIONS : GUEST_ACCOUNT_OPTIONS;
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
+    if (!isAuth) {
+        return (
+            <div className="md:hidden flex items-center justify-end">
+                <Link
+                    href={PATHS?.LOGIN || '/'}
+                    className="text-black text-sm font-semibold px-5 py-2.5 bg-[#F6CD28] hover:bg-yellow-500 transition-colors rounded-full"
+                >
+                    Log In
+                </Link>
+            </div>
+        );
+    }
+
     return (
         <div className="md:hidden">
             <Sheet>

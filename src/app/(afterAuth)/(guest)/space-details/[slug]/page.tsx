@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { SpaceDetailsSkeleton } from '@/components/skeletons';
 import { ServerGet } from '@/services/serverApi';
 import { endpoints } from '@/services/endPoints';
+import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,7 @@ async function getSpaceDetails(slug: string) {
     try {
         const endpoint = endpoints.GUEST_SPACE_DETAILS.replace(':slug', slug);
         const response: any = await ServerGet(endpoint);
-        return response?.data ?? response ?? null;
+        return response?.data || null;
     } catch (error) {
         console.error('Error fetching space details on server:', error);
         return null;
@@ -84,6 +85,10 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
 const Page = async (props: Props) => {
     const params = await props.params;
     const spaceData = await getSpaceDetails(params.slug);
+
+    if (!spaceData) {
+        notFound();
+    }
 
     return (
         <Suspense fallback={<SpaceDetailsSkeleton />}>
