@@ -30,7 +30,34 @@ export const useHostProfileLogic = () => {
         true,
     );
 
-    const categoriesData = categoriesResponse?.data;
+    const isFitnessWellness = (category: any) => {
+        if (!category) return false;
+        const name = (category.name || '').toLowerCase();
+        const slug = (category.slug || '').toLowerCase();
+        return (
+            slug === 'fitness-wellness' ||
+            slug === 'fitness-wellness-spaces' ||
+            (name.includes('fitness') && (name.includes('wellness') || name.includes('welness')))
+        );
+    };
+
+    const categoriesData = (() => {
+        const rawData = categoriesResponse?.data;
+        if (!rawData || !Array.isArray(rawData.categories)) return rawData;
+
+        const sortedCategories = [...rawData.categories].sort((a: any, b: any) => {
+            const aIsFW = isFitnessWellness(a);
+            const bIsFW = isFitnessWellness(b);
+            if (aIsFW && !bIsFW) return -1;
+            if (!aIsFW && bIsFW) return 1;
+            return 0;
+        });
+
+        return {
+            ...rawData,
+            categories: sortedCategories,
+        };
+    })();
 
     useEffect(() => {
         if (categoriesData?.categories?.length && !userHasClickedTab) {
