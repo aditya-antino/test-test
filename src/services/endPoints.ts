@@ -76,6 +76,7 @@ export const endpoints = {
     GUEST_BOOKING_CALENDAR: '/guest/{spaceId}/non-operating-days',
     GUEST_BOOKING_TIME_SLOTS: '/guest/{spaceId}/space-availability',
     GUEST_SPACE_CATEGORIES: '/guest/categories',
+    GUEST_SPACE_TAGS: '/guest/space-tags',
     GUEST_BOOKING_STATUS: '/guest/booking/status',
     GUEST_ADD_COMMENT: '/guest/comment',
     GUEST_ADD_RATINGS: '/guest/rating',

@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getPlacesData } from '@/services/guest/categories.services';
 import { handleApiError } from '@/hooks/handleApiError';
 import { RootState } from '@/store/store';
-import { setSelectedPlace } from '@/store/slice/homePageSearchSlice';
 import { cn } from '@/lib/utils';
 
 type Item = {
@@ -36,7 +35,6 @@ export default function HeroPlacesDropdown({
     onSelect,
     onClose,
 }: HeroDropdownTabsProps) {
-    const dispatch = useDispatch();
     const selectedPlace = useSelector((state: RootState) => state.homeSearchData.selectedPlace);
 
     const [places, setPlaces] = useState<Item[]>([]);
@@ -70,8 +68,8 @@ export default function HeroPlacesDropdown({
     }
 
     function handleSelect(item: Item) {
+        // Toggle: onSelect in useHomePageSearch handles deselect if already selected
         onSelect(item);
-        dispatch(setSelectedPlace(item));
         onClose();
     }
 
@@ -80,9 +78,6 @@ export default function HeroPlacesDropdown({
             <div className="p-2">
                 {places.map((item) => {
                     const isSelected = selectedPlace?.id === item.id;
-                    const isMatch =
-                        searchVal.trim() &&
-                        item.name.toLowerCase().includes(searchVal.toLowerCase());
 
                     return (
                         <div
@@ -96,19 +91,13 @@ export default function HeroPlacesDropdown({
                             <span
                                 className={cn(
                                     "text-sm transition-colors",
-                                    isSelected ? "font-bold text-gray-900" : "text-gray-700 group-hover:text-gray-900",
-                                    isMatch && !isSelected && "font-semibold text-[#F6CD28]"
+                                    isSelected ? "font-bold text-gray-900" : "text-gray-700 group-hover:text-gray-900"
                                 )}
                             >
                                 {item.name}
                             </span>
                             {isSelected && (
                                 <div className="w-2 h-2 rounded-full bg-[#F6CD28]" />
-                            )}
-                            {isMatch && !isSelected && (
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-[#F6CD28]">
-                                    Match
-                                </span>
                             )}
                         </div>
                     );
@@ -130,14 +119,7 @@ export default function HeroPlacesDropdown({
                     {loading ? (
                         <ShimmerList />
                     ) : places.length > 0 ? (
-                        <div>
-                            {searchVal && (
-                                <div className="text-sm text-gray-500 mb-2 px-3">
-                                    Showing all matches for "{searchVal}"
-                                </div>
-                            )}
-                            <RenderOptions />
-                        </div>
+                        <RenderOptions />
                     ) : (
                         <p className="text-sm text-gray-500 px-3">No places found</p>
                     )}

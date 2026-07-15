@@ -7,6 +7,7 @@ import { getCategoriesData } from '@/services/guest/categories.services';
 import { handleApiError } from '@/hooks/handleApiError';
 import { RootState } from '@/store/store';
 import { setSelectedCategories, setSelectedActivities } from '@/store/slice/homePageSearchSlice';
+import { useGetActivities, useGetGuestSpaceTags } from '@/services';
 import { cn } from '@/lib/utils';
 
 type Item = {
@@ -34,6 +35,7 @@ function ShimmerList() {
 
 const tabsData = [
     { label: 'Spaces', value: 'spaces' },
+    { label: 'Activities', value: 'activities' }
 ];
 
 export default function HeroSpacesDropdown({
@@ -44,15 +46,19 @@ export default function HeroSpacesDropdown({
 }: HeroDropdownTabsProps) {
     const dispatch = useDispatch();
 
-    const { selectedCategories } = useSelector(
+    const { selectedCategories, selectedActivities } = useSelector(
         (state: RootState) => state.homeSearchData,
     );
 
     const selectedCategory = selectedCategories.length ? selectedCategories[0] : undefined;
+    const selectedActivity = selectedActivities.length ? selectedActivities[0] : undefined;
 
-    const [activeTab] = useState<'spaces'>('spaces');
+    const [activeTab, setActiveTab] = useState<'spaces' | 'activities'>('spaces');
     const [spaces, setSpaces] = useState<Item[]>([]);
     const [loading, setLoading] = useState(false);
+
+    const { data: activitiesData, isLoading: activitiesLoading } = useGetActivities();
+    const { data: spaceTagsResponse, isLoading: spaceTagsLoading } = useGetGuestSpaceTags();
 
     useEffect(() => {
         fetchSpaces();
@@ -81,45 +87,86 @@ export default function HeroSpacesDropdown({
         }
     }
 
+    function getData() {
+        if (activeTab === 'spaces') return spaces;
+        if (activeTab === 'activities') {
+            const rawTags = spaceTagsResponse?.data?.tags || spaceTagsResponse?.data || [];
+            return (
+                rawTags.map((item: any) => ({
+                    id: String(item.id || item.ids?.[0]),
+                    name: item.name || item.tag || item.activity || 'Untitled',
+                    ids: item.ids || [item.id],
+                })) || []
+            );
+        }
+        return [];
+    }
+
     function handleSelect(item: Item) {
-        onSelect(item, 'spaces');
-        dispatch(setSelectedActivities([]));
-        dispatch(setSelectedCategories([{ item, type: 'spaces' }]));
+        if (activeTab === 'spaces') {
+            const alreadySelected = selectedCategory?.item?.id === item.id;
+            if (alreadySelected) {
+                dispatch(setSelectedCategories([]));
+            } else {
+                dispatch(setSelectedCategories([{ item, type: activeTab }]));
+                onSelect(item, activeTab);
+            }
+        } else if (activeTab === 'activities') {
+            const alreadySelected = selectedActivity?.name === item.name;
+            if (alreadySelected) {
+                dispatch(setSelectedActivities([]));
+            } else {
+                dispatch(
+                    setSelectedActivities([
+                        {
+                            name: item.name,
+                            ids: item.ids || [Number(item.id)],
+                        },
+                    ]),
+                );
+                onSelect(item, activeTab);
+            }
+        }
         onClose();
     }
 
-    function handleTabChange() {
-        // Single tab, no-op
+    function handleTabChange(tab: string) {
+        setActiveTab(tab as 'spaces' | 'activities');
     }
 
     // Determine if the user is actively typing a search term, 
-    // or if the search value is just the name of the currently selected category.
+    // or if the search value is just the name of the currently selected category/activity.
     const isEditingSearch = useMemo(() => {
         if (!searchVal.trim()) return false;
-        if (!selectedCategory) return true;
-        return searchVal.trim().toLowerCase() !== selectedCategory.item.name.toLowerCase();
-    }, [searchVal, selectedCategory]);
+        const val = searchVal.trim().toLowerCase();
+        // Not editing if searchVal matches any selected category or activity name
+        if (selectedCategory && val === selectedCategory.item.name.toLowerCase()) return false;
+        if (selectedActivity && val === selectedActivity.name.toLowerCase()) return false;
+        return true;
+    }, [searchVal, selectedCategory, selectedActivity]);
 
-    const filteredSpaces = useMemo(() => {
-        return spaces.filter((item) =>
-            isEditingSearch
-                ? item.name.toLowerCase().includes(searchVal.toLowerCase())
-                : true
-        );
-    }, [spaces, searchVal, isEditingSearch]);
+    const filteredData = useMemo(() => {
+        const data = getData();
+        // Always show all items for both tabs, just highlight matches
+        return data;
+    }, [activeTab, spaces, spaceTagsResponse, searchVal, isEditingSearch]);
 
     function RenderOptions() {
-        if (filteredSpaces.length === 0) {
-            return <p className="text-sm text-gray-500 p-3">No spaces found</p>;
+        const data = filteredData;
+        if (data.length === 0) {
+            return (
+                <p className="text-sm text-gray-500 p-3">
+                    {activeTab === 'spaces' ? 'No spaces found' : 'No activities found'}
+                </p>
+            );
         }
 
         return (
             <div className="p-2">
-                {filteredSpaces.map((item) => {
-                    const isSelected = selectedCategory?.item?.id === item.id;
-                    const isMatch =
-                        searchVal.trim() &&
-                        item.name.toLowerCase().includes(searchVal.toLowerCase());
+                {data.map((item) => {
+                    const isSelected = activeTab === 'spaces'
+                        ? selectedCategory?.item?.id === item.id
+                        : selectedActivity?.name === item.name;
 
                     return (
                         <div
@@ -133,19 +180,13 @@ export default function HeroSpacesDropdown({
                             <span
                                 className={cn(
                                     "text-sm transition-colors",
-                                    isSelected ? "font-bold text-gray-900" : "text-gray-700 group-hover:text-gray-900",
-                                    isMatch && !isSelected && "font-semibold text-[#F6CD28]"
+                                    isSelected ? "font-bold text-gray-900" : "text-gray-700 group-hover:text-gray-900"
                                 )}
                             >
                                 {item.name}
                             </span>
                             {isSelected && (
                                 <div className="w-2 h-2 rounded-full bg-[#F6CD28]" />
-                            )}
-                            {isMatch && !isSelected && (
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-[#F6CD28]">
-                                    Match
-                                </span>
                             )}
                         </div>
                     );
@@ -156,6 +197,9 @@ export default function HeroSpacesDropdown({
 
     if (!isOpen) return null;
 
+    const activeLoading = activeTab === 'spaces' ? loading : spaceTagsLoading;
+    const activeData = getData();
+
     return (
         <div className="max-h-96 overflow-y-auto">
             <Tabs
@@ -165,21 +209,14 @@ export default function HeroSpacesDropdown({
                 variant="underline"
                 className="mb-3 sticky top-0 bg-white z-10"
             />
-            {loading ? (
+            {activeLoading ? (
                 <ShimmerList />
-            ) : spaces.length > 0 ? (
-                <div>
-                    {searchVal && (
-                        <div className="text-sm text-gray-500 mb-2 px-3">
-                            {isEditingSearch
-                                ? `Showing spaces matching "${searchVal}"`
-                                : `Showing all spaces, highlighting matches for "${searchVal}"`}
-                        </div>
-                    )}
-                    <RenderOptions />
-                </div>
+            ) : activeData.length > 0 ? (
+                <RenderOptions />
             ) : (
-                <p className="text-sm text-gray-500">No spaces found</p>
+                <p className="text-sm text-gray-500 p-3">
+                    {activeTab === 'spaces' ? 'No spaces found' : 'No activities found'}
+                </p>
             )}
         </div>
     );

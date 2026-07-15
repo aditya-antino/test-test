@@ -102,7 +102,7 @@ export const useHomePageSearch = (isSearchPage = false, onSearch?: any) => {
     const handleSelect = (item: Item, type: 'spaces' | 'activities') => {
         if (type === 'spaces') {
             dispatch(setSelectedCategories([{ item, type }]));
-            dispatch(setSelectedActivities([]));
+            // Space and activity selections are independent — don't clear activities
         } else {
             // Use full backend ids array from HeroDropdownTabs (item.ids) when present
             const allIds = (item as any).ids as number[] | undefined;
@@ -114,7 +114,7 @@ export const useHomePageSearch = (isSearchPage = false, onSearch?: any) => {
                     },
                 ]),
             );
-            dispatch(setSelectedCategories([]));
+            // Space and activity selections are independent — don't clear categories
         }
         dispatch(setSearchVal(item.name));
         setIsCategoryModalOpen(false);
@@ -122,8 +122,14 @@ export const useHomePageSearch = (isSearchPage = false, onSearch?: any) => {
     };
 
     const handleSelectPlaces = (item: Item) => {
-        dispatch(setSelectedPlace(item));
-        dispatch(setPlacesSearchVal(item.name));
+        const alreadySelected = selectedPlace?.id === item.id;
+        if (alreadySelected) {
+            dispatch(setSelectedPlace(undefined));
+            dispatch(setPlacesSearchVal(''));
+        } else {
+            dispatch(setSelectedPlace(item));
+            dispatch(setPlacesSearchVal(item.name));
+        }
         setIsPlacesModalOpen(false);
         setActiveMobileInput(null);
     };

@@ -10,12 +10,14 @@ import {
     useGetAmenities,
     useGetActivities,
     useGetPublicCategories,
+    useGetGuestSpaceTags,
 } from '@/services';
 import { getPlacesData } from '@/services/guest/categories.services';
 import {
     setDate,
     setSelectedPlace,
-    setPlacesSearchVal
+    setPlacesSearchVal,
+    setSearchVal,
 } from '@/store/slice/homePageSearchSlice';
 import { convert12to24 } from '@/lib/utils';
 import { FilterSection } from '@/components/common/FilterDrawer';
@@ -71,8 +73,9 @@ export const useSpaceList = (initialSpaceData?: any) => {
     const { data: spaceTypesData, isLoading: spaceTypesLoading } = useGetSpaceTypes();
     const { data: amenitiesData, isLoading: amenitiesLoading } = useGetAmenities();
     const { data: activitiesData, isLoading: activitiesLoading } = useGetActivities();
+    const { data: spaceTagsData, isLoading: spaceTagsLoading } = useGetGuestSpaceTags();
 
-    const isSectionsLoading = spaceTypesLoading || amenitiesLoading || activitiesLoading;
+    const isSectionsLoading = spaceTypesLoading || amenitiesLoading || spaceTagsLoading;
 
     const filterParams = useMemo(() => {
         const getFormattedTime = (time: string | undefined) => {
@@ -93,7 +96,11 @@ export const useSpaceList = (initialSpaceData?: any) => {
             spaceTypeIds: appliedFilters.spaceTypeIds.length
                 ? appliedFilters.spaceTypeIds.join(',')
                 : undefined,
-            activityIds: appliedFilters.activityIds.length
+            // Deprecated: activityIds is no longer supported — use tagIds for Admin Space Tags
+            // activityIds: appliedFilters.activityIds.length
+            //     ? appliedFilters.activityIds.join(',')
+            //     : undefined,
+            tagIds: appliedFilters.activityIds.length
                 ? appliedFilters.activityIds.join(',')
                 : undefined,
             amenityIds: appliedFilters.amenityIds.length
@@ -122,14 +129,27 @@ export const useSpaceList = (initialSpaceData?: any) => {
                 })),
             });
         }
-        if (activitiesData?.data?.activities) {
+        // Deprecated: Activities from useGetActivities — replaced by Admin Space Tags
+        // if (activitiesData?.data?.activities) {
+        //     sections.push({
+        //         title: 'Choose',
+        //         titleHighlighted: 'Activities',
+        //         key: 'activities',
+        //         options: activitiesData.data.activities.map((activity) => ({
+        //             label: activity.activity,
+        //             ids: (activity as any).ids,
+        //         })),
+        //     });
+        // }
+        const tagsArray = spaceTagsData?.data || [];
+        if (Array.isArray(tagsArray) && tagsArray.length > 0) {
             sections.push({
                 title: 'Choose',
                 titleHighlighted: 'Activities',
                 key: 'activities',
-                options: activitiesData.data.activities.map((activity) => ({
-                    label: activity.activity,
-                    ids: (activity as any).ids,
+                options: tagsArray.map((tag: any) => ({
+                    label: tag.name,
+                    ids: [tag.id],
                 })),
             });
         }
@@ -145,17 +165,30 @@ export const useSpaceList = (initialSpaceData?: any) => {
             });
         }
         setFilterSections(sections);
-    }, [spaceTypesData, activitiesData, amenitiesData]);
+    }, [spaceTypesData, activitiesData, amenitiesData, spaceTagsData]);
 
     useEffect(() => {
-        const resolvedActivityIds = selectedActivities.flatMap((active) => {
-            if (active.ids && active.ids.length > 0) return active.ids;
+        // Deprecated: resolve against activitiesData (host activities)
+        // const resolvedActivityIds = selectedActivities.flatMap((active) => {
+        //     if (active.ids && active.ids.length > 0) return active.ids;
+        //     const matchedActivity = activitiesData?.data?.activities?.find(
+        //         (a) => a.activity && active.name && a.activity.toLowerCase() === active.name.toLowerCase(),
+        //     );
+        //     if (matchedActivity) {
+        //         return (matchedActivity as any).ids || [matchedActivity.id];
+        //     }
+        //     return [];
+        // });
 
-            const matchedActivity = activitiesData?.data?.activities?.find(
-                (a) => a.activity && active.name && a.activity.toLowerCase() === active.name.toLowerCase(),
+        // Resolve tag IDs from Admin Space Tags
+        const tagsArray = spaceTagsData?.data || [];
+        const resolvedTagIds = selectedActivities.flatMap((active) => {
+            if (active.ids && active.ids.length > 0) return active.ids;
+            const matchedTag = tagsArray.find(
+                (t: any) => t.name && active.name && t.name.toLowerCase() === active.name.toLowerCase(),
             );
-            if (matchedActivity) {
-                return (matchedActivity as any).ids || [matchedActivity.id];
+            if (matchedTag) {
+                return [matchedTag.id];
             }
             return [];
         });
@@ -163,7 +196,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
         setAppliedFilters((prev) => ({
             ...prev,
             categoryIds: selectedCategories.map((c) => Number(c.item.id)) || [],
-            activityIds: resolvedActivityIds.length > 0 ? resolvedActivityIds : prev.activityIds,
+            activityIds: selectedActivities.length === 0 ? [] : (resolvedTagIds.length > 0 ? resolvedTagIds : prev.activityIds),
             cityId: selectedPlace?.id,
             date: selectedDateFromStore ? new Date(selectedDateFromStore) : undefined,
         }));
@@ -172,13 +205,13 @@ export const useSpaceList = (initialSpaceData?: any) => {
         selectedActivities,
         selectedPlace,
         selectedDateFromStore,
-        activitiesData,
+        spaceTagsData,
     ]);
 
     // Read URL -> Redux on load
     useEffect(() => {
         if (initializedFromUrl) return;
-        if (categoriesLoading || activitiesLoading) return;
+        if (categoriesLoading || spaceTagsLoading) return;
 
         // Slug aliases: when these are detected in the URL, silently rewrite to the canonical slug
         const SPACE_SLUG_ALIASES: Record<string, string> = {
@@ -211,27 +244,44 @@ export const useSpaceList = (initialSpaceData?: any) => {
             const locationParam = searchParams.get('location');
             const dateParam = searchParams.get('date');
 
-            if (activityParam && activitiesData?.data?.activities) {
+            // Deprecated: resolve URL activity param against host activitiesData
+            // if (activityParam && activitiesData?.data?.activities) {
+            //     const activitySlugs = activityParam.split(',');
+            //     const matchedActivities = activitiesData.data.activities
+            //         .filter((a: any) => a.activity && activitySlugs.includes(toSlug(a.activity)))
+            //         .map((a: any) => ({ name: a.activity, ids: a.ids }));
+            //     if (matchedActivities.length > 0) {
+            //         dispatch(setSelectedActivities(matchedActivities));
+            //     }
+            //     const drawerActivityIds = activitiesData.data.activities
+            //         .filter((a: any) => a.activity && activitySlugs.includes(toSlug(a.activity)))
+            //         .flatMap((a: any) => a.ids || [a.id]);
+            //     setAppliedFilters(prev => ({
+            //         ...prev,
+            //         activityIds: Array.from(new Set([...prev.activityIds, ...drawerActivityIds])),
+            //     }));
+            // }
+
+            // Resolve URL activity param against Admin Space Tags
+            const urlTagsArray = spaceTagsData?.data || [];
+            if (activityParam && urlTagsArray.length > 0) {
                 const activitySlugs = activityParam.split(',');
 
-                const matchedActivities = activitiesData.data.activities
-                    .filter((a: any) => a.activity && activitySlugs.includes(toSlug(a.activity)))
-                    .map((a: any) => ({
-                        name: a.activity,
-                        ids: a.ids
-                    }));
+                const matchedTags = urlTagsArray
+                    .filter((t: any) => t.name && activitySlugs.includes(toSlug(t.name)))
+                    .map((t: any) => ({ name: t.name, ids: [t.id] }));
 
-                if (matchedActivities.length > 0) {
-                    dispatch(setSelectedActivities(matchedActivities));
+                if (matchedTags.length > 0) {
+                    dispatch(setSelectedActivities(matchedTags));
                 }
 
-                const drawerActivityIds = activitiesData.data.activities
-                    .filter((a: any) => a.activity && activitySlugs.includes(toSlug(a.activity)))
-                    .flatMap((a: any) => a.ids || [a.id]);
+                const drawerTagIds = urlTagsArray
+                    .filter((t: any) => t.name && activitySlugs.includes(toSlug(t.name)))
+                    .map((t: any) => t.id);
 
                 setAppliedFilters(prev => ({
                     ...prev,
-                    activityIds: Array.from(new Set([...prev.activityIds, ...drawerActivityIds])),
+                    activityIds: Array.from(new Set([...prev.activityIds, ...drawerTagIds])),
                 }));
             }
 
@@ -318,7 +368,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
         };
 
         syncFromUrl();
-    }, [categoriesData, activitiesData, categoriesLoading, activitiesLoading, searchParams, dispatch, initializedFromUrl]);
+    }, [categoriesData, spaceTagsData, categoriesLoading, spaceTagsLoading, searchParams, dispatch, initializedFromUrl]);
 
     // Sync State -> URL on changes
     useEffect(() => {
@@ -345,10 +395,19 @@ export const useSpaceList = (initialSpaceData?: any) => {
 
         const activityNames = selectedActivities.map((a: any) => a.name).filter(Boolean);
         const drawerActivityNames: string[] = [];
-        if (activitiesData?.data?.activities) {
+        // Deprecated: resolve names from host activitiesData
+        // if (activitiesData?.data?.activities) {
+        //     appliedFilters.activityIds.forEach(id => {
+        //         const act = activitiesData.data.activities.find((a: any) => (a as any).ids?.includes(id) || a.id === id);
+        //         if (act) drawerActivityNames.push(act.activity);
+        //     });
+        // }
+        // Resolve names from Admin Space Tags
+        const urlSyncTagsArray = spaceTagsData?.data || [];
+        if (urlSyncTagsArray.length > 0) {
             appliedFilters.activityIds.forEach(id => {
-                const act = activitiesData.data.activities.find((a: any) => (a as any).ids?.includes(id) || a.id === id);
-                if (act) drawerActivityNames.push(act.activity);
+                const tag = urlSyncTagsArray.find((t: any) => t.id === id);
+                if (tag) drawerActivityNames.push(tag.name);
             });
         }
         const activitiesStr = Array.from(new Set([...activityNames, ...drawerActivityNames])).map(toSlug).join(',');
@@ -431,12 +490,11 @@ export const useSpaceList = (initialSpaceData?: any) => {
                 endTime: endTime || prev.endTime,
             };
 
+            // Space and activity filters are independent — both can coexist
             if (isActivity) {
                 nextFilters.activityIds = selectedCategory.ids || [];
-                nextFilters.categoryIds = [];
             } else if (selectedCategory?.id) {
                 nextFilters.categoryIds = [Number(selectedCategory.id)];
-                nextFilters.activityIds = [];
             }
 
             return nextFilters;
@@ -444,6 +502,9 @@ export const useSpaceList = (initialSpaceData?: any) => {
     };
 
     const clearFilters = () => {
+        dispatch(setSelectedActivities([]));
+        dispatch(setSelectedCategories([]));
+        dispatch(setSearchVal(''));
         setAppliedFilters((prev) => ({
             ...prev,
             spaceTypeIds: [],
@@ -472,10 +533,19 @@ export const useSpaceList = (initialSpaceData?: any) => {
             });
         }
 
-        if (activitiesData?.data?.activities) {
+        // Deprecated: resolve activity names from host activitiesData
+        // if (activitiesData?.data?.activities) {
+        //     appliedFilters.activityIds.forEach(id => {
+        //         const act = activitiesData.data.activities.find((a: any) => (a as any).ids?.includes(id) || a.id === id);
+        //         if (act) selected.activities.push(act.activity);
+        //     });
+        // }
+        // Resolve activity names from Admin Space Tags
+        const drawerTagsArray = spaceTagsData?.data || [];
+        if (drawerTagsArray.length > 0) {
             appliedFilters.activityIds.forEach(id => {
-                const act = activitiesData.data.activities.find((a: any) => (a as any).ids?.includes(id) || a.id === id);
-                if (act) selected.activities.push(act.activity);
+                const tag = drawerTagsArray.find((t: any) => t.id === id);
+                if (tag) selected.activities.push(tag.name);
             });
         }
 
@@ -491,7 +561,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
         selected.amenities = Array.from(new Set(selected.amenities));
 
         return selected;
-    }, [appliedFilters.spaceTypeIds, appliedFilters.activityIds, appliedFilters.amenityIds, spaceTypesData, activitiesData, amenitiesData]);
+    }, [appliedFilters.spaceTypeIds, appliedFilters.activityIds, appliedFilters.amenityIds, spaceTypesData, spaceTagsData, amenitiesData]);
 
     return {
         appliedFilters,

@@ -386,6 +386,15 @@ export const useGetGuestSpaceCategories = (
     });
 };
 
+export const useGetGuestSpaceTags = (options?: UseQueryOptions<any>) => {
+    return useQuery<any>({
+        queryKey: ['guest-space-tags'],
+        queryFn: async () => await Get<any>(endpoints.GUEST_SPACE_TAGS),
+        staleTime: 10 * 60 * 1000, // 10 minutes
+        ...options,
+    });
+};
+
 export const useAfterAuthGetSpaceGuestList = (params?: any, options?: { enabled?: boolean; initialData?: any }) => {
     return useQuery<{ data: { count: number; records: Array<Space> } }>({
         queryKey: ['get-auth-space-guest-list', params],
