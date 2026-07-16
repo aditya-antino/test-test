@@ -18,6 +18,7 @@ import LogoSection from './header-components/LogoSection';
 import DesktopGuestSection from './header-components/DesktopGuestSection';
 import DesktopAuthSection from './header-components/DesktopAuthSection';
 import MobileNavigation from './header-components/MobileNavigation';
+import Breadcrumbs from './Breadcrumbs';
 
 // Exporting these just in case any other files were directly importing them from header.tsx
 export { HOST_ACCOUNT_OPTIONS, GUEST_ACCOUNT_OPTIONS } from './header-components/headerConstants';
@@ -227,6 +228,8 @@ export function Header({ userName = '-' }: HeaderProps) {
                     showMessageBadge={showMessageBadge}
                 />
             </header>
+
+            <Breadcrumbs />
 
             <ConfirmHostModal
                 onConfirm={updateGuestRole}
