@@ -11,8 +11,7 @@ import { Space } from '@/services';
 
 interface ExploreSpacesSectionProps {
     city: string;
-    mostBooked: Space[];
-    recentlyAdded: Space[];
+    spacesByCity: Record<string, Space[]>;
     isLoading: boolean;
     isAuth: boolean;
     onSpaceClick: (slug: string) => void;
@@ -20,8 +19,7 @@ interface ExploreSpacesSectionProps {
 
 export default function ExploreSpacesSection({
     city,
-    mostBooked,
-    recentlyAdded,
+    spacesByCity,
     isLoading,
     isAuth,
     onSpaceClick,
@@ -69,6 +67,10 @@ export default function ExploreSpacesSection({
         );
     };
 
+    const hasAnySpaces = Object.values(spacesByCity || {}).some(
+        (list) => Array.isArray(list) && list.length > 0
+    );
+
     return (
         <section className="bg-gray-50/50 py-12 px-4 md:px-16">
             <div className="max-w-7xl mx-auto">
@@ -85,26 +87,27 @@ export default function ExploreSpacesSection({
                     <div className="space-y-12">
                         <div>
                             <Typography size="lg" weight="semibold" className="mb-4 pl-2">
-                                Most Booked
-                            </Typography>
-                            <SkeletonCardGrid count={4} gridClassName="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" />
-                        </div>
-                        <div>
-                            <Typography size="lg" weight="semibold" className="mb-4 pl-2">
-                                Recently Added
+                                Loading spaces...
                             </Typography>
                             <SkeletonCardGrid count={4} gridClassName="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" />
                         </div>
                     </div>
-                ) : mostBooked.length === 0 && recentlyAdded.length === 0 ? (
+                ) : !hasAnySpaces ? (
                     <EmptyState
                         title="No spaces found"
                         description={`We couldn't find any spaces in ${formattedCity} matching this category right now.`}
                     />
                 ) : (
-                    <div className="space-y-6">
-                        {renderCarousel(mostBooked, 'Most Booked')}
-                        {renderCarousel(recentlyAdded, 'Recently Added')}
+                    <div className="space-y-10">
+                        {Object.entries(spacesByCity).map(([cityKey, list]) => {
+                            if (!list || list.length === 0) return null;
+                            const cityLabel = capitalize(cityKey);
+                            return (
+                                <div key={cityKey}>
+                                    {renderCarousel(list, `Spaces in ${cityLabel}`)}
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>

@@ -278,12 +278,12 @@ export default function Breadcrumbs() {
 
     return (
         <div className="w-full px-4 md:px-20 py-2 font-figtree select-none">
-            <nav className="flex flex-wrap items-center space-x-1.5 text-xs text-[#A8A8A8] font-medium">
+            <nav className="flex flex-wrap items-center space-x-1.5 text-base text-[#A8A8A8] font-medium">
                 {breadcrumbs.map((item, index) => {
                     const isLast = index === breadcrumbs.length - 1;
                     return (
                         <React.Fragment key={index}>
-                            {index > 0 && <ChevronRight className="h-3 w-3 text-[#A8A8A8]/60 shrink-0" />}
+                            {index > 0 && <ChevronRight className="h-4 w-4 text-[#A8A8A8]/60 shrink-0" />}
                             {isLast ? (
                                 <span className="text-gray-800 font-semibold truncate">{item.label}</span>
                             ) : (

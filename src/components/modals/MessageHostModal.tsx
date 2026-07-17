@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { X, SquarePen, Plus, Minus, ChevronDown } from 'lucide-react';
+import { X, SquarePen, Plus, Minus, ChevronDown, Clock, Lightbulb } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
@@ -1157,7 +1157,7 @@ const MessageHostModal: React.FC<MessageHostModalProps> = ({
     // Gross Booking Amount
     const grossAmount = originalBasePrice * Math.max(hours, 1);
 
-    // Duration Discount Amount (Host Discount)
+    // Discount Amount (matches booking-review)
     const extraDiscountAmount = grossAmount * (totalHostDiscountPerc / 100);
 
     // Discounted Base
@@ -1167,33 +1167,32 @@ const MessageHostModal: React.FC<MessageHostModalProps> = ({
     const cgstPercentage = parseFloat(bookingSettings?.cgst || '9') / 100;
     const sgstPercentage = parseFloat(bookingSettings?.sgst || '9') / 100;
 
-    const guestPlatformFee = Math.round(discountedBase * guestPlatformFeePercentage);
+    // Precise calculation — no intermediate rounding (matches booking-review)
+    const guestPlatformFee = discountedBase * guestPlatformFeePercentage;
     const subtotal = discountedBase + guestPlatformFee;
-    const cgstAmount = Math.round(subtotal * cgstPercentage * 100) / 100;
-    const sgstAmount = Math.round(subtotal * sgstPercentage * 100) / 100;
+    const cgstAmount = subtotal * cgstPercentage;
+    const sgstAmount = subtotal * sgstPercentage;
     const totalAmount = Math.round((subtotal + cgstAmount + sgstAmount) * 100) / 100;
+    const taxesTotal = Math.round((cgstAmount + sgstAmount) * 100) / 100;
 
-    // Price breakdown data using real calculations
+    // Price breakdown — labels aligned with booking-review page
     const priceItems: PriceBreakdownItem[] = [
         { label: `₹${originalBasePrice} x ${hours} Hours`, amount: `₹${grossAmount}` },
     ];
 
     if (totalHostDiscountPerc > 0 && extraDiscountAmount > 0) {
         priceItems.push({
-            label: `Host Discount (${totalHostDiscountPerc}%)`,
+            label: `Hourly discount (${totalHostDiscountPerc}%)`,
             amount: `-₹${Math.round(extraDiscountAmount)}`,
         });
     }
 
     priceItems.push(
-        { label: 'Guest Platform Fee', amount: `₹${guestPlatformFee}` },
+        { label: 'Platform fee', amount: `₹${(Math.round(guestPlatformFee * 100) / 100).toFixed(2)}` },
+        { label: 'Subtotal', amount: `₹${(Math.round(subtotal * 100) / 100).toFixed(2)}` },
         {
-            label: `CGST (${parseFloat(bookingSettings?.cgst || '9')}%)`,
-            amount: `₹${cgstAmount.toFixed(2)}`,
-        },
-        {
-            label: `SGST (${parseFloat(bookingSettings?.sgst || '9')}%)`,
-            amount: `₹${sgstAmount.toFixed(2)}`,
+            label: `IGST (${parseFloat(bookingSettings?.cgst || '9') + parseFloat(bookingSettings?.sgst || '9')}%)`,
+            amount: `₹${taxesTotal.toFixed(2)}`,
         },
     );
 
@@ -1486,6 +1485,66 @@ const MessageHostModal: React.FC<MessageHostModalProps> = ({
                 <div className="p-6 space-y-6">
                     {/* Booking Header */}
                     <BookingHeader spaceData={spaceData} />
+
+                    {/* Hourly Discount Tiers Card */}
+                    {(() => {
+                        const edp = (spaceData?.SpaceListing as any)?.extra_discount_per;
+                        const hasAnyTier =
+                            typeof edp === 'object' &&
+                            edp !== null &&
+                            Object.values(edp).some((v) => parseFloat(String(v)) > 0);
+                        if (!hasAnyTier) return null;
+
+                        // Determine next tier prompt based on current hours
+                        let nextTier: { hours: number; discount: number } | null = null;
+                        if (hours < 4 && edp.four > 0) nextTier = { hours: 4, discount: edp.four };
+                        else if (hours < 6 && edp.six > 0) nextTier = { hours: 6, discount: edp.six };
+                        else if (hours < 8 && edp.eight > 0) nextTier = { hours: 8, discount: edp.eight };
+                        else if (hours < 12 && edp.twelve > 0) nextTier = { hours: 12, discount: edp.twelve };
+
+                        return (
+                            <div className="bg-[#f9fafe] border border-[#FEF08A] rounded-2xl p-4 space-y-3">
+                                <div className="flex items-center gap-2 text-zinc-800">
+                                    <Clock className="w-4 h-4 text-[#FACC15]" />
+                                    <span className="text-sm font-semibold">Save on longer bookings</span>
+                                </div>
+                                <ul className="space-y-1.5 ml-1">
+                                    {[
+                                        { hours: 4, key: 'four' },
+                                        { hours: 6, key: 'six' },
+                                        { hours: 8, key: 'eight' },
+                                        { hours: 12, key: 'twelve' },
+                                    ].map((tier) => {
+                                        const discountVal = parseFloat(
+                                            String(edp[tier.key as keyof typeof edp] || '0'),
+                                        );
+                                        if (discountVal <= 0) return null;
+                                        return (
+                                            <li
+                                                key={tier.key}
+                                                className="flex items-center gap-2 text-zinc-700"
+                                            >
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#FACC15]" />
+                                                <span className="text-[13px] font-medium">
+                                                    {discountVal}% off for {tier.hours}+ hours
+                                                </span>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                                {nextTier && (
+                                    <div className="pt-2 border-t border-[#FEF08A]">
+                                        <div className="flex items-center gap-2 text-[#854D0E] bg-[#FEF9C3]/50 p-2 rounded-lg border border-[#FEF08A]/50">
+                                            <Lightbulb className="w-3.5 h-3.5" />
+                                            <span className="text-[12px] font-semibold">
+                                                Book {nextTier.hours}+ hours to save {nextTier.discount}% extra
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })()}
 
                     {/* Booking Details */}
                     <div className="space-y-4">

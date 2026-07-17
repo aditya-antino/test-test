@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getPlacesData } from '@/services/guest/categories.services';
 import { handleApiError } from '@/hooks/handleApiError';
@@ -40,6 +40,21 @@ export default function HeroPlacesDropdown({
     const [places, setPlaces] = useState<Item[]>([]);
     const [loading, setLoading] = useState(false);
 
+    const isEditingSearch = useMemo(() => {
+        if (!searchVal.trim()) return false;
+        const val = searchVal.trim().toLowerCase();
+        if (selectedPlace && val === selectedPlace.name.toLowerCase()) return false;
+        return true;
+    }, [searchVal, selectedPlace]);
+
+    const filteredPlaces = useMemo(() => {
+        if (!isEditingSearch) return places;
+        const query = searchVal.trim().toLowerCase();
+        return places.filter((item) =>
+            item.name.toLowerCase().includes(query)
+        );
+    }, [places, searchVal, isEditingSearch]);
+
     useEffect(() => {
         fetchPlacesData();
     }, []);
@@ -75,9 +90,17 @@ export default function HeroPlacesDropdown({
 
     function RenderOptions() {
         return (
-            <div className="p-2">
-                {places.map((item) => {
+            <div className="p-2 pt-0">
+                {isEditingSearch && (
+                    <p className="text-sm text-slate-400 pb-2 pt-1">
+                        Showing all matches for "{searchVal}"
+                    </p>
+                )}
+                {filteredPlaces.map((item) => {
                     const isSelected = selectedPlace?.id === item.id;
+                    const isMatch =
+                        searchVal.trim() &&
+                        item.name.toLowerCase().includes(searchVal.toLowerCase());
 
                     return (
                         <div
@@ -91,13 +114,22 @@ export default function HeroPlacesDropdown({
                             <span
                                 className={cn(
                                     "text-sm transition-colors",
-                                    isSelected ? "font-bold text-gray-900" : "text-gray-700 group-hover:text-gray-900"
+                                    isSelected
+                                        ? "font-bold text-gray-900"
+                                        : isMatch
+                                            ? "text-[#F6CD28] font-medium"
+                                            : "text-gray-700 group-hover:text-gray-900"
                                 )}
                             >
                                 {item.name}
                             </span>
                             {isSelected && (
                                 <div className="w-2 h-2 rounded-full bg-[#F6CD28]" />
+                            )}
+                            {isMatch && !isSelected && (
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-[#F6CD28]">
+                                    Match
+                                </span>
                             )}
                         </div>
                     );
@@ -115,10 +147,10 @@ export default function HeroPlacesDropdown({
                 className="w-full sm:w-80 bg-white border shadow-lg rounded-2xl overflow-hidden relative z-50"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="p-4 max-h-72 overflow-y-auto">
+                <div className="pt-2 px-4 pb-4 max-h-72 overflow-y-auto">
                     {loading ? (
                         <ShimmerList />
-                    ) : places.length > 0 ? (
+                    ) : filteredPlaces.length > 0 ? (
                         <RenderOptions />
                     ) : (
                         <p className="text-sm text-gray-500 px-3">No places found</p>

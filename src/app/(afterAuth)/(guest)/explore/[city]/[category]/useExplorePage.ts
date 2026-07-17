@@ -13,6 +13,7 @@ export const useExplorePage = (initialSpaceData?: any) => {
     const { isAuth } = useSelector((state: RootState) => state.auth);
 
     const spacesData = initialSpaceData;
+    console.log("Hi ",spacesData)
     const spacesLoading = false;
 
     // Map backend keys to what BookingCard expects
@@ -37,23 +38,25 @@ export const useExplorePage = (initialSpaceData?: any) => {
 
     // Use raw backend data directly without mappers, as BookingCard supports fallbacks internally
     const spaces = useMemo(() => {
-        const list = Array.isArray(spacesData)
-            ? spacesData
-            : [
-                  ...(spacesData?.data?.mostBookedSpaces || spacesData?.mostBookedSpaces || []),
-                  ...(spacesData?.data?.recentlyAddedSpaces || spacesData?.recentlyAddedSpaces || []),
-              ];
-        return list.map(mapSpaceToBookingCardFormat);
+        if (Array.isArray(spacesData)) {
+            return spacesData.map(mapSpaceToBookingCardFormat);
+        }
+        if (spacesData && typeof spacesData === 'object') {
+            const list = Object.values(spacesData).flat();
+            return list.map(mapSpaceToBookingCardFormat);
+        }
+        return [];
     }, [spacesData]);
 
-    const mostBooked = useMemo(() => {
-        const list = spacesData?.data?.mostBookedSpaces || spacesData?.mostBookedSpaces || [];
-        return list.map(mapSpaceToBookingCardFormat);
-    }, [spacesData]);
-
-    const recentlyAdded = useMemo(() => {
-        const list = spacesData?.data?.recentlyAddedSpaces || spacesData?.recentlyAddedSpaces || [];
-        return list.map(mapSpaceToBookingCardFormat);
+    const spacesByCity = useMemo(() => {
+        if (!spacesData || typeof spacesData !== 'object') return {};
+        const result: Record<string, any[]> = {};
+        for (const [cityKey, list] of Object.entries(spacesData)) {
+            if (Array.isArray(list)) {
+                result[cityKey] = list.map(mapSpaceToBookingCardFormat);
+            }
+        }
+        return result;
     }, [spacesData]);
 
     const handleSpaceClick = (slug: string) => {
@@ -115,8 +118,7 @@ export const useExplorePage = (initialSpaceData?: any) => {
 
     return {
         spaces,
-        mostBooked,
-        recentlyAdded,
+        spacesByCity,
         isLoading: spacesLoading,
         isAuth,
         handleSpaceClick,

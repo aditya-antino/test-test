@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
         rules: [
             {
                 userAgent: '*',
-                disallow: ['/*?activity', '/*?location', '/*?date'],
+                disallow: ['/*?activity', '/*?location', '/*?date', '/guest/host-profile'],
             },
         ],
         sitemap: `${baseUrl}/sitemap.xml`,

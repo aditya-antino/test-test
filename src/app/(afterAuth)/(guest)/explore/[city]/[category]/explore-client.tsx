@@ -96,8 +96,7 @@ export default function ExploreClient({
     categorySlug,
 }: ExploreClientProps) {
     const {
-        mostBooked,
-        recentlyAdded,
+        spacesByCity,
         isLoading,
         isAuth,
         handleSpaceClick,
@@ -164,8 +163,7 @@ export default function ExploreClient({
 
             <ExploreSpacesSection
                 city={formattedCity}
-                mostBooked={mostBooked}
-                recentlyAdded={recentlyAdded}
+                spacesByCity={spacesByCity}
                 isLoading={isLoading}
                 isAuth={isAuth}
                 onSpaceClick={handleSpaceClick}

@@ -147,8 +147,11 @@ export default function HeroSpacesDropdown({
 
     const filteredData = useMemo(() => {
         const data = getData();
-        // Always show all items for both tabs, just highlight matches
-        return data;
+        if (!isEditingSearch) return data;
+        const query = searchVal.trim().toLowerCase();
+        return data.filter((item) =>
+            item.name.toLowerCase().includes(query)
+        );
     }, [activeTab, spaces, spaceTagsResponse, searchVal, isEditingSearch]);
 
     function RenderOptions() {
@@ -162,12 +165,19 @@ export default function HeroSpacesDropdown({
         }
 
         return (
-            <div className="p-2">
+            <div className="p-2 pt-0">
+                {isEditingSearch && (
+                    <p className="text-sm text-slate-400 pb-2 pt-1">
+                        Showing all matches for "{searchVal}"
+                    </p>
+                )}
                 {data.map((item) => {
                     const isSelected = activeTab === 'spaces'
                         ? selectedCategory?.item?.id === item.id
                         : selectedActivity?.name === item.name;
-
+                    const isMatch =
+                        searchVal.trim() &&
+                        item.name.toLowerCase().includes(searchVal.toLowerCase());
                     return (
                         <div
                             key={item.id}
@@ -180,13 +190,22 @@ export default function HeroSpacesDropdown({
                             <span
                                 className={cn(
                                     "text-sm transition-colors",
-                                    isSelected ? "font-bold text-gray-900" : "text-gray-700 group-hover:text-gray-900"
+                                    isSelected
+                                        ? "font-bold text-gray-900"
+                                        : isMatch
+                                            ? "text-[#F6CD28] font-medium"
+                                            : "text-gray-700 group-hover:text-gray-900"
                                 )}
                             >
                                 {item.name}
                             </span>
                             {isSelected && (
                                 <div className="w-2 h-2 rounded-full bg-[#F6CD28]" />
+                            )}
+                            {isMatch && !isSelected && (
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-[#F6CD28]">
+                                    Match
+                                </span>
                             )}
                         </div>
                     );
@@ -207,11 +226,11 @@ export default function HeroSpacesDropdown({
                 activeTab={activeTab}
                 onTabChange={handleTabChange}
                 variant="underline"
-                className="mb-3 sticky top-0 bg-white z-10"
+                className="mb-2 sticky top-0 bg-white z-10"
             />
             {activeLoading ? (
                 <ShimmerList />
-            ) : activeData.length > 0 ? (
+            ) : filteredData.length > 0 ? (
                 <RenderOptions />
             ) : (
                 <p className="text-sm text-gray-500 p-3">
