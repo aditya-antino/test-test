@@ -7,24 +7,14 @@ import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { handleApiError } from '@/hooks/handleApiError';
-import { sendMessageToHost } from '@/services/chatApi';
 import { useGetGuestBookingCalendar, useGetGuestTimeSlots } from '@/services';
 import Instant from '../icons/Instant';
-import { PATHS } from '@/constants/path';
 import { checkRestrictedContent } from '@/utils/validators';
-import login from '@/assets/Login.png';
+import { formatCurrency } from '@/lib/utils';
 
 // Types
 interface PriceBreakdownItem {
@@ -73,7 +63,15 @@ const PHONE_NUMBER_REGEX =
     /(\+?\d{1,4}[\s.-]?)?(\(?\d{3,4}\)?[\s.-]?)?\d{3,4}[\s.-]?\d{4,6}|(\d[\s.-]?){10,15}/g;
 
 // Header Component with Instant Booking and Price/Rating
-const BookingHeader = ({ spaceData }: { spaceData?: any }) => {
+const BookingHeader = ({
+    spaceData,
+    bookingSettings,
+    hours = 1,
+}: {
+    spaceData?: any;
+    bookingSettings?: any;
+    hours?: number;
+}) => {
     const basePrice = parseFloat(spaceData?.SpaceListing?.price_per_hour) || 500;
     let calculatedDiscountAmount = parseFloat(
         String((spaceData?.SpaceListing as any)?.discountAmount || '0'),
@@ -83,11 +81,36 @@ const BookingHeader = ({ spaceData }: { spaceData?: any }) => {
         calculatedDiscountAmount = calculatedDiscountAmount + 10;
     }
 
-    const hasDiscount = calculatedDiscountAmount > 0;
-    const discountPercentage = calculatedDiscountAmount / 100; // Convert percentage to decimal
-    const discountedPrice = hasDiscount
-        ? Math.round(basePrice * (1 - discountPercentage))
-        : basePrice;
+    const extra_discount_per = (spaceData?.SpaceListing as any)?.extra_discount_per;
+    let appliedExtraDiscount = 0;
+
+    if (typeof extra_discount_per === 'object' && extra_discount_per !== null) {
+        const t12 = parseFloat(String(extra_discount_per.twelve || '0'));
+        const t8 = parseFloat(String(extra_discount_per.eight || '0'));
+        const t6 = parseFloat(String(extra_discount_per.six || '0'));
+        const t4 = parseFloat(String(extra_discount_per.four || '0'));
+
+        if (hours >= 12 && t12 > 0) appliedExtraDiscount = t12;
+        else if (hours >= 8 && t8 > 0) appliedExtraDiscount = t8;
+        else if (hours >= 6 && t6 > 0) appliedExtraDiscount = t6;
+        else if (hours >= 4 && t4 > 0) appliedExtraDiscount = t4;
+    } else if (extra_discount_per) {
+        if (hours >= 6) {
+            appliedExtraDiscount = parseFloat(String(extra_discount_per || '0'));
+        }
+    }
+
+    const totalHostDiscount = calculatedDiscountAmount + appliedExtraDiscount;
+    const hasDiscount = totalHostDiscount > 0;
+
+    // GST and Platform Fee Calculation
+    const platformFeePercentage = parseFloat(bookingSettings?.guest_platform_fee || '5') / 100;
+    const cgstPercentage = parseFloat(bookingSettings?.cgst || '9') / 100;
+    const sgstPercentage = parseFloat(bookingSettings?.sgst || '9') / 100;
+    const taxMultiplier = (1 + platformFeePercentage) * (1 + cgstPercentage + sgstPercentage);
+
+    const grossBasePrice = basePrice * taxMultiplier;
+    const grossDiscountedPrice = basePrice * (1 - totalHostDiscount / 100) * taxMultiplier;
 
     return (
         <div className="flex flex-col gap-4">
@@ -105,36 +128,50 @@ const BookingHeader = ({ spaceData }: { spaceData?: any }) => {
                 </div>
             )}
             {/* Price and Rating */}
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    {/* Current/Discounted Price */}
-                    <span className="text-gray-800 font-bold text-lg font-poppins">
-                        ₹{discountedPrice}
-                    </span>
-                    <span className="text-gray-500 font-medium text-base font-poppins">/hour</span>
+            <div>
+                <div className="flex justify-between items-start">
+                    <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-2">
+                            {/* Current/Discounted Price */}
+                            <span className="text-gray-800 font-bold text-lg font-poppins">
+                                ₹
+                                {formatCurrency(
+                                    hasDiscount ? grossDiscountedPrice : grossBasePrice,
+                                )}
+                            </span>
+                            <span className="text-gray-500 font-medium text-base font-poppins">
+                                /hour
+                            </span>
 
-                    {/* Original Price with Strikethrough (if discount exists) */}
-                    {hasDiscount && (
-                        <span className="text-red-500 text-base font-poppins">
-                            <span className="line-through">₹{basePrice}</span>
-                            <span className="ml-1">/hour</span>
+                            {/* Original Price with Strikethrough (if discount exists) */}
+                            {hasDiscount && (
+                                <span className="text-red-500 text-base font-poppins">
+                                    <span className="line-through">
+                                        ₹{formatCurrency(grossBasePrice)}
+                                    </span>
+                                    <span className="ml-1">/hour</span>
+                                </span>
+                            )}
+                        </div>
+                        <span className="text-gray-500 font-medium text-[11px] font-poppins">
+                            incl. of all taxes
                         </span>
-                    )}
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-5 h-5">
-                        <Image
-                            src="/icons/star-icon.svg"
-                            alt="Star rating"
-                            width={20}
-                            height={20}
-                            className="text-[#F6CD28]"
-                        />
                     </div>
-                    <span className="text-gray-500 font-normal text-sm font-poppins">
-                        {parseFloat(spaceData?.avg_rating ?? '0').toFixed(1)} (
-                        {spaceData?.reviewCount ?? 0} reviews)
-                    </span>
+                    <div className="flex items-center gap-1">
+                        <div className="w-5 h-5">
+                            <Image
+                                src="/icons/star-icon.svg"
+                                alt="Star rating"
+                                width={20}
+                                height={20}
+                                className="text-[#F6CD28]"
+                            />
+                        </div>
+                        <span className="text-gray-500 font-normal text-sm font-poppins">
+                            {parseFloat(spaceData?.avg_rating ?? '0').toFixed(1)} (
+                            {spaceData?.reviewCount ?? 0} reviews)
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1484,7 +1521,11 @@ const MessageHostModal: React.FC<MessageHostModalProps> = ({
 
                 <div className="p-6 space-y-6">
                     {/* Booking Header */}
-                    <BookingHeader spaceData={spaceData} />
+                    <BookingHeader
+                        spaceData={spaceData}
+                        bookingSettings={bookingSettings}
+                        hours={hours}
+                    />
 
                     {/* Hourly Discount Tiers Card */}
                     {(() => {

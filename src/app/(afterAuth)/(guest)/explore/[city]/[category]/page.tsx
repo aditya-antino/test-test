@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
 import ExploreClient from './explore-client';
 import { ServerGet } from '@/services/serverApi';
 import { endpoints } from '@/services/endPoints';
@@ -7,6 +8,32 @@ import { CATEGORY_BANNERS } from '@/constants/categoryBanners';
 import { formatCityName } from '@/utils';
 
 export const dynamic = 'force-dynamic';
+
+const VALID_CITIES = new Set(['delhi-ncr', 'delhi']);
+
+const VALID_CATEGORIES = new Set([
+    'baithaks',
+    'baithak',
+    'creative-spaces',
+    'creative-space',
+    'event-spaces',
+    'exhibitions',
+    'exhibition-spaces',
+    'residential-spaces',
+    'photography-studios',
+    'podcast',
+    'podcast-studios',
+    'wellness',
+    'fitness-wellness',
+    'wellness-workshop',
+    'fitness-wellness-spaces',
+    'workshops',
+    'workshop',
+    'event-venues',
+    'event-venue',
+    'cyclorama',
+    'cyclorama-studios',
+]);
 
 const toSlug = (text: string) =>
     text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -35,7 +62,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const resolvedParams = await params;
     const { city, category } = resolvedParams;
+    const normalizedCity = (city || '').toLowerCase();
     const normalizedCategory = (category || '').toLowerCase();
+
+    if (!VALID_CITIES.has(normalizedCity) || !VALID_CATEGORIES.has(normalizedCategory)) {
+        notFound();
+    }
 
     const formattedCity = formatCityName(city);
     const formattedCategory = formatTitle(category);
@@ -148,6 +180,13 @@ async function getSpaceList(city: string, category: string) {
 export default async function ExplorePage({ params }: Props) {
     const resolvedParams = await params;
     const { city, category } = resolvedParams;
+    const normalizedCity = (city || '').toLowerCase();
+    const normalizedCategory = (category || '').toLowerCase();
+
+    if (!VALID_CITIES.has(normalizedCity) || !VALID_CATEGORIES.has(normalizedCategory)) {
+        notFound();
+    }
+
     const initialSpaceData = await getSpaceList(city, category);
 
     return (

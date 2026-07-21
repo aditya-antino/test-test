@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/common';
 import Typography from '@/components/ui/typoGraphy';
 import { capitalize } from '@/utils';
 import { Space } from '@/services';
+import { ChevronRight } from 'lucide-react';
 
 interface ExploreSpacesSectionProps {
     city: string;
@@ -15,6 +16,7 @@ interface ExploreSpacesSectionProps {
     isLoading: boolean;
     isAuth: boolean;
     onSpaceClick: (slug: string) => void;
+    onCityHeaderClick?: (cityKey: string) => void;
 }
 
 export default function ExploreSpacesSection({
@@ -23,19 +25,30 @@ export default function ExploreSpacesSection({
     isLoading,
     isAuth,
     onSpaceClick,
+    onCityHeaderClick,
 }: ExploreSpacesSectionProps) {
     const formattedCity = city;
 
-    const renderCarousel = (spaces: Space[], title: string) => {
+    const renderCarousel = (spaces: Space[], title: string, cityKey: string) => {
         if (spaces.length === 0) return null;
 
         const isSingle = spaces.length === 1;
 
         return (
             <div className="mt-8">
-                <Typography size="lg" weight="semibold" className="mb-4 pl-2">
-                    {title}
-                </Typography>
+                <div
+                    onClick={() => onCityHeaderClick?.(cityKey)}
+                    className="flex items-center gap-1.5 mb-4 pl-2 group w-fit cursor-pointer select-none"
+                >
+                    <Typography
+                        size="lg"
+                        weight="semibold"
+                        className="group-hover:text-[#D89D03] transition-colors"
+                    >
+                        {title}
+                    </Typography>
+                    <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-[#D89D03] group-hover:translate-x-1 transition-all" />
+                </div>
                 {isSingle ? (
                     <div className="flex justify-center md:justify-start w-full">
                         <div className="min-w-[280px] sm:min-w-[320px] max-w-[320px] p-2">
@@ -104,7 +117,7 @@ export default function ExploreSpacesSection({
                             const cityLabel = capitalize(cityKey);
                             return (
                                 <div key={cityKey}>
-                                    {renderCarousel(list, `Spaces in ${cityLabel}`)}
+                                    {renderCarousel(list, `Spaces in ${cityLabel}`, cityKey)}
                                 </div>
                             );
                         })}

@@ -60,6 +60,29 @@ export default function HeroSpacesDropdown({
     const { data: activitiesData, isLoading: activitiesLoading } = useGetActivities();
     const { data: spaceTagsResponse, isLoading: spaceTagsLoading } = useGetGuestSpaceTags();
 
+    const rawTags = useMemo(() => {
+        const raw = spaceTagsResponse?.data?.tags || spaceTagsResponse?.data || [];
+        return Array.isArray(raw) ? raw : [];
+    }, [spaceTagsResponse]);
+
+    const hasActivities = useMemo(() => {
+        return rawTags.length > 0;
+    }, [rawTags]);
+
+    const availableTabs = useMemo(() => {
+        const tabs = [{ label: 'Spaces', value: 'spaces' }];
+        if (hasActivities) {
+            tabs.push({ label: 'Activities', value: 'activities' });
+        }
+        return tabs;
+    }, [hasActivities]);
+
+    useEffect(() => {
+        if (!hasActivities && activeTab === 'activities') {
+            setActiveTab('spaces');
+        }
+    }, [hasActivities, activeTab]);
+
     useEffect(() => {
         fetchSpaces();
     }, []);
@@ -89,15 +112,12 @@ export default function HeroSpacesDropdown({
 
     function getData() {
         if (activeTab === 'spaces') return spaces;
-        if (activeTab === 'activities') {
-            const rawTags = spaceTagsResponse?.data?.tags || spaceTagsResponse?.data || [];
-            return (
-                rawTags.map((item: any) => ({
-                    id: String(item.id || item.ids?.[0]),
-                    name: item.name || item.tag || item.activity || 'Untitled',
-                    ids: item.ids || [item.id],
-                })) || []
-            );
+        if (activeTab === 'activities' && hasActivities) {
+            return rawTags.map((item: any) => ({
+                id: String(item.id || item.ids?.[0]),
+                name: item.name || item.tag || item.activity || 'Untitled',
+                ids: item.ids || [item.id],
+            }));
         }
         return [];
     }
@@ -152,7 +172,7 @@ export default function HeroSpacesDropdown({
         return data.filter((item) =>
             item.name.toLowerCase().includes(query)
         );
-    }, [activeTab, spaces, spaceTagsResponse, searchVal, isEditingSearch]);
+    }, [activeTab, spaces, rawTags, searchVal, isEditingSearch]);
 
     function RenderOptions() {
         const data = filteredData;
@@ -222,7 +242,7 @@ export default function HeroSpacesDropdown({
     return (
         <div className="max-h-96 overflow-y-auto">
             <Tabs
-                tabs={tabsData}
+                tabs={availableTabs}
                 activeTab={activeTab}
                 onTabChange={handleTabChange}
                 variant="underline"

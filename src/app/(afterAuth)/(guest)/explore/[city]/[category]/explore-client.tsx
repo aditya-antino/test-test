@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
+import { notFound } from 'next/navigation';
 import { useExplorePage } from './useExplorePage';
 import {
     CityHeroSection,
     ExploreSpacesSection,
     WhyBookSection,
-    CategoryGallery,
     FAQSection,
 } from '@/components/explorePage';
 import Footer from '@/components/layout/footer';
@@ -84,6 +84,9 @@ const CATEGORY_CTA_LABELS: Record<string, string> = {
     workshop: 'Find Workshop Spaces',
 };
 
+const VALID_CITIES = new Set(['delhi-ncr', 'delhi']);
+const VALID_CATEGORIES = new Set(Object.keys(BANNER_IMAGE_MAP));
+
 interface ExploreClientProps {
     initialSpaceData?: any;
     citySlug: string;
@@ -95,6 +98,13 @@ export default function ExploreClient({
     citySlug,
     categorySlug,
 }: ExploreClientProps) {
+    const normalizedCity = (citySlug || '').toLowerCase();
+    const normalizedCategory = (categorySlug || '').toLowerCase();
+
+    if (!VALID_CITIES.has(normalizedCity) || !VALID_CATEGORIES.has(normalizedCategory)) {
+        notFound();
+    }
+
     const {
         spacesByCity,
         isLoading,
@@ -103,10 +113,10 @@ export default function ExploreClient({
         handleSearch,
         handleGalleryItemClick,
         handleCtaClick,
+        handleCityHeaderClick,
     } = useExplorePage(initialSpaceData);
 
     // Get config for this category or fallback
-    const normalizedCategory = (categorySlug || '').toLowerCase();
     
     // Map alternative category slugs to their main config key in EXPLORE_PAGE_GALLERY
     const galleryConfigKeyMap: Record<string, string> = {
@@ -167,6 +177,7 @@ export default function ExploreClient({
                 isLoading={isLoading}
                 isAuth={isAuth}
                 onSpaceClick={handleSpaceClick}
+                onCityHeaderClick={(cityKey) => handleCityHeaderClick(cityKey, categorySlug)}
             />
 
             <WhyBookSection title={galleryConfig.whyBookTitle || `Why Book ${formattedCategory} Through Sparespace?`} />

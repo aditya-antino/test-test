@@ -137,13 +137,11 @@ export default function Breadcrumbs() {
             return [rootItem, { label: 'Space List', url: '/space-list' }];
         }
 
-        const exploreMatch = pathname.match(/^\/explore\/([^/]+)\/([^/]+)/);
+        const exploreMatch = pathname.match(/^\/explore\/(?:[^/]+\/)?([^/]+)/);
         if (exploreMatch) {
-            const city = exploreMatch[1];
-            const category = exploreMatch[2];
+            const category = exploreMatch[1];
             return [
                 rootItem,
-                { label: formatSlug(city), url: `/explore/${city}/${category}` },
                 { label: formatSlug(category), url: pathname },
             ];
         }

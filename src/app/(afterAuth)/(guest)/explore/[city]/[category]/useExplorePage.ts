@@ -13,7 +13,6 @@ export const useExplorePage = (initialSpaceData?: any) => {
     const { isAuth } = useSelector((state: RootState) => state.auth);
 
     const spacesData = initialSpaceData;
-    console.log("Hi ",spacesData)
     const spacesLoading = false;
 
     // Map backend keys to what BookingCard expects
@@ -116,6 +115,27 @@ export const useExplorePage = (initialSpaceData?: any) => {
         router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST || '/space-list'}?${params.toString()}`);
     };
 
+    const cityLocationSlugMap: Record<string, string> = {
+        noida: 'noida-uttar-pradesh',
+        delhi: 'new-delhi-delhi',
+        gurgaon: 'gurgaon-haryana',
+        gurugram: 'gurgaon-haryana',
+    };
+
+    const handleCityHeaderClick = (cityKey: string, categorySlug?: string) => {
+        const params = new URLSearchParams();
+        if (categorySlug) {
+            const mappedCategory = slugToCategoryMap[categorySlug] || categorySlug;
+            if (mappedCategory) params.append('space', mappedCategory);
+        }
+        if (cityKey) {
+            const cleanCity = cityKey.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+            const locationSlug = cityLocationSlugMap[cleanCity] || cleanCity;
+            params.append('location', locationSlug);
+        }
+        router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST || '/space-list'}?${params.toString()}`);
+    };
+
     return {
         spaces,
         spacesByCity,
@@ -125,5 +145,6 @@ export const useExplorePage = (initialSpaceData?: any) => {
         handleSearch,
         handleGalleryItemClick,
         handleCtaClick,
+        handleCityHeaderClick,
     };
 };

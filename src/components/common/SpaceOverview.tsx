@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { SpaceDetailsInterface } from '@/services';
-import { Star, User, Share, Building, Users, IndianRupee } from 'lucide-react';
+import { Star, User, Share, Building, Users, IndianRupee, Tag, ChevronRight, ChevronDown, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
@@ -87,6 +87,7 @@ export default function SpaceOverview({
     const [showBookingForm, setShowBookingForm] = useState(false);
     const { isGuestMode } = useGuestMode();
     const [showVerificationModal, setShowVerificationModal] = useState(false);
+    const [isDiscountExpanded, setIsDiscountExpanded] = useState(false);
 
     // Pricing logic consistent with bookingForm.tsx
     const basePrice = parseFloat(data?.SpaceListing?.price_per_hour) ?? 1000;
@@ -98,10 +99,40 @@ export default function SpaceOverview({
         calculatedDiscountAmount = calculatedDiscountAmount + 10;
     }
 
+    // Tiered extra discounts processing (4+, 6+, 8+, 12+ hours)
+    const extra_discount_per = (data?.SpaceListing as any)?.extra_discount_per;
+    let extraDiscountObj: Record<string, any> | null = null;
+
+    if (typeof extra_discount_per === 'string') {
+        try {
+            extraDiscountObj = JSON.parse(extra_discount_per);
+        } catch {
+            extraDiscountObj = null;
+        }
+    } else if (typeof extra_discount_per === 'object' && extra_discount_per !== null) {
+        extraDiscountObj = extra_discount_per;
+    }
+
+    const tierList = [
+        { hours: 4, key: 'four' },
+        { hours: 6, key: 'six' },
+        { hours: 8, key: 'eight' },
+        { hours: 12, key: 'twelve' },
+    ]
+        .map((tier) => {
+            const discount = parseFloat(String(extraDiscountObj?.[tier.key] ?? '0'));
+            return { ...tier, discount };
+        })
+        .filter((tier) => !isNaN(tier.discount) && tier.discount > 0);
+
+    const hasTieredDiscounts = tierList.length > 0;
+    const hasBaseDiscount = calculatedDiscountAmount > 0;
+
+    const maxDiscount = hasTieredDiscounts ? Math.max(...tierList.map((t) => t.discount)) : 0;
+
     // Calculate discounted price if discount is available
-    const hasDiscount = calculatedDiscountAmount > 0;
     const discountPercentage = calculatedDiscountAmount / 100; // Convert percentage to decimal
-    const discountedPrice = hasDiscount ? basePrice * (1 - discountPercentage) : basePrice;
+    const discountedPrice = hasBaseDiscount ? basePrice * (1 - discountPercentage) : basePrice;
 
     // GST and Platform Fee Calculation
     const platformFeePercentage = parseFloat(bookingSettings?.guest_platform_fee || '5') / 100;
@@ -274,7 +305,7 @@ export default function SpaceOverview({
                                 </span>
                                 <span className="text-gray-500 text-xs font-poppins">/hr</span>
                             </div>
-                            {hasDiscount && (
+                            {hasBaseDiscount && (
                                 <div className="text-red-500 text-[10px] font-poppins flex items-center gap-1">
                                     <span className="line-through">
                                         ₹{formatCurrency(grossBasePrice)} /hr
@@ -302,19 +333,74 @@ export default function SpaceOverview({
 
                 {/* Mobile buttons below host info */}
                 {isGuestMode && (
-                    <div className="flex justify-between gap-2 sm:hidden">
-                        <Button
-                            onClick={handleMessageHost}
-                            className="flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-full hover:bg-gray-50 whitespace-nowrap text-sm"
-                        >
-                            Need Help? Chat
-                        </Button>
-                        <Button
-                            onClick={handleBookClick}
-                            className="flex-1 px-4 py-2 bg-[#F6CD28] hover:bg-yellow-500 text-black font-semibold rounded-full whitespace-nowrap"
-                        >
-                            Book Now
-                        </Button>
+                    <div className="flex flex-col gap-3 sm:hidden">
+                        <div className="flex justify-between gap-2">
+                            <Button
+                                onClick={handleMessageHost}
+                                className="flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-full hover:bg-gray-50 whitespace-nowrap text-sm"
+                            >
+                                Need Help? Chat
+                            </Button>
+                            <Button
+                                onClick={handleBookClick}
+                                className="flex-1 px-4 py-2 bg-[#F6CD28] hover:bg-yellow-500 text-black font-semibold rounded-full whitespace-nowrap"
+                            >
+                                Book Now
+                            </Button>
+                        </div>
+
+                        {/* Host Discounts Banner for Mobile View (Only for Tiered Duration Discounts) */}
+                        {hasTieredDiscounts && (
+                            <div
+                                onClick={() => setIsDiscountExpanded(!isDiscountExpanded)}
+                                className="mt-1 bg-[#FFFDF0] border border-[#FEF08A] rounded-2xl p-3.5 transition-all duration-200 cursor-pointer select-none space-y-3"
+                            >
+                                <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2.5 text-zinc-800">
+                                        <Tag className="w-4 h-4 text-amber-700 shrink-0" />
+                                        <span className="text-sm font-semibold text-zinc-800 leading-snug">
+                                            {maxDiscount > 0
+                                                ? `Save up to ${maxDiscount}% on longer bookings`
+                                                : 'Save on longer bookings'}
+                                        </span>
+                                    </div>
+                                    {isDiscountExpanded ? (
+                                        <ChevronDown className="w-4 h-4 text-zinc-600 shrink-0" />
+                                    ) : (
+                                        <ChevronRight className="w-4 h-4 text-zinc-600 shrink-0" />
+                                    )}
+                                </div>
+
+                                {isDiscountExpanded && (
+                                    <div className="space-y-3 pt-2">
+                                        <ul className="space-y-1.5 ml-1">
+                                            {tierList.map((tier) => (
+                                                <li
+                                                    key={tier.key}
+                                                    className="flex items-center gap-2 text-zinc-700"
+                                                >
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-700 shrink-0" />
+                                                    <span className="text-[13px] font-medium">
+                                                        {tier.discount}% off for {tier.hours}+ hours
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+
+                                        {tierList.length > 0 && (
+                                            <div className="pt-1">
+                                                <div className="flex items-center gap-2 text-amber-900 bg-[#FEF9C3] p-2.5 rounded-xl border border-[#FEF08A]">
+                                                    <Lightbulb className="w-4 h-4 text-amber-700 shrink-0" />
+                                                    <span className="text-xs font-semibold">
+                                                        Book {tierList[0].hours}+ hours to save {tierList[0].discount}% extra
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
