@@ -34,6 +34,8 @@ const DesktopSpaceList = ({
         }
     }, [searchParams]);
 
+    const isFirstRender = React.useRef(true);
+
     // Reset to page 1 whenever filter params change (excluding `limit`)
     const filterKey = useMemo(() => {
         const { limit, ...rest } = filterParams;
@@ -41,7 +43,17 @@ const DesktopSpaceList = ({
     }, [filterParams]);
 
     useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
         setCurrentPage(1);
+        const pageParam = searchParams.get('page');
+        if (pageParam) {
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete('page');
+            router.replace(`?${params.toString()}`, { scroll: false });
+        }
     }, [filterKey]);
 
     const queryParams = useMemo(

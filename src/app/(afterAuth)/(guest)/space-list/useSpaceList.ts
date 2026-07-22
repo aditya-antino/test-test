@@ -468,6 +468,7 @@ export const useSpaceList = (initialSpaceData?: any) => {
         } else if (params.has('range')) { params.delete('range'); changed = true; }
 
         if (changed) {
+            params.delete('page');
             router.replace(`?${params.toString()}`, { scroll: false });
         }
     }, [selectedCategories, selectedActivities, selectedPlace, selectedDateFromStore, appliedFilters, searchParams, router, initializedFromUrl]);
