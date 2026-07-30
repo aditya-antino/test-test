@@ -4,36 +4,14 @@ import { notFound } from 'next/navigation';
 import ExploreClient from './explore-client';
 import { ServerGet } from '@/services/serverApi';
 import { endpoints } from '@/services/endPoints';
-import { CATEGORY_BANNERS } from '@/constants/categoryBanners';
+import { SEO_BANNERS } from '@/constants/seoBanners';
 import { formatCityName } from '@/utils';
 
 export const dynamic = 'force-dynamic';
 
 const VALID_CITIES = new Set(['delhi-ncr', 'delhi']);
 
-const VALID_CATEGORIES = new Set([
-    'baithaks',
-    'baithak',
-    'creative-spaces',
-    'creative-space',
-    'event-spaces',
-    'exhibitions',
-    'exhibition-spaces',
-    'residential-spaces',
-    'photography-studios',
-    'podcast',
-    'podcast-studios',
-    'wellness',
-    'fitness-wellness',
-    'wellness-workshop',
-    'fitness-wellness-spaces',
-    'workshops',
-    'workshop',
-    'event-venues',
-    'event-venue',
-    'cyclorama',
-    'cyclorama-studios',
-]);
+const VALID_CATEGORIES = new Set(Object.keys(SEO_BANNERS));
 
 const toSlug = (text: string) =>
     text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -72,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const formattedCity = formatCityName(city);
     const formattedCategory = formatTitle(category);
 
-    const bannerInfo = CATEGORY_BANNERS[normalizedCategory];
+    const bannerInfo = SEO_BANNERS[normalizedCategory];
 
     const title = bannerInfo?.metaTitle
         ? bannerInfo.metaTitle.replaceAll('{city}', formattedCity)
@@ -83,16 +61,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         : `Discover and book professional ${formattedCategory.toLowerCase()} in ${formattedCity}. Book unique spaces on Spare Space.`;
 
     const EXPLORE_OG_IMAGE_MAP: Record<string, string> = {
-        'photography-studios':  '/og-images/photography_banner_image.jpg',
-        'podcast-studios':      '/og-images/podcast_banner_image.png',
-        'baithaks':             '/og-images/baithak_banner_image.jpg',
-        'fitness-wellness':     '/og-images/wellness_banner_image.webp',
-        'fitness-wellness-spaces': '/og-images/wellness_banner_image.webp',
-        'exhibitions':          '/og-images/exhibition_banner_image.jpg',
-        'event-venues':         '/og-images/event_venues_banner_image.jpg',
-        'workshops':            '/og-images/workshop_banner_image.jpg',
-        'creative-spaces':      '/og-images/creative_spaces_banner_image.jpg',
-        'cyclorama-studios':    '/og-images/cyclorama_banner_image.png',
+        'photography-studios':      '/og-images/photography_banner_image.jpg',
+        'podcast-studios':          '/og-images/podcast_banner_image.png',
+        'baithaks':                 '/og-images/baithak_banner_image.jpg',
+        'fitness-wellness':         '/og-images/wellness_banner_image.webp',
+        'fitness-wellness-spaces':  '/og-images/wellness_banner_image.webp',
+        'exhibitions':              '/og-images/exhibition_banner_image.jpg',
+        'event-venues':             '/og-images/event_venues_banner_image.jpg',
+        'workshops':                '/og-images/workshop_banner_image.jpg',
+        'creative-spaces':          '/og-images/creative_spaces_banner_image.jpg',
+        'cyclorama-studios':        '/og-images/cyclorama_banner_image.png',
+        // new banners
+        'sound-healing':            '/og-images/sound_healing.png',
+        'dance-rehearsal':          '/og-images/dance_rehearsal.png',
+        'yoga':                     '/og-images/yoga.png',
+        'yoga-sessions':            '/og-images/yoga.png',
+        'kitchen':                  '/og-images/kitchen.png',
+        'living-room':              '/og-images/living_room.png',
+        'performance':              '/og-images/performance.jpg',
+        'theatre':                  '/og-images/theatre.png',
+        'supper-club':              '/og-images/supper_club.png',
+        'outdoor-space':            '/og-images/outdoor_space.jpg',
+        'bhajan-clubbing':          '/og-images/bhajan_clubbing.png',
+        'screening-space':          '/og-images/screening _space.jpg',
+        'screening-spaces':         '/og-images/screening _space.jpg',
+        'art-gallery':              '/og-images/art_gallery.jpg',
+        'warehouse-studio':         '/og-images/warehouse_studio.jpg',
+        'brand-pop-up':             '/og-images/brand_pop_up.png',
     };
 
     let ogImageUrl = `${baseUrl}/og-image.png`;
@@ -115,15 +110,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             }
         } catch (_) {}
 
-        // 3rd priority: fall back to categoryBanners.ts ogImage field
+        // 3rd priority: fall back to seoBanners.ts ogImage field
         if (ogImageUrl === `${baseUrl}/og-image.png`) {
-            if (normalizedCategory && CATEGORY_BANNERS[normalizedCategory]) {
-                const item = CATEGORY_BANNERS[normalizedCategory];
+            if (normalizedCategory && SEO_BANNERS[normalizedCategory]) {
+                const item = SEO_BANNERS[normalizedCategory];
                 let localPath = '';
                 if (item.ogImage) {
                     localPath = item.ogImage;
-                } else if (item.parentCategory && CATEGORY_BANNERS[item.parentCategory]?.ogImage) {
-                    localPath = CATEGORY_BANNERS[item.parentCategory].ogImage;
+                } else if (item.parentCategory && SEO_BANNERS[item.parentCategory]?.ogImage) {
+                    localPath = SEO_BANNERS[item.parentCategory].ogImage;
                 }
                 if (localPath) ogImageUrl = `${baseUrl}${localPath}`;
             }
@@ -162,8 +157,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function getSpaceList(city: string, category: string) {
     try {
         const queryParams = new URLSearchParams();
-        queryParams.append('city', city.replace(/-/g, ' ')); // e.g., "delhi"
-        queryParams.append('activity', category);            // e.g., "photography-studios"
+        queryParams.append('city', city.replace(/-/g, ' '));
+        queryParams.append('activity', category);
         queryParams.append('limit', '10');
 
         const apiUrl = `${endpoints.GET_EXPLORE_SPACES}?${queryParams.toString()}`;

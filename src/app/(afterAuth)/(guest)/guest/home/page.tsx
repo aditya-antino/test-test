@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
+import BrowseByActivities from '@/components/homePage/BrowseByActivities';
 import FeaturedCategories from '@/components/homePage/FeaturedCategoreies';
 import WhyChoseSpaceSpare from '@/components/homePage/WhyChoseSpaceSpare';
 import ExploreSpaceInCities from '@/components/homePage/ExporeSpaceInCities';
@@ -61,7 +62,7 @@ export default function Home() {
     return (
         <div className="flex flex-col w-full gap-8 md:gap-24">
             <HomeHeroSection />
-            {/* <BrowseByActivities /> */}
+            <BrowseByActivities />
             <FeaturedCategories />
             <ExploreSpaceInCities />
             <WhyChoseSpaceSpare />

@@ -141,7 +141,7 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
             <div className="px-4 md:px-16">
                 {/* Filters Row */}
                 <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-between md:items-center w-full">
-                    <div className="flex gap-3 overflow-x-auto scrollbar-hide py-1 pl-1">
+                    <div className="flex gap-3 overflow-x-auto scrollbar-hide p-1.5">
                         {/* Price Sort Pill */}
                         <FilterPill
                             key={appliedFilters.range || 'none'}

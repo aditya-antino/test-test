@@ -12,4 +12,18 @@ export { default as noAIPics } from './icons/no_ai_images.svg';
 export { default as flexibleBooking } from './icons/flexible_booking_options.svg';
 export { default as verifiedStudios } from './icons/verified_studios.svg';
 export { default as cycloramaBanner } from './cyclorama_banner_image.png';
-
+// new banners
+export { default as soundHealingBanner } from './sound_healing.png';
+export { default as danceRehearsalBanner } from './dance_rehearsal.png';
+export { default as yogaBanner } from './yoga.png';
+export { default as kitchenBanner } from './kitchen.png';
+export { default as livingRoomNewBanner } from './living_room.png';
+export { default as performanceBanner } from './performance.jpg';
+export { default as theatreBanner } from './theatre.png';
+export { default as supperClubBanner } from './supper_club.png';
+export { default as outdoorSpaceBanner } from './outdoor_space.jpg';
+export { default as bhajanClubbingBanner } from './bhajan_clubbing.png';
+export { default as screeningSpaceBanner } from './screening _space.jpg';
+export { default as artGalleryBanner } from './art_gallery.jpg';
+export { default as warehouseStudioBanner } from './warehouse_studio.jpg';
+export { default as brandPopUpBanner } from './brand_pop_up.png';

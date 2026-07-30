@@ -8,38 +8,76 @@ import { setSelectedCategories, setSelectedActivities } from '@/store/slice/home
 import { toast } from 'react-toastify';
 import { PATHS } from '@/constants/path';
 import {
-    podcastIcon,
-    camera,
-    Exhibiton,
-    Meeting,
-    spotlight,
-    Videoshoot,
-    Wellness,
-    Workshop,
+    artGallery,
+    artWorkshop,
+    baithak,
+    bhajanClubbing,
+    bookClub,
+    brandPopup,
+    communityMeet,
+    cyclorama,
+    dance,
+    kitchen,
+    livingRoom,
+    meetUp,
+    outdoor,
+    performance,
+    podcastIconNew,
+    screening,
+    soundHealing,
+    supperClub,
+    theatre,
+    warehouse,
+    yoga,
 } from '@/assets/activitiesIcon';
 
 interface StaticActivity {
     activity: string;
-    icon: any;
+    icon?: any;
     id: string;
     key: string;
 }
 
 const STATIC_ACTIVITIES: StaticActivity[] = [
-    { activity: 'Photoshoot', icon: camera, id: 'photoshoot', key: 'photoshoot' },
-    { activity: 'Video Shoot', icon: Videoshoot, id: 'video-shoot', key: 'video-shoot' },
-    { activity: 'Workshop', icon: Workshop, id: 'workshop', key: 'workshop' },
-    { activity: 'Podcast', icon: podcastIcon, id: 'podcast', key: 'podcast' },
-    { activity: 'Meeting', icon: Meeting, id: 'meeting', key: 'meeting' },
-    { activity: 'Events', icon: spotlight, id: 'events', key: 'events' },
-    { activity: 'Exhibition', icon: Exhibiton, id: 'exhibition', key: 'exhibition' },
-    { activity: 'Wellness', icon: Wellness, id: 'wellness', key: 'wellness' },
+    { activity: 'Art Gallery',      icon: artGallery,     id: 'art-gallery',       key: 'art-gallery' },
+    { activity: 'Art Workshop',      icon: artWorkshop,    id: 'art-workshop',      key: 'art-workshop' },
+    { activity: 'Baithak',           icon: baithak,        id: 'baithak',           key: 'baithak' },
+    { activity: 'Bhajan Clubbing',   icon: bhajanClubbing, id: 'bhajan-clubbing',   key: 'bhajan-clubbing' },
+    { activity: 'Book Club',         icon: bookClub,       id: 'book-launch',       key: 'book-launch' },
+    { activity: 'Brand Pop Up',      icon: brandPopup,     id: 'brand-pop-up',      key: 'brand-pop-up' },
+    { activity: 'Community Meetup',  icon: communityMeet,  id: 'community-meetup',  key: 'community-meetup' },
+    { activity: 'Cyclorama',         icon: cyclorama,      id: 'cyclorama-studios', key: 'cyclorama-studios' },
+    { activity: 'Dance Rehearsal',   icon: dance,          id: 'dance-rehearsal',   key: 'dance-rehearsal' },
+    { activity: 'Kitchen',           icon: kitchen,        id: 'kitchen',           key: 'kitchen' },
+    { activity: 'Living Room',       icon: livingRoom,     id: 'living-room',       key: 'living-room' },
+    { activity: 'Meet Up',           icon: meetUp,         id: 'meet-up',           key: 'meet-up' },
+    { activity: 'Outdoor Space',     icon: outdoor,        id: 'outdoor-space',     key: 'outdoor-space' },
+    { activity: 'Performance',       icon: performance,    id: 'performance',       key: 'performance' },
+    { activity: 'Podcast',           icon: podcastIconNew, id: 'podcast-studios',   key: 'podcast-studios' },
+    { activity: 'Screening Space',   icon: screening,      id: 'screening-space',   key: 'screening-space' },
+    { activity: 'Sound Healing',     icon: soundHealing,   id: 'sound-healing',     key: 'sound-healing' },
+    { activity: 'Supper Club',       icon: supperClub,     id: 'supper-club',       key: 'supper-club' },
+    { activity: 'Theatre',           icon: theatre,        id: 'theatre',           key: 'theatre' },
+    { activity: 'Warehouse Studio',  icon: warehouse,      id: 'warehouse-studio',  key: 'warehouse-studio' },
+    { activity: 'Yoga',              icon: yoga,           id: 'yoga',              key: 'yoga' },
 ];
 
 interface ActivityCardProps {
     activity: StaticActivity;
     onClick: (activity: StaticActivity) => void;
 }
+
+const renderActivityIcon = (icon: any, title: string) => {
+    return (
+        <Image
+            src={icon}
+            alt={title}
+            width={64}
+            height={64}
+            className="w-14 h-14 md:w-16 md:h-16 object-contain"
+        />
+    );
+};
 
 const ActivityCard = React.memo(function ActivityCard({ activity, onClick }: ActivityCardProps) {
     const handleClick = React.useCallback(() => {
@@ -51,14 +89,8 @@ const ActivityCard = React.memo(function ActivityCard({ activity, onClick }: Act
             className="flex flex-col items-center gap-3 cursor-pointer group min-w-[110px] px-2 pb-1 pt-1 transition-transform duration-300 ease-in-out hover:scale-[1.03]"
             onClick={handleClick}
         >
-            <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center rounded-2xl bg-white border border-gray-100 shadow-sm transition-all duration-300 group-hover:border-[#F7CD29]/50 group-hover:bg-[#F7CD29]/[0.03] group-hover:shadow-[0_4px_12px_rgba(247,205,41,0.15)]">
-                <Image
-                    src={activity.icon}
-                    alt={activity.activity}
-                    width={40}
-                    height={40}
-                    className="w-10 h-10 md:w-12 md:h-12 object-contain"
-                />
+            <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center rounded-2xl bg-white/30 border border-gray-100 shadow-sm transition-all duration-300 group-hover:border-[#F7CD29]/50 group-hover:shadow-[0_4px_12px_rgba(247,205,41,0.2)]">
+                {renderActivityIcon(activity.icon, activity.activity)}
             </div>
             <p className="text-sm md:text-base font-semibold text-gray-700 group-hover:text-gray-900 whitespace-nowrap text-center transition-colors">
                 {activity?.activity || 'Untitled'}
@@ -106,8 +138,9 @@ const BrowseByActivities = React.memo(function BrowseByActivities() {
             <div className="w-full flex justify-center">
                 <ArrowScrollWrapper
                     autoScroll={true}
+                    autoScrollInterval={3000}
                     gapClassName="gap-6 md:gap-10"
-                    arrowTopClassName="hidden md:flex md:top-[12px]"
+                    arrowTopClassName="flex top-[48px] -translate-y-1/2 md:top-[56px]"
                 >
                     {STATIC_ACTIVITIES.map((activity: StaticActivity) => (
                         <ActivityCard

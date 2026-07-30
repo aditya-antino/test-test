@@ -11,81 +11,148 @@ import {
 } from '@/components/explorePage';
 import Footer from '@/components/layout/footer';
 import { CATEGORY_BANNERS, DEFAULT_BANNER } from '@/constants/categoryBanners';
-import { capitalize, formatCityName } from '@/utils';
+import { SEO_BANNERS } from '@/constants/seoBanners';
+import { formatCityName } from '@/utils';
 import {
-    baithakBanner,
-    creativeSpacesBanner,
-    eventVenturesBanner,
-    exhibitionBanner,
-    livingRoomBanner,
     photographyBanner,
     podcastBanner,
+    baithakBanner,
     wellnessBanner,
+    exhibitionBanner,
+    eventVenturesBanner,
     workshopsBanner,
-    cycloramaBanner
+    creativeSpacesBanner,
+    cycloramaBanner,
+
+    soundHealingBanner,
+    danceRehearsalBanner,
+    yogaBanner,
+    kitchenBanner,
+    livingRoomNewBanner,
+    performanceBanner,
+    theatreBanner,
+    supperClubBanner,
+
+    outdoorSpaceBanner,
+    bhajanClubbingBanner,
+
+    screeningSpaceBanner,
+    artGalleryBanner,
+    warehouseStudioBanner,
+    brandPopUpBanner,
 } from '@/assets/explore-page';
 import { EXPLORE_PAGE_FAQS, EXPLORE_PAGE_GALLERY } from '@/constants/explorePage';
 
 const BANNER_IMAGE_MAP: Record<string, any> = {
-    baithaks: baithakBanner,
-    baithak: baithakBanner,
-    'creative-spaces': creativeSpacesBanner,
-    'creative-space': creativeSpacesBanner,
-    'event-spaces': eventVenturesBanner,
-    exhibitions: exhibitionBanner,
-    'exhibition-spaces': exhibitionBanner,
-    'residential-spaces': livingRoomBanner,
-    'photography-studios': photographyBanner,
-    podcast: podcastBanner,
-    'podcast-studios': podcastBanner,
-    wellness: wellnessBanner,
-    'fitness-wellness': wellnessBanner,
-    'wellness-workshop': wellnessBanner,
-    'fitness-wellness-spaces': wellnessBanner,
-    workshops: workshopsBanner,
-    workshop: workshopsBanner,
-    'event-venues': eventVenturesBanner,
-    'event-venue': eventVenturesBanner,
-    'cyclorama': cycloramaBanner,
-    'cyclorama-studios': cycloramaBanner,
+    'sound-healing':        soundHealingBanner,
+    'dance-rehearsal':      danceRehearsalBanner,
+    yoga:                   yogaBanner,
+    'yoga-sessions':        yogaBanner,
+    kitchen:                kitchenBanner,
+    'living-room':          livingRoomNewBanner,
+    performance:            performanceBanner,
+    theatre:                theatreBanner,
+    'supper-club':          supperClubBanner,
+    'meet-up':              workshopsBanner,
+    meetup:                 workshopsBanner,
+    'outdoor-space':        outdoorSpaceBanner,
+    'bhajan-clubbing':      bhajanClubbingBanner,
+    'community-meetup':     eventVenturesBanner,
+    'community-meetups':    eventVenturesBanner,
+    'screening-space':      screeningSpaceBanner,
+    'screening-spaces':     screeningSpaceBanner,
+    'art-gallery':          artGalleryBanner,
+    'warehouse-studio':     warehouseStudioBanner,
+    'book-launch':          eventVenturesBanner,
+    'brand-pop-up':         brandPopUpBanner,
+
+    'photography-studios':  photographyBanner,
+    podcast:                podcastBanner,
+    'podcast-studios':      podcastBanner,
+    baithaks:               baithakBanner,
+    baithak:                baithakBanner,
+    'fitness-wellness':     wellnessBanner,
+    exhibitions:            exhibitionBanner,
+    'event-venues':         eventVenturesBanner,
+    workshops:              workshopsBanner,
+    'creative-spaces':      creativeSpacesBanner,
+    'cyclorama-studios':    cycloramaBanner,
 };
 
 const CATEGORY_TITLE_PREFIXES: Record<string, string> = {
+    'sound-healing': 'Sound Healing Spaces',
+    'dance-rehearsal': 'Dance Rehearsal Spaces',
+    yoga: 'Yoga Studios & Wellness Spaces',
+    'yoga-sessions': 'Yoga Studios & Wellness Spaces',
+    kitchen: 'Kitchen Sets & Spaces',
+    'living-room': 'Living Room & Residential Spaces',
+    performance: 'Performance Venues',
+    theatre: 'Theatre Spaces for Plays & Performances',
+    'supper-club': 'Supper Club Venues',
+    'meet-up': 'Meetup Spaces',
+    meetup: 'Meetup Spaces',
+    'outdoor-space': 'Outdoor & Open-Air Spaces',
+    'bhajan-clubbing': 'Bhajan & Spiritual Gathering Venues',
+    'community-meetup': 'Community Meetup Spaces',
+    'community-meetups': 'Community Meetup Spaces',
+    'screening-space': 'Screening Spaces',
+    'screening-spaces': 'Screening Spaces',
+    'art-gallery': 'Art Galleries',
+    'warehouse-studio': 'Warehouse Studios',
+    'book-launch': 'Book Launch Venues',
+    'brand-pop-up': 'Brand Pop Up Spaces',
+
+    'photography-studios': 'Photography Studios',
+    podcast: 'Podcast Studios',
+    'podcast-studios': 'Podcast Studios',
     baithaks: 'Spaces for Hosting Baithaks',
     baithak: 'Spaces for Hosting Baithaks',
     'fitness-wellness': 'Fitness and Wellness Spaces',
-    'wellness-workshop': 'Fitness and Wellness Spaces',
-    wellness: 'Fitness and Wellness Spaces',
-    'fitness-wellness-spaces': 'Fitness and Wellness Spaces',
+    exhibitions: 'Exhibition Spaces',
+    'event-venues': 'Event Venues',
     workshops: 'Spaces for Workshops',
-    workshop: 'Spaces for Workshops',
+    'creative-spaces': 'Creative Spaces',
+    'cyclorama-studios': 'Cyclorama Studios',
 };
 
 const CATEGORY_CTA_LABELS: Record<string, string> = {
+    'sound-healing': 'Find Sound Healing Spaces',
+    'dance-rehearsal': 'Find Dance Rehearsal Spaces',
+    yoga: 'Find Yoga Studios & Wellness Spaces',
+    'yoga-sessions': 'Find Yoga Studios & Wellness Spaces',
+    kitchen: 'Find Kitchen Sets & Spaces',
+    'living-room': 'Find Living Room & Residential Spaces',
+    performance: 'Find Performance Venues',
+    theatre: 'Find Theatre Spaces',
+    'supper-club': 'Find Supper Club Venues',
+    'meet-up': 'Find Meetup Spaces',
+    meetup: 'Find Meetup Spaces',
+    'outdoor-space': 'Find Outdoor Spaces',
+    'bhajan-clubbing': 'Find Bhajan & Spiritual Gathering Venues',
+    'community-meetup': 'Find Community Meetup Spaces',
+    'community-meetups': 'Find Community Meetup Spaces',
+    'screening-space': 'Find Screening Spaces',
+    'screening-spaces': 'Find Screening Spaces',
+    'art-gallery': 'Find Art Galleries',
+    'warehouse-studio': 'Find Warehouse Studios',
+    'book-launch': 'Find Book Launch Venues',
+    'brand-pop-up': 'Find Brand Pop Up Spaces',
+
+    'photography-studios': 'Find Photography Studios',
+    podcast: 'Find Podcast Studios',
+    'podcast-studios': 'Find Podcast Studios',
     baithaks: 'Find Baithak Spaces',
     baithak: 'Find Baithak Spaces',
     'fitness-wellness': 'Find Fitness & Wellness Spaces',
-    'wellness-workshop': 'Find Fitness & Wellness Spaces',
-    wellness: 'Find Fitness & Wellness Spaces',
-    'fitness-wellness-spaces': 'Find Fitness & Wellness Spaces',
-    'photography-studios': 'Find Photography Studios',
-    'podcast-studios': 'Find Podcast Studios',
-    'event-venues': 'Find Event Venues',
-    'event-venue': 'Find Event Venues',
-    'event-spaces': 'Find Event Spaces',
-    'creative-spaces': 'Find Creative Spaces',
-    'creative-space': 'Find Creative Spaces',
-    'cyclorama-studios': 'Find Cyclorama Studios',
-    cyclorama: 'Find Cyclorama Studios',
     exhibitions: 'Find Exhibition Spaces',
-    'exhibition-spaces': 'Find Exhibition Spaces',
-    'residential-spaces': 'Find Residential Spaces',
+    'event-venues': 'Find Event Venues',
     workshops: 'Find Workshop Spaces',
-    workshop: 'Find Workshop Spaces',
+    'creative-spaces': 'Find Creative Spaces',
+    'cyclorama-studios': 'Find Cyclorama Studios',
 };
 
 const VALID_CITIES = new Set(['delhi-ncr', 'delhi']);
-const VALID_CATEGORIES = new Set(Object.keys(BANNER_IMAGE_MAP));
+const VALID_CATEGORIES = new Set(Object.keys(SEO_BANNERS));
 
 interface ExploreClientProps {
     initialSpaceData?: any;
@@ -133,7 +200,7 @@ export default function ExploreClient({
     const galleryItems = galleryConfig.items || [];
     const faqs = EXPLORE_PAGE_FAQS[normalizedCategory] || EXPLORE_PAGE_FAQS.DEFAULT;
 
-    const bannerInfo = CATEGORY_BANNERS[normalizedCategory] || CATEGORY_BANNERS[configKey] || DEFAULT_BANNER;
+    const bannerInfo = SEO_BANNERS[normalizedCategory] || CATEGORY_BANNERS[normalizedCategory] || CATEGORY_BANNERS[configKey] || DEFAULT_BANNER;
 
     // Format strings
     const formattedCity = formatCityName(citySlug);
@@ -142,10 +209,10 @@ export default function ExploreClient({
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join(' ');
     
-    // Determine custom prefix from map, fallback to banner title, fallback to capitalized category
+    const activeBanner = SEO_BANNERS[normalizedCategory] || CATEGORY_BANNERS[normalizedCategory];
     const titlePrefix = CATEGORY_TITLE_PREFIXES[normalizedCategory] || 
-        (CATEGORY_BANNERS[normalizedCategory] && CATEGORY_BANNERS[normalizedCategory].title !== DEFAULT_BANNER.title
-            ? CATEGORY_BANNERS[normalizedCategory].title
+        (activeBanner && activeBanner.title !== DEFAULT_BANNER.title
+            ? activeBanner.title
             : formattedCategory);
         
     const title = `${titlePrefix} in ${formattedCity}`;

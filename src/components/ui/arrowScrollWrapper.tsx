@@ -23,6 +23,7 @@ const ArrowScrollWrapper: React.FC<ArrowScrollWrapperProps> = ({
     const scrollerRef = useRef<HTMLDivElement>(null);
     const [showLeft, setShowLeft] = useState(false);
     const [showRight, setShowRight] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     const updateButtons = () => {
         const el = scrollerRef.current;
@@ -57,10 +58,10 @@ const ArrowScrollWrapper: React.FC<ArrowScrollWrapperProps> = ({
     useEffect(() => {
         if (!autoScroll) return;
         const interval = setInterval(() => {
-            scrollBy('right');
+            if (!isHovered) scrollBy('right');
         }, autoScrollInterval);
         return () => clearInterval(interval);
-    }, [autoScroll, autoScrollInterval]);
+    }, [autoScroll, autoScrollInterval, isHovered]);
 
     // Arrow styles
     const arrowBase =
@@ -71,7 +72,11 @@ const ArrowScrollWrapper: React.FC<ArrowScrollWrapperProps> = ({
             : 'bg-white text-black hover:bg-gray-100';
 
     return (
-        <div className="relative max-w-screen">
+        <div
+            className="relative max-w-screen"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             {/* Left Arrow */}
             <button
                 type="button"

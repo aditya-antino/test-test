@@ -97,7 +97,7 @@ const FilterPill = (props: FilterPillProps) => {
   /* ----------------------------- External trigger ---------------------------- */
   if (props.triggerMode === "external") {
     return (
-      <PillBtn {...props.buttonProps} onClick={props.onTrigger}>
+      <PillBtn {...props.buttonProps} className={cn(props.className, props.buttonProps?.className)} onClick={props.onTrigger}>
         {props.leftIcon}
         <span className="truncate">{props.placeholder ?? "Select"}</span>
         {props.rightIcon ?? null}

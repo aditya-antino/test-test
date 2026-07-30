@@ -193,10 +193,16 @@ export const useSpaceList = (initialSpaceData?: any) => {
             return [];
         });
 
+        // If the selected activity doesn't exist in available tags (and tags have loaded),
+        // clear the filter so no stale IDs are sent to the API
+        if (selectedActivities.length > 0 && resolvedTagIds.length === 0 && tagsArray.length > 0) {
+            dispatch(setSelectedActivities([]));
+        }
+
         setAppliedFilters((prev) => ({
             ...prev,
             categoryIds: selectedCategories.map((c) => Number(c.item.id)) || [],
-            activityIds: selectedActivities.length === 0 ? [] : (resolvedTagIds.length > 0 ? resolvedTagIds : prev.activityIds),
+            activityIds: resolvedTagIds,
             cityId: selectedPlace?.id,
             date: selectedDateFromStore ? new Date(selectedDateFromStore) : undefined,
         }));
