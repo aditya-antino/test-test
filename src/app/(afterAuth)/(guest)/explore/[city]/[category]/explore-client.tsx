@@ -178,7 +178,6 @@ export default function ExploreClient({
         isAuth,
         handleSpaceClick,
         handleSearch,
-        handleGalleryItemClick,
         handleCtaClick,
         handleCityHeaderClick,
     } = useExplorePage(initialSpaceData);
@@ -248,14 +247,6 @@ export default function ExploreClient({
             />
 
             <WhyBookSection title={galleryConfig.whyBookTitle || `Why Book ${formattedCategory} Through Sparespace?`} />
-
-            {/* {galleryItems.length > 0 && (
-                <CategoryGallery
-                    title={galleryConfig.title || `${formattedCategory.split(' ')[0]} Types`}
-                    items={galleryItems}
-                    onItemClick={handleGalleryItemClick}
-                />
-            )} */}
 
             <FAQSection faqs={faqs} />
 

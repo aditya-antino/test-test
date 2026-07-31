@@ -87,49 +87,23 @@ export const useExplorePage = (initialSpaceData?: any) => {
         router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST}?activity=${slug}`);
     };
 
-    // Map explore frontend category slugs directly to backend category name slugs
-    // These must match toSlug(CategoryMaster.name) on the space-list page
+    // All other SEO page slugs are activity pages and use the activity= filter instead.
     const slugToCategoryMap: Record<string, string> = {
-        'sound-healing':          'fitness-wellness-spaces',
-        'dance-rehearsal':        'photo-film-studio',
-        'yoga':                   'fitness-wellness-spaces',
-        'yoga-sessions':          'fitness-wellness-spaces',
-        'kitchen':                'residential-spaces',
-        'living-room':            'residential-spaces',
-        'performance':            'event-spaces',
-        'theatre':                'event-spaces',
-        'supper-club':            'event-spaces',
-        'meet-up':                'event-spaces',
-        'meetup':                 'event-spaces',
-        'outdoor-space':          'event-spaces',
-        'bhajan-clubbing':        'event-spaces',
-        'community-meetup':       'event-spaces',
-        'community-meetups':      'event-spaces',
-        'screening-space':        'photo-film-studio',
-        'screening-spaces':       'photo-film-studio',
-        'art-gallery':            'event-spaces',
-        'warehouse-studio':       'photo-film-studio',
-        'book-launch':            'event-spaces',
-        'brand-pop-up':           'event-spaces',
-
-
-        'photography-studios':    'photo-film-studio',
-        'podcast':                'photo-film-studio',
-        'podcast-studios':        'photo-film-studio',
-        'baithaks':               'event-spaces',
-        'baithak':                'event-spaces',
-        'fitness-wellness':       'fitness-wellness-spaces',
-        'exhibitions':            'event-spaces',
-        'event-venues':           'event-spaces',
-        'workshops':              'workshop-area',
-        'creative-spaces':        'photo-film-studio',
-        'cyclorama-studios':      'photo-film-studio',
+        // 'creative-spaces':     'photo-film-studio',
+        'workshops':           'workshop-area',
+        'photography-studios': 'photo-film-studio',
+        'outdoor-space':       'outdoor-spaces',
     };
 
     const handleCtaClick = (categorySlug: string) => {
-        const mappedCategory = slugToCategoryMap[categorySlug] || categorySlug;
         const params = new URLSearchParams();
-        if (mappedCategory) params.append('space', mappedCategory);
+
+        if (slugToCategoryMap[categorySlug]) {
+            params.append('space', slugToCategoryMap[categorySlug]);
+        } else {
+            params.append('activity', categorySlug);
+        }
+
         router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST || '/space-list'}?${params.toString()}`);
     };
 
@@ -143,8 +117,11 @@ export const useExplorePage = (initialSpaceData?: any) => {
     const handleCityHeaderClick = (cityKey: string, categorySlug?: string) => {
         const params = new URLSearchParams();
         if (categorySlug) {
-            const mappedCategory = slugToCategoryMap[categorySlug] || categorySlug;
-            if (mappedCategory) params.append('space', mappedCategory);
+            if (slugToCategoryMap[categorySlug]) {
+                params.append('space', slugToCategoryMap[categorySlug]);
+            } else {
+                params.append('activity', categorySlug);
+            }
         }
         if (cityKey) {
             const cleanCity = cityKey.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
