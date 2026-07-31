@@ -43,7 +43,7 @@ export const SEO_BANNERS: Record<string, BannerContent> = {
 
     'living-room': {
         title: 'Living Room & Residential Spaces',
-        description: 'Discover stunning living rooms, furnished apartments, and residential setups in Delhi NCR for photoshoots, brand shoots, and intimate gatherings.',
+        description: 'Discover stunning living rooms, furnished apartments, and residential setups in Delhi, Noida, and Gurgaon for photoshoots, brand shoots, and intimate gatherings.',
         parentCategory: 'residential-spaces',
         metaTitle: 'Book Living Room Spaces in Delhi NCR | Spare Space',
         metaDescription: 'Book aesthetic living rooms and residential locations for shoots and events on Spare Space.'
@@ -177,14 +177,14 @@ export const SEO_BANNERS: Record<string, BannerContent> = {
 
     'podcast': {
         title: 'Podcast Studios',
-        description: 'Discover and book acoustically treated podcast studios in Delhi NCR equipped with multi-mic setups, video recording cameras, sound mixing, and professional lighting.',
+        description: 'Discover and book acoustically treated podcast studios in Delhi, Noida, and Gurgaon equipped with multi-mic setups, video recording cameras, sound mixing, and professional lighting.',
         parentCategory: 'creative-spaces',
         metaTitle: 'Book Podcast Studios in Delhi NCR | Spare Space',
         metaDescription: 'Book podcast recording studios equipped with mics, video setups, and soundproofing across Delhi, Noida & Gurgaon.'
     },
     'podcast-studios': {
         title: 'Podcast Studios',
-        description: 'Discover and book acoustically treated podcast studios in Delhi NCR equipped with multi-mic setups, video recording cameras, sound mixing, and professional lighting.',
+        description: 'Discover and book acoustically treated podcast studios in Delhi, Noida, and Gurgaon equipped with multi-mic setups, video recording cameras, sound mixing, and professional lighting.',
         parentCategory: 'creative-spaces',
         metaTitle: 'Book Podcast Studios in Delhi NCR | Spare Space',
         metaDescription: 'Book podcast recording studios equipped with mics, video setups, and soundproofing across Delhi, Noida & Gurgaon.'
