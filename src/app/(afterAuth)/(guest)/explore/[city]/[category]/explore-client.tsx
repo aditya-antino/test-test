@@ -17,6 +17,7 @@ import {
     photographyBanner,
     podcastBanner,
     baithakBanner,
+    bookLaunchBanner,
     wellnessBanner,
     exhibitionBanner,
     eventVenturesBanner,
@@ -63,7 +64,7 @@ const BANNER_IMAGE_MAP: Record<string, any> = {
     'screening-spaces':     screeningSpaceBanner,
     'art-gallery':          artGalleryBanner,
     'warehouse-studio':     warehouseStudioBanner,
-    'book-launch':          eventVenturesBanner,
+    'book-launch':          bookLaunchBanner,
     'brand-pop-up':         brandPopUpBanner,
 
     'photography-studios':  photographyBanner,
@@ -246,7 +247,7 @@ export default function ExploreClient({
                 onCityHeaderClick={(cityKey) => handleCityHeaderClick(cityKey, categorySlug)}
             />
 
-            <WhyBookSection title={galleryConfig.whyBookTitle || `Why Book ${formattedCategory} Through Sparespace?`} />
+            <WhyBookSection title={galleryConfig.whyBookTitle || `Why Book ${formattedCategory} Through Spare Space?`} />
 
             <FAQSection faqs={faqs} />
 

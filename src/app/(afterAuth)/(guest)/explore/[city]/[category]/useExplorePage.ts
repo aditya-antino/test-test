@@ -90,9 +90,18 @@ export const useExplorePage = (initialSpaceData?: any) => {
     // All other SEO page slugs are activity pages and use the activity= filter instead.
     const slugToCategoryMap: Record<string, string> = {
         // 'creative-spaces':     'photo-film-studio',
+        'fitness-wellness':    'fitness-wellness-spaces',
+        'event-venue':         'event-spaces',
         'workshops':           'workshop-area',
         'photography-studios': 'photo-film-studio',
         'outdoor-space':       'outdoor-spaces',
+    };
+
+    // Maps slug variants to their canonical activity value.
+    const activityAliasMap: Record<string, string> = {
+        'baithak':         'baithaks',
+        'creative-spaces': 'creative-workshop',
+        'community-meetup': 'meet-up'
     };
 
     const handleCtaClick = (categorySlug: string) => {
@@ -101,7 +110,7 @@ export const useExplorePage = (initialSpaceData?: any) => {
         if (slugToCategoryMap[categorySlug]) {
             params.append('space', slugToCategoryMap[categorySlug]);
         } else {
-            params.append('activity', categorySlug);
+            params.append('activity', activityAliasMap[categorySlug] ?? categorySlug);
         }
 
         router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST || '/space-list'}?${params.toString()}`);

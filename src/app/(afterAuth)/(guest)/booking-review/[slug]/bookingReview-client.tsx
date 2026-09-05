@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
@@ -11,7 +11,6 @@ import {
     useRazopayBookingOrder,
     useGuestInstantBooking,
     useGetGuestBookingDetails,
-    useGetKYCDoc,
 } from '@/services';
 import {
     openRazorpayPayment,
@@ -29,12 +28,6 @@ import { BookingReviewSkeleton } from '@/components/skeletons';
 import { useBookingReview } from './useBookingReview';
 
 export default function BookingReviewClient() {
-    const { data: kycDoc } = useGetKYCDoc();
-    const isKycVerified = useMemo(() => {
-        const docs = kycDoc?.data?.filter((doc: any) => doc.type !== 'pan' && doc.type !== 'gst') || [];
-        return docs.length > 0;
-    }, [kycDoc]);
-
     const {
         spaceDetails,
         isSpaceLoading,
@@ -105,11 +98,7 @@ export default function BookingReviewClient() {
                 isOpen={showSuccessModal}
                 onClose={handleSuccessModalClose}
                 title="Your request has been taken."
-                message={
-                    isKycVerified
-                        ? "Your booking request has been sent to the host. Once accepted, your booking will be confirmed. You will be notified of any updates."
-                        : "Your booking request has been sent to the host. Once accepted, your booking will be confirmed. NOTE: Please verify your KYC details within 6 hours under your profile to prevent automatic cancellation."
-                }
+                message="Your booking request has been sent to the host. Once accepted, your booking will be confirmed. You will be notified of any updates."
             />
         </>
     );

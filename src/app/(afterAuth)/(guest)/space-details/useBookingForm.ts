@@ -124,14 +124,59 @@ export const useBookingForm = ({
                     }
                 };
 
-                const startMinutes = convertToMinutes(prefilledStartTime);
-                const endMinutes = convertToMinutes(prefilledEndTime);
+                const checkOperatingHours = (
+                    startStr: string,
+                    endStr: string,
+                    slots: Array<{ from: string; to: string }>,
+                ): boolean => {
+                    const getSlotIntervals = (fromStr: string, toStr: string): Array<[number, number]> => {
+                        const start = convertToMinutes(fromStr);
+                        let end = convertToMinutes(toStr);
+                        if (end === 0 && start > 0) end = 1440;
+                        if (fromStr.trim().toUpperCase() === toStr.trim().toUpperCase() || (start === 0 && end === 0)) return [[0, 1440]];
+                        if (end > start) return [[start, end]];
+                        return [[start, 1440], [0, end]];
+                    };
 
-                const isWithinOperatingHours = operatingHours.some((slot: any) => {
-                    const slotStartMinutes = convertToMinutes(slot.from);
-                    const slotEndMinutes = convertToMinutes(slot.to);
-                    return startMinutes >= slotStartMinutes && endMinutes <= slotEndMinutes;
-                });
+                    const rawIntervals: Array<[number, number]> = [];
+                    slots.forEach((s) => {
+                        if (s?.from && s?.to) rawIntervals.push(...getSlotIntervals(s.from, s.to));
+                    });
+                    if (rawIntervals.length === 0) return true;
+
+                    rawIntervals.sort((a, b) => a[0] - b[0]);
+                    const merged: Array<[number, number]> = [];
+                    for (const item of rawIntervals) {
+                        if (merged.length === 0) {
+                            merged.push([...item]);
+                        } else {
+                            const last = merged[merged.length - 1];
+                            if (item[0] <= last[1]) last[1] = Math.max(last[1], item[1]);
+                            else merged.push([...item]);
+                        }
+                    }
+
+                    const bStart = convertToMinutes(startStr);
+                    let bEnd = convertToMinutes(endStr);
+                    if (bEnd === 0 && bStart > 0) bEnd = 1440;
+
+                    const reqIntervals: Array<[number, number]> =
+                        bEnd > bStart
+                            ? [[bStart, bEnd]]
+                            : bEnd < bStart
+                            ? [[bStart, 1440], [0, bEnd]]
+                            : [[bStart, bStart]];
+
+                    return reqIntervals.every(([rS, rE]) =>
+                        merged.some(([oS, oE]) => rS >= oS && rE <= oE)
+                    );
+                };
+
+                const isWithinOperatingHours = checkOperatingHours(
+                    prefilledStartTime,
+                    prefilledEndTime,
+                    operatingHours,
+                );
 
                 if (!isWithinOperatingHours) {
                     const formattedSlots = operatingHours
@@ -550,12 +595,10 @@ export const useBookingForm = ({
             return;
         }
 
-        // if (!filteredKycDoc || filteredKycDoc.length === 0) {
-        //     openVerificationModal?.(true);
-        //     return;
-        // }
-
-        // KYC verification check is bypassed on frontend to allow guest booking without pre-verification
+        if (!filteredKycDoc || filteredKycDoc.length === 0) {
+            openVerificationModal?.(true);
+            return;
+        }
 
         const errors = getValidationErrors();
         if (errors.length > 0) {

@@ -13,11 +13,10 @@ export const useHostProfileLogic = () => {
     const params = useParams();
     const router = useRouter();
     const hostId = params.hostId as string;
+    const ALL_SPACES_LIMIT = 100;
 
     const [activeTab, setActiveTab] = useState<number | null>(null);
     const [userHasClickedTab, setUserHasClickedTab] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [showAllSpaces, setShowAllSpaces] = useState(false);
 
     const [reviews, setReviews] = useState<any[]>([]);
     const [reviewPage, setReviewPage] = useState(1);
@@ -65,24 +64,19 @@ export const useHostProfileLogic = () => {
         }
     }, [categoriesData, userHasClickedTab]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-        setShowAllSpaces(false);
-    }, [activeTab]);
-
     const {
         data: hostProfileData,
         isLoading: isHostLoading,
         error,
     } = useGetHostProfile({
-        page: currentPage,
-        limit: showAllSpaces ? 10 : 3,
+        page: 1,
+        limit: ALL_SPACES_LIMIT,
         hostId: hostId ? parseInt(hostId) : undefined,
     });
 
     const { data: spaceDataResponse, isFetching: isSpacesLoading } = useGetHostProfileSpaceData({
-        page: currentPage,
-        limit: showAllSpaces ? 10 : 3,
+        page: 1,
+        limit: ALL_SPACES_LIMIT,
         categoryId: activeTab!,
         hostId: hostId ? parseInt(hostId) : undefined,
     });
@@ -123,13 +117,6 @@ export const useHostProfileLogic = () => {
             console.warn('Space slug is missing, cannot navigate');
         }
     };
-
-    const handleShowMoreSpaces = () => {
-        setShowAllSpaces(true);
-        setCurrentPage(1);
-    };
-
-    const handlePageChange = (page: number) => setCurrentPage(page);
 
     const apiData = hostProfileData as any;
     const hostSpaceData = spaceDataResponse as any;
@@ -184,8 +171,6 @@ export const useHostProfileLogic = () => {
         activeTab,
         setActiveTab,
         setUserHasClickedTab,
-        currentPage,
-        showAllSpaces,
         reviews,
         reviewPagination,
         categoriesData,
@@ -199,8 +184,6 @@ export const useHostProfileLogic = () => {
         refetchReviews,
         handleSeeMoreReviews,
         handleSpaceClick,
-        handleShowMoreSpaces,
-        handlePageChange,
         hostData,
     };
 };

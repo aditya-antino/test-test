@@ -3,12 +3,10 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, MessageCircle, Calendar, Home, CheckCircle, UserIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Footer from '@/components/layout/footer';
 import BookingCard from '@/components/common/bookingCard/bookingCard';
 import Reviews from '@/components/common/Reviews';
-import Pagination from '@/components/ui/CustomPagination';
 import { PATHS } from '@/constants/path';
 import BecameHostBanner from '@/components/homePage/BecameHostBanner';
 import imgSvg from '@/assets/img.svg';
@@ -26,12 +24,10 @@ const HostProfileClient = () => {
         activeTab,
         setActiveTab,
         setUserHasClickedTab,
-        showAllSpaces,
         reviews,
         reviewPagination,
         categoriesData,
         categoriesLoading,
-        hostProfileData,
         isHostLoading,
         isSpacesLoading,
         error,
@@ -40,12 +36,8 @@ const HostProfileClient = () => {
         refetchReviews,
         handleSeeMoreReviews,
         handleSpaceClick,
-        handleShowMoreSpaces,
-        handlePageChange,
         hostData,
     } = useHostProfileLogic();
-
-    const apiData = hostProfileData as any;
 
     const { data: bookingDetails } = useGetGuestBookingDetails();
 
@@ -205,30 +197,6 @@ const HostProfileClient = () => {
                                 </div>
                             )}
                         </div>
-
-                        {apiData?.data?.pagination &&
-                            apiData.data.pagination.totalProperties > 3 &&
-                            !showAllSpaces && (
-                                <div className=" flex items-center justify-center">
-                                    <Button
-                                        variant="outline"
-                                        className="w-50"
-                                        onClick={handleShowMoreSpaces}
-                                    >
-                                        Show me more
-                                    </Button>
-                                </div>
-                            )}
-
-                        {showAllSpaces && apiData?.data?.pagination && (
-                            <Pagination
-                                limit={apiData.data.pagination.limit}
-                                count={apiData.data.pagination.totalProperties}
-                                currentPage={apiData.data.pagination.currentPage}
-                                onPageChange={handlePageChange}
-                                totalPage={apiData.data.pagination.totalPages}
-                            />
-                        )}
                     </div>
 
                     {reviews && reviews?.length > 0 && (

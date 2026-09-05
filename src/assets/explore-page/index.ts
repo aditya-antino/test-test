@@ -1,4 +1,5 @@
-export { default as baithakBanner } from './baithak_banner_image.jpg';
+export { default as baithakBanner } from './baithak_banner_image.png';
+export {default as bookLaunchBanner} from './book_launch_image.png';
 export { default as creativeSpacesBanner } from './creative_spaces_banner_image.jpg';
 export { default as eventVenturesBanner } from './event_venues_banner_image.jpg';
 export { default as exhibitionBanner } from './exhibition_banner_image.jpg';

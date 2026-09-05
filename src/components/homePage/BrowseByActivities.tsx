@@ -40,21 +40,21 @@ interface StaticActivity {
 
 const STATIC_ACTIVITIES: StaticActivity[] = [
     { activity: 'Art Gallery',      icon: artGallery,     id: 'art-gallery',       key: 'art-gallery' },
-    { activity: 'Art Workshop',      icon: artWorkshop,    id: 'art-workshop',      key: 'art-workshop' },
-    { activity: 'Baithak',           icon: baithak,        id: 'baithak',           key: 'baithak' },
+    { activity: 'Art Workshops',      icon: artWorkshop,    id: 'art-workshops',     key: 'art-workshops' },
+    { activity: 'Baithak',           icon: baithak,        id: 'baithak',           key: 'baithaks' },
     { activity: 'Bhajan Clubbing',   icon: bhajanClubbing, id: 'bhajan-clubbing',   key: 'bhajan-clubbing' },
-    { activity: 'Book Club',         icon: bookClub,       id: 'book-launch',       key: 'book-launch' },
+    { activity: 'Book Launch',         icon: bookClub,       id: 'book-launch',       key: 'book-launch' },
     { activity: 'Brand Pop Up',      icon: brandPopup,     id: 'brand-pop-up',      key: 'brand-pop-up' },
-    { activity: 'Community Meetup',  icon: communityMeet,  id: 'community-meetup',  key: 'community-meetup' },
+    { activity: 'Community Meetup',  icon: communityMeet,  id: 'community-meetup',  key: 'meet-up' },
     { activity: 'Cyclorama',         icon: cyclorama,      id: 'cyclorama-studios', key: 'cyclorama-studios' },
     { activity: 'Dance Rehearsal',   icon: dance,          id: 'dance-rehearsal',   key: 'dance-rehearsal' },
-    { activity: 'Kitchen',           icon: kitchen,        id: 'kitchen',           key: 'kitchen' },
+    { activity: 'Kitchen',           icon: kitchen,        id: 'kitchen',           key: 'kitchen-setup' },
     { activity: 'Living Room',       icon: livingRoom,     id: 'living-room',       key: 'living-room' },
     { activity: 'Meet Up',           icon: meetUp,         id: 'meet-up',           key: 'meet-up' },
     { activity: 'Outdoor Space',     icon: outdoor,        id: 'outdoor-space',     key: 'outdoor-space' },
     { activity: 'Performance',       icon: performance,    id: 'performance',       key: 'performance' },
-    { activity: 'Podcast',           icon: podcastIconNew, id: 'podcast-studios',   key: 'podcast-studios' },
-    { activity: 'Screening Space',   icon: screening,      id: 'screening-space',   key: 'screening-space' },
+    { activity: 'Podcast',           icon: podcastIconNew, id: 'podcast-studios',   key: 'podcast' },
+    { activity: 'Screening Space',   icon: screening,      id: 'screening-space',   key: 'screening-spaces' },
     { activity: 'Sound Healing',     icon: soundHealing,   id: 'sound-healing',     key: 'sound-healing' },
     { activity: 'Supper Club',       icon: supperClub,     id: 'supper-club',       key: 'supper-club' },
     { activity: 'Theatre',           icon: theatre,        id: 'theatre',           key: 'theatre' },
@@ -115,7 +115,9 @@ const BrowseByActivities = React.memo(function BrowseByActivities() {
                         },
                     ]),
                 );
-                router.push(PATHS.SPACE_LISTING_PAGE_GUEST || '/space-list');
+                const params = new URLSearchParams();
+                params.append('activity', activity.key);
+                router.push(`${PATHS.SPACE_LISTING_PAGE_GUEST || '/space-list'}?${params.toString()}`);
                 return;
             }
             toast.error('Something went wrong!!');

@@ -1021,36 +1021,76 @@ const BookingDetailsSection = ({
         endTime: string,
         operatingHours: Array<{ from: string; to: string }>,
     ): boolean => {
-        if (operatingHours.length === 0) return true;
+        if (!operatingHours || operatingHours.length === 0) return true;
 
-        const startMinutes = convertToMinutes(startTime);
-        const endMinutes = convertToMinutes(endTime);
-        const bookingSpansMidnight = endMinutes < startMinutes;
+        const getSlotIntervals = (fromStr: string, toStr: string): Array<[number, number]> => {
+            const start = convertToMinutes(fromStr);
+            let end = convertToMinutes(toStr);
 
-        return operatingHours.some((slot) => {
-            const slotStartMinutes = convertToMinutes(slot.from);
-            const slotEndMinutes = convertToMinutes(slot.to);
-            const slotSpansMidnight = slotEndMinutes < slotStartMinutes;
+            if (end === 0 && start > 0) {
+                end = 1440;
+            }
 
-            if (slotSpansMidnight) {
-                if (bookingSpansMidnight) {
-                    return startMinutes >= slotStartMinutes && endMinutes <= slotEndMinutes;
-                } else {
-                    if (startMinutes >= slotStartMinutes && endMinutes >= slotStartMinutes) {
-                        return true;
-                    }
-                    if (startMinutes <= slotEndMinutes && endMinutes <= slotEndMinutes) {
-                        return true;
-                    }
-                    return false;
-                }
+            if (fromStr.trim().toUpperCase() === toStr.trim().toUpperCase() || (start === 0 && end === 0)) {
+                return [[0, 1440]];
+            }
+
+            if (end > start) {
+                return [[start, end]];
+            }
+
+            return [
+                [start, 1440],
+                [0, end],
+            ];
+        };
+
+        const rawIntervals: Array<[number, number]> = [];
+        operatingHours.forEach((slot) => {
+            if (slot?.from && slot?.to) {
+                rawIntervals.push(...getSlotIntervals(slot.from, slot.to));
+            }
+        });
+
+        if (rawIntervals.length === 0) return true;
+
+        rawIntervals.sort((a, b) => a[0] - b[0]);
+
+        const mergedIntervals: Array<[number, number]> = [];
+        for (const interval of rawIntervals) {
+            if (mergedIntervals.length === 0) {
+                mergedIntervals.push([...interval]);
             } else {
-                if (bookingSpansMidnight) {
-                    return false;
+                const last = mergedIntervals[mergedIntervals.length - 1];
+                if (interval[0] <= last[1]) {
+                    last[1] = Math.max(last[1], interval[1]);
                 } else {
-                    return startMinutes >= slotStartMinutes && endMinutes <= slotEndMinutes;
+                    mergedIntervals.push([...interval]);
                 }
             }
+        }
+
+        const bStart = convertToMinutes(startTime);
+        let bEnd = convertToMinutes(endTime);
+
+        if (bEnd === 0 && bStart > 0) {
+            bEnd = 1440;
+        }
+
+        const bookingIntervals: Array<[number, number]> =
+            bEnd > bStart
+                ? [[bStart, bEnd]]
+                : bEnd < bStart
+                ? [
+                      [bStart, 1440],
+                      [0, bEnd],
+                  ]
+                : [[bStart, bStart]];
+
+        return bookingIntervals.every(([reqStart, reqEnd]) => {
+            return mergedIntervals.some(([opStart, opEnd]) => {
+                return reqStart >= opStart && reqEnd <= opEnd;
+            });
         });
     };
 
@@ -1749,10 +1789,12 @@ const BookButton = ({
     onBook,
     isDisabled,
     validationErrors,
+    isInstantBooking,
 }: {
     onBook: () => void;
     isDisabled: boolean;
     validationErrors: string[];
+    isInstantBooking: boolean;
 }) => {
     const handleBook = () => {
         if (validationErrors.length > 0) {
@@ -1777,7 +1819,9 @@ const BookButton = ({
                         : ' bg-[#F7CD29] md:bg-white border-[#F7CD29] md:border-gray-300 text-gray-700 hover:bg-[#F7CD29]'
                 }`}
             >
-                <span className="font-semibold text-base leading-6 font-figtree">Book</span>
+                <span className="font-semibold text-base leading-6 font-figtree">
+                    {isInstantBooking ? 'Book' : 'Send booking request'}
+                </span>
             </Button>
         </div>
     );
@@ -1865,6 +1909,7 @@ const BookingForm = ({
                 onBook={handleBook}
                 isDisabled={validationErrors.length > 0}
                 validationErrors={validationErrors}
+                isInstantBooking={!!spaceData?.SpaceListing?.instant_booking}
             />
         </div>
     );

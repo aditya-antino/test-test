@@ -11,12 +11,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Timer,
-    AlertCircle,
-} from 'lucide-react';
+import { Timer } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useGetGuestBookingCalendar, useGetGuestTimeSlots, useGetKYCDoc } from '@/services';
+import { useGetGuestBookingCalendar, useGetGuestTimeSlots } from '@/services';
 import { formatCurrency } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useForm } from 'react-hook-form';
@@ -1000,13 +997,6 @@ const BookingReview: React.FC<BookingReviewProps> = ({
         </form>
     );
 
-    const { data: kycDoc } = useGetKYCDoc();
-    const isKycVerified = useMemo(() => {
-        const docs =
-            kycDoc?.data?.filter((doc: any) => doc.type !== 'pan' && doc.type !== 'gst') || [];
-        return docs.length > 0;
-    }, [kycDoc]);
-
     const [agreements, setAgreements] = useState({
         keepConversations: false,
         processPayments: false,
@@ -1146,55 +1136,90 @@ const BookingReview: React.FC<BookingReviewProps> = ({
         endTime: string,
         operatingHours: Array<{ from: string; to: string }>,
     ): boolean => {
-        if (operatingHours.length === 0) return true; // If no operating hours, assume always available
+        if (!operatingHours || operatingHours.length === 0) return true;
 
         const convertToMinutes = (time: string): number => {
-            const [timePart, period] = time.split(' ');
-            const [hours, minutes] = timePart.split(':');
-            let hour24 = parseInt(hours, 10);
-
-            if (isNaN(hour24)) hour24 = 0;
-
-            if (period === 'PM' && hour24 !== 12) hour24 += 12;
-            if (period === 'AM' && hour24 === 12) hour24 = 0;
-
-            return hour24 * 60 + parseInt(minutes, 10);
+            try {
+                const [timePart, period] = time.split(' ');
+                const [hours, minutes] = timePart.split(':');
+                let hour24 = parseInt(hours, 10);
+                if (isNaN(hour24)) hour24 = 0;
+                if (period === 'PM' && hour24 !== 12) hour24 += 12;
+                if (period === 'AM' && hour24 === 12) hour24 = 0;
+                return hour24 * 60 + parseInt(minutes, 10);
+            } catch {
+                return 0;
+            }
         };
 
-        const startMinutes = convertToMinutes(startTime);
-        const endMinutes = convertToMinutes(endTime);
-        const bookingSpansMidnight = endMinutes < startMinutes;
+        const getSlotIntervals = (fromStr: string, toStr: string): Array<[number, number]> => {
+            const start = convertToMinutes(fromStr);
+            let end = convertToMinutes(toStr);
 
-        return operatingHours.some((slot) => {
-            const slotStartMinutes = convertToMinutes(slot.from);
-            const slotEndMinutes = convertToMinutes(slot.to);
-            const slotSpansMidnight = slotEndMinutes < slotStartMinutes;
+            if (end === 0 && start > 0) {
+                end = 1440;
+            }
 
-            if (slotSpansMidnight) {
-                // Operating hours span midnight (e.g., 10 PM to 2 AM)
-                if (bookingSpansMidnight) {
-                    // Booking also spans midnight
-                    return startMinutes >= slotStartMinutes && endMinutes <= slotEndMinutes;
-                } else {
-                    // Booking doesn't span midnight, check if it overlaps with the slot
-                    if (startMinutes >= slotStartMinutes && endMinutes >= slotStartMinutes) {
-                        return true;
-                    }
-                    if (startMinutes <= slotEndMinutes && endMinutes <= slotEndMinutes) {
-                        return true;
-                    }
-                    return false;
-                }
+            if (fromStr.trim().toUpperCase() === toStr.trim().toUpperCase() || (start === 0 && end === 0)) {
+                return [[0, 1440]];
+            }
+
+            if (end > start) {
+                return [[start, end]];
+            }
+
+            return [
+                [start, 1440],
+                [0, end],
+            ];
+        };
+
+        const rawIntervals: Array<[number, number]> = [];
+        operatingHours.forEach((slot) => {
+            if (slot?.from && slot?.to) {
+                rawIntervals.push(...getSlotIntervals(slot.from, slot.to));
+            }
+        });
+
+        if (rawIntervals.length === 0) return true;
+
+        rawIntervals.sort((a, b) => a[0] - b[0]);
+
+        const mergedIntervals: Array<[number, number]> = [];
+        for (const interval of rawIntervals) {
+            if (mergedIntervals.length === 0) {
+                mergedIntervals.push([...interval]);
             } else {
-                // Operating hours don't span midnight
-                if (bookingSpansMidnight) {
-                    // Booking spans midnight but operating hours don't - invalid
-                    return false;
+                const last = mergedIntervals[mergedIntervals.length - 1];
+                if (interval[0] <= last[1]) {
+                    last[1] = Math.max(last[1], interval[1]);
                 } else {
-                    // Neither spans midnight - check if booking is within slot
-                    return startMinutes >= slotStartMinutes && endMinutes <= slotEndMinutes;
+                    mergedIntervals.push([...interval]);
                 }
             }
+        }
+
+        const bStart = convertToMinutes(startTime);
+        let bEnd = convertToMinutes(endTime);
+
+        if (bEnd === 0 && bStart > 0) {
+            bEnd = 1440;
+        }
+
+        const bookingIntervals: Array<[number, number]> =
+            bEnd > bStart
+                ? [[bStart, bEnd]]
+                : bEnd < bStart
+                ? [
+                      [bStart, 1440],
+                      [0, bEnd],
+                  ]
+                : [[bStart, bStart]];
+
+        return bookingIntervals.every(([reqStart, reqEnd]) => {
+            return mergedIntervals.some(([opStart, opEnd]) => {
+                return reqStart >= opStart && reqEnd <= opEnd;
+            });
         });
     };
 
@@ -3048,15 +3073,6 @@ const BookingReview: React.FC<BookingReviewProps> = ({
 
                     {/* Book Now Button */}
                     <div className="space-y-2 md:space-y-3">
-                        {!isKycVerified && (
-                            <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-start gap-2">
-                                <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                                <p className="text-red-800 text-xs leading-normal font-medium">
-                                    Please verify your KYC within 6 hours of booking to prevent
-                                    automatic cancellation.
-                                </p>
-                            </div>
-                        )}
                         <Button
                             onClick={() => {
                                 // Re-validate before proceeding

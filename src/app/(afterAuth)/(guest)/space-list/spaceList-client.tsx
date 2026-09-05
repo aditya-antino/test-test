@@ -124,10 +124,30 @@ const SpaceListClient = ({ initialSpaceData }: SpaceListClientProps) => {
                     <BannerSkeleton />
                 ) : (
                     (() => {
+                        const hasSpaceFilter = selectedCategories.length > 0;
                         const slug = mainHeading ? toSlug(mainHeading) : '';
                         const resolvedSlug = slug === 'creative-spaces' ? 'creative-space' : slug;
-                        const bannerContent = CATEGORY_BANNERS[resolvedSlug] || DEFAULT_BANNER;
-                        return <CategoryBanner content={bannerContent} />;
+                        const matchedBanner = CATEGORY_BANNERS[resolvedSlug];
+
+                        // If a space= filter is active and we have a matching banner, use it
+                        if (hasSpaceFilter && matchedBanner) {
+                            return <CategoryBanner content={matchedBanner} />;
+                        }
+
+                        // If only an activity= filter is active, generate a dynamic heading
+                        if (!hasSpaceFilter && mainHeading) {
+                            const rawName = selectedActivities?.[0]?.name || mainHeading;
+                            // Strip trailing "Spaces" (case-insensitive) to avoid "Discover Screening Spaces Spaces"
+                            const activityName = rawName.replace(/\s+spaces$/i, '').trim();
+                            const dynamicBanner = {
+                                title: `Discover ${activityName} Spaces`,
+                                description: `Explore a curated collection of ${activityName.toLowerCase()} spaces for rent across Delhi, Noida & Gurgaon. Book by the hour on Spare Space.`,
+                            };
+                            return <CategoryBanner content={dynamicBanner} />;
+                        }
+
+                        // Fallback: no filters active
+                        return <CategoryBanner content={matchedBanner || DEFAULT_BANNER} />;
                     })()
                 )}
             </div>

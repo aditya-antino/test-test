@@ -9,7 +9,7 @@ import Workshop from './Workshop.png';
 // new icons
 import artGallery from './art_gallery.png';
 import artWorkshop from './art_workshop.png';
-import baithak from './baithak.png';
+import baithak from './baithak.jpg';
 import bhajanClubbing from './bhajan_clubbing.png';
 import bookClub from './book_club.png';
 import brandPopup from './brand_popup.png';
@@ -26,7 +26,7 @@ import screening from './screening.png';
 import soundHealing from './sound_healing.png';
 import supperClub from './supper_club.png';
 import theatre from './theatre.png';
-import warehouse from './warehouse.png';
+import warehouse from './warehouse.jpg';
 import yoga from './yoga.png';
 
 export {
