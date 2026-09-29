@@ -104,6 +104,7 @@ export interface Reservation {
     tcs_percent?: number;
     hostTDSPer?: number;
     hostPlatformFeePer?: number;
+    hostGst?: boolean;
     Financial?: {
         baseAmount: string | number;
         cgstAmount: string | number;

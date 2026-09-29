@@ -83,6 +83,31 @@ export const useReservations = () => {
             ? Number(row?.Financial?.baseAmount) || 0
             : Number(row?.amount) || 0;
 
+        // When Financial is null (awaiting_payment — guest hasn't paid yet), use the
+        // same percentage-based estimate as the Booking Requests tab so amounts are consistent.
+        if (!row?.Financial) {
+            const hasHostGST = Boolean(row?.hostGst);
+            const cgstAmt = hasHostGST ? (amount * (row.cgst_percent || 0)) / 100 : 0;
+            const sgstAmt = hasHostGST ? (amount * (row.sgst_percent || 0)) / 100 : 0;
+            const hostSubtotal = hasHostGST ? amount + cgstAmt + sgstAmt : amount;
+            const platformFee = (amount * (row.host_platform_fee_percent || 0)) / 100;
+            const platformFeeGST = (platformFee * 18) / 100;
+            const tds = (amount * (row.tds_percent || 0)) / 100;
+            const tcs = hasHostGST ? (amount * (row.tcs_percent || 0)) / 100 : 0;
+            const totalHostAmount = hostSubtotal - platformFee - platformFeeGST - tds - tcs;
+            return {
+                amount,
+                totalHostAmount: Number(totalHostAmount.toFixed(2)),
+                hostPlatformFee: Number(platformFee.toFixed(2)),
+                hostTDSFee: Number(tds.toFixed(2)),
+                csgt: cgstAmt,
+                ssgt: sgstAmt,
+                tcsAmount: tcs,
+                penaltyAmount: 0,
+                hasHostGST,
+            };
+        }
+
         // Get GST and tax details
         const hasHostGST = Boolean(row?.Financial?.hostGst);
         const csgt = Number(row?.Financial?.cgstAmount) || 0;
@@ -161,11 +186,9 @@ export const useReservations = () => {
     useEffect(() => {
         const tabChanged = prevActiveTabRef.current !== activeStatusTab;
         if ((!isLoading && prevIsLoadingRef.current) || tabChanged) {
-            if (reservations.length > 0) {
-                const currentNotifications = { ...notifications.reservation };
-                currentNotifications[activeStatusTab] = true;
-                dispatch(updateHeaderNotification({ reservation: currentNotifications }));
-            }
+            const currentNotifications = { ...notifications.reservation };
+            currentNotifications[activeStatusTab] = true;
+            dispatch(updateHeaderNotification({ reservation: currentNotifications }));
         }
         prevIsLoadingRef.current = isLoading;
         prevActiveTabRef.current = activeStatusTab;
