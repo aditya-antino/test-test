@@ -162,7 +162,7 @@ export default function ReservationsPage() {
                 </div>
             ),
         },
-        ...(activeStatusTab === 'upcoming'
+        ...(['upcoming', 'awaiting_payment'].includes(activeStatusTab)
             ? [
                 {
                     key: 'phone_number',
@@ -218,7 +218,7 @@ export default function ReservationsPage() {
             key: '',
             label: '',
             render: (_: any, row: Reservation) =>
-                ['upcoming', 'completed', 'cancelled', 'pending_payout'].includes(
+                ['upcoming', 'completed', 'cancelled', 'pending_payout', 'awaiting_payment'].includes(
                     activeStatusTab,
                 ) ? (
                     <Button

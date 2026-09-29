@@ -2,9 +2,19 @@
 
 import { useEffect } from 'react';
 import Script from 'next/script';
+import { useAuth } from '@/hooks';
 
 const WatiWidget = () => {
     const url = process.env.NEXT_PUBLIC_WATI_URL;
+    const { isAuth } = useAuth();
+
+    useEffect(() => {
+        document.body.setAttribute('data-chat-widget-hidden', String(isAuth));
+
+        return () => {
+            document.body.removeAttribute('data-chat-widget-hidden');
+        };
+    }, [isAuth]);
 
     useEffect(() => {
         const handleGlobalClick = (e: MouseEvent) => {

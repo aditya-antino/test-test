@@ -25,23 +25,27 @@ const ReservationDetails: React.FC<ReservationDetailsProps> = ({ isOpen, onClose
         tcs_percent = 0,
         discountAmount = 0,
         couponCode = '',
-        Financial: {
-            baseAmount = 0,
-            hostGst = false,
-            tcsAmount = 0,
-            tdsAmount = 0,
-            cgstAmount = 0,
-            sgstAmount = 0,
-            guestPlatformFeeAmount = 0,
-            guestPlatformFeeCgstAmount = 0,
-            guestPlatformFeeSgstAmount = 0,
-            hostPlatformFeeAmount = 0,
-            hostPlatformFeeCgstAmount = 0,
-            hostPlatformFeeSgstAmount = 0,
-            penaltyAmount = 0,
-            refundPercentage = 0,
-        } = {},
+        Financial,
     } = data;
+
+    // Financial (BookingFinancial) is only created once payment is captured, so it
+    // comes back as `null` (not `undefined`) for approved-but-unpaid bookings.
+    const {
+        baseAmount = 0,
+        hostGst = false,
+        tcsAmount = 0,
+        tdsAmount = 0,
+        cgstAmount = 0,
+        sgstAmount = 0,
+        guestPlatformFeeAmount = 0,
+        guestPlatformFeeCgstAmount = 0,
+        guestPlatformFeeSgstAmount = 0,
+        hostPlatformFeeAmount = 0,
+        hostPlatformFeeCgstAmount = 0,
+        hostPlatformFeeSgstAmount = 0,
+        penaltyAmount = 0,
+        refundPercentage = 0,
+    } = Financial || {};
 
     // Guest calculations
     const guestBaseAmount = Number(baseAmount);
@@ -193,7 +197,7 @@ const ReservationDetails: React.FC<ReservationDetailsProps> = ({ isOpen, onClose
                     )}
                     <div className="flex items-center justify-between mt-1">
                         <Typography color="text-gray-500" size="sm" weight="font-medium">
-                            Status: {(status || 'N/A').toUpperCase()}
+                            Status: {activeTab === 'awaiting_payment' ? 'AWAITING PAYMENT' : (status || 'N/A').toUpperCase()}
                         </Typography>
                     </div>
                 </div>
@@ -216,6 +220,8 @@ const ReservationDetails: React.FC<ReservationDetailsProps> = ({ isOpen, onClose
                     </Typography>
                 </div>
 
+                {Financial ? (
+                <>
                 {/* Guest Paid Section with boxed background */}
                 <div className="flex flex-col gap-4 p-4 bg-yellow-50 rounded-lg">
                     <div className="flex justify-between items-center">
@@ -419,6 +425,22 @@ const ReservationDetails: React.FC<ReservationDetailsProps> = ({ isOpen, onClose
                         </div>
                     </div>
                 </div>
+                </>
+                ) : (
+                    <div className="flex flex-col gap-2 p-4 bg-yellow-50 rounded-lg">
+                        <div className="flex justify-between items-center">
+                            <Typography color="text-gray-900" size="base" weight="font-semibold">
+                                Booking Amount
+                            </Typography>
+                            <Typography color="text-gray-900" size="sm" weight="font-semibold">
+                                {formatCurrency(Number(amount))}
+                            </Typography>
+                        </div>
+                        <Typography color="text-gray-600" size="sm" weight="font-medium">
+                            Guest has not completed payment yet. The full payment and payout breakdown will appear here once payment is captured.
+                        </Typography>
+                    </div>
+                )}
 
                 {/* Attendees */}
                 <div className="flex justify-between items-center border-t border-gray-200 pt-3">

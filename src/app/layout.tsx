@@ -107,7 +107,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     />
                 </noscript>
 
-                <RootProvider>{children}</RootProvider>
+                <RootProvider>
+                    {children}
+                    <WatiWidget />
+                </RootProvider>
 
                 {/* Google Tag Manager - loads as early as possible (equivalent to top of <head>) */}
                 <Script id="gtm-script" strategy="lazyOnload">
@@ -148,8 +151,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     src="https://checkout.razorpay.com/v1/checkout.js"
                     strategy="lazyOnload"
                 />
-
-                <WatiWidget />
             </body>
         </html>
     );

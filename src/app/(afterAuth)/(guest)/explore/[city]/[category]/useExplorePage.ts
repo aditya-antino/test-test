@@ -99,9 +99,7 @@ export const useExplorePage = (initialSpaceData?: any) => {
 
     // Maps slug variants to their canonical activity value.
     const activityAliasMap: Record<string, string> = {
-        'baithak':         'baithaks',
         'creative-spaces': 'creative-workshop',
-        'community-meetup': 'meet-up'
     };
 
     const handleCtaClick = (categorySlug: string) => {

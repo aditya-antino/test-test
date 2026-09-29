@@ -148,7 +148,7 @@ export const ReservationCard = ({
                         }
                         href={`${PATHS.GUEST_DETAILS}/${data.User.id}`}
                     />
-                    {(activeStatusTab === 'completed' || activeStatusTab === 'upcoming') && (
+                    {['completed', 'upcoming', 'awaiting_payment'].includes(activeStatusTab) && (
                         <ReservationCardTypo
                             label="Mobile Number"
                             value={data.User?.phone_number || 'N/A'}
@@ -174,7 +174,7 @@ export const ReservationCard = ({
                 </div>
 
                 <div className="p-4 flex flex-col gap-2">
-                    {['upcoming', 'completed', 'cancelled', 'pending_payout'].includes(activeStatusTab) && (
+                    {['upcoming', 'completed', 'cancelled', 'pending_payout', 'awaiting_payment'].includes(activeStatusTab) && (
                         <Button
                             onClick={onClick}
                             className="text-gray-700 flex items-center justify-center w-full text-base font-semibold"

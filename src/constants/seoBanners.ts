@@ -25,14 +25,6 @@ export const SEO_BANNERS: Record<string, BannerContent> = {
         metaTitle: 'Book Yoga Studios & Wellness Spaces in Delhi NCR | Spare Space',
         metaDescription: 'Discover and book peaceful yoga studios and wellness spaces across Delhi, Noida & Gurgaon on Spare Space.'
     },
-    'yoga-sessions': {
-        title: 'Yoga Studios & Wellness Spaces',
-        description: 'Discover and book peaceful yoga studios and wellness spaces in Delhi, Noida, and Gurgaon for yoga classes, meditation, breathwork, wellness workshops, retreats, and private sessions. Find calm, fully equipped venues for individuals, instructors, and wellness communities across Delhi NCR.',
-        parentCategory: 'fitness-wellness-spaces',
-        metaTitle: 'Book Yoga Studios & Wellness Spaces in Delhi NCR | Spare Space',
-        metaDescription: 'Discover and book peaceful yoga studios and wellness spaces across Delhi, Noida & Gurgaon on Spare Space.'
-    },
-
     'kitchen': {
         title: 'Kitchen Sets & Spaces',
         description: 'Discover and book fully equipped kitchen sets and kitchen spaces in Delhi, Noida, and Gurgaon for food photography, cooking shows, recipe videos, product shoots, brand campaigns, content creation, and commercial productions.',
@@ -73,14 +65,7 @@ export const SEO_BANNERS: Record<string, BannerContent> = {
         metaDescription: 'Discover and book unique venues for supper clubs and private dining experiences across Delhi, Noida & Gurgaon on Spare Space.'
     },
 
-    'meet-up': {
-        title: 'Meetup Spaces',
-        description: 'Find comfortable meetup spaces in Delhi, Noida, and Gurgaon for networking events, startup communities, hobby groups, workshops, discussion circles, and social gatherings.',
-        parentCategory: 'event-spaces',
-        metaTitle: 'Book Meetup Spaces in Delhi NCR | Spare Space',
-        metaDescription: 'Discover and book comfortable meetup and networking spaces across Delhi, Noida & Gurgaon on Spare Space.'
-    },
-    'meetup': {
+    'meetups': {
         title: 'Meetup Spaces',
         description: 'Find comfortable meetup spaces in Delhi, Noida, and Gurgaon for networking events, startup communities, hobby groups, workshops, discussion circles, and social gatherings.',
         parentCategory: 'event-spaces',
@@ -104,13 +89,6 @@ export const SEO_BANNERS: Record<string, BannerContent> = {
         metaDescription: 'Book peaceful venues for bhajan evenings, satsangs, and spiritual gatherings across Delhi, Noida & Gurgaon on Spare Space.'
     },
 
-    'community-meetup': {
-        title: 'Community Meetup Spaces',
-        description: 'Discover community meetup spaces in Delhi, Noida, and Gurgaon for resident meetings, networking events, clubs, workshops, social initiatives, discussion groups, and local community gatherings.',
-        parentCategory: 'event-spaces',
-        metaTitle: 'Book Community Meetup Spaces in Delhi NCR | Spare Space',
-        metaDescription: 'Discover and book community meetup spaces for resident meetings, workshops, and social initiatives across Delhi, Noida & Gurgaon on Spare Space.'
-    },
     'community-meetups': {
         title: 'Community Meetup Spaces',
         description: 'Discover community meetup spaces in Delhi, Noida, and Gurgaon for resident meetings, networking events, clubs, workshops, social initiatives, discussion groups, and local community gatherings.',
@@ -119,13 +97,6 @@ export const SEO_BANNERS: Record<string, BannerContent> = {
         metaDescription: 'Discover and book community meetup spaces for resident meetings, workshops, and social initiatives across Delhi, Noida & Gurgaon on Spare Space.'
     },
 
-    'screening-space': {
-        title: 'Screening Spaces',
-        description: 'Discover and book screening spaces in Delhi, Noida, and Gurgaon for movie nights, documentary screenings, product launches, private screenings, presentations, film club events, and corporate showcases. Find venues equipped with projectors, screens, and comfortable seating for an immersive viewing experience.',
-        parentCategory: 'creative-spaces',
-        metaTitle: 'Book Screening Spaces in Delhi NCR | Spare Space',
-        metaDescription: 'Discover and book private screening spaces equipped with projectors, screens, and AV systems across Delhi, Noida & Gurgaon on Spare Space.'
-    },
     'screening-spaces': {
         title: 'Screening Spaces',
         description: 'Discover and book screening spaces in Delhi, Noida, and Gurgaon for movie nights, documentary screenings, product launches, private screenings, presentations, film club events, and corporate showcases. Find venues equipped with projectors, screens, and comfortable seating for an immersive viewing experience.',
@@ -191,13 +162,6 @@ export const SEO_BANNERS: Record<string, BannerContent> = {
     },
 
     'baithaks': {
-        title: 'Spaces for Hosting Baithaks',
-        description: 'Discover intimate, acoustically rich venues across Delhi, Noida, and Gurgaon for classical music baithaks, ghazal evenings, poetry sessions, and cultural gatherings.',
-        parentCategory: 'event-spaces',
-        metaTitle: 'Book Spaces for Hosting Baithaks in Delhi NCR | Spare Space',
-        metaDescription: 'Find and book intimate baithak venues for classical music, poetry, and cultural gatherings in Delhi, Noida & Gurgaon.'
-    },
-    'baithak': {
         title: 'Spaces for Hosting Baithaks',
         description: 'Discover intimate, acoustically rich venues across Delhi, Noida, and Gurgaon for classical music baithaks, ghazal evenings, poetry sessions, and cultural gatherings.',
         parentCategory: 'event-spaces',

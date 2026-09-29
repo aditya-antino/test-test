@@ -8,6 +8,7 @@ interface HeaderNotificationStatus {
         cancelled: boolean;
         rejected: boolean;
         pendingPayout: boolean;
+        awaiting_payment: boolean;
     };
     chat: boolean;
     showHostMessageBadge: boolean;
@@ -22,6 +23,7 @@ const initialState: HeaderNotificationStatus = {
         cancelled: true,
         rejected: false,
         pendingPayout: false,
+        awaiting_payment: false,
     },
     chat: true,
     showHostMessageBadge: true,

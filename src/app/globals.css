@@ -19,6 +19,15 @@ html {
     font-size: 87.5%; /* Reduces base size to 14px (1rem = 14px) */
 }
 
+/* Prevent iOS Safari from auto-zooming on input focus (triggers when font-size < 16px) */
+@media screen and (max-width: 768px) {
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+}
+
 * {
     font-family: 'Figtree';
     box-sizing: border-box;
@@ -266,6 +275,13 @@ input[type='radio']:checked::after {
 
 /* --- WATI Widget Scoped Overrides --- */
 /* IMPORTANT: All selectors must be scoped to the widget to avoid global side effects */
+
+/* 0. Only show the chat widget to logged-out visitors */
+body[data-chat-widget-hidden='true'] #wa-chat-widget {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
 
 /* 1. Hide "Powered by" branding - Maximum specificity */
 html body .wa-chat-box-poweredby,

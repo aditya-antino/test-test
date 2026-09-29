@@ -241,29 +241,6 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
             answer: 'Booking a few days in advance is recommended, especially for weekends and larger groups.',
         },
     ],
-    'yoga-sessions': [
-        {
-            question: 'What types of yoga sessions can I host?',
-            answer: 'You can host yoga classes, meditation sessions, breathwork practices, wellness workshops, private sessions, and group retreats.',
-        },
-        {
-            question: 'Can I book a yoga studio for private or group sessions?',
-            answer: 'Yes. You can book studios for private classes, group sessions, workshops, retreats, and wellness events.',
-        },
-        {
-            question: 'What facilities are available?',
-            answer: 'Most venues offer yoga mats, cushions, changing rooms, air conditioning, washrooms, parking, and a peaceful ambience.',
-        },
-        {
-            question: 'Can I book the studio on an hourly basis?',
-            answer: 'Yes. Most yoga studios offer flexible hourly and full-day booking options.',
-        },
-        {
-            question: 'How early should I book a yoga space?',
-            answer: 'Booking a few days in advance is recommended, especially for weekends and larger groups.',
-        },
-    ],
-
     'kitchen': [
         {
             question: 'Are kitchen spaces suitable for food photography?',
@@ -379,29 +356,7 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
         },
     ],
 
-    'meet-up': [
-        {
-            question: 'What types of meetups can I organize?',
-            answer: 'You can host networking events, startup meetups, workshops, club meetings, and community discussions.',
-        },
-        {
-            question: 'Can I book the venue on an hourly basis?',
-            answer: 'Yes. Most meetup spaces offer flexible hourly booking options.',
-        },
-        {
-            question: 'Is Wi-Fi available?',
-            answer: 'Many venues provide high-speed Wi-Fi for meetings and presentations.',
-        },
-        {
-            question: 'Are refreshments allowed?',
-            answer: 'Most venues allow refreshments or external catering, subject to their policies.',
-        },
-        {
-            question: "What's the ideal group size?",
-            answer: 'Meetup spaces are available for small groups as well as larger communities, depending on the venue.',
-        },
-    ],
-    'meetup': [
+    'meetups': [
         {
             question: 'What types of meetups can I organize?',
             answer: 'You can host networking events, startup meetups, workshops, club meetings, and community discussions.',
@@ -470,28 +425,6 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
         },
     ],
     
-    'community-meetup': [
-        {
-            question: 'What community events can I host?',
-            answer: 'You can host resident meetings, workshops, club gatherings, networking events, and social initiatives.',
-        },
-        {
-            question: 'Can I book recurring sessions?',
-            answer: 'Yes. Many venues support weekly or monthly recurring bookings.',
-        },
-        {
-            question: 'Is Wi-Fi available?',
-            answer: 'Most community venues provide Wi-Fi for meetings and presentations.',
-        },
-        {
-            question: 'Are refreshments permitted?',
-            answer: 'Yes. Many venues allow refreshments or external catering.',
-        },
-        {
-            question: 'What is the booking process?',
-            answer: 'Simply choose your venue, select the date and duration, and confirm your booking online.',
-        },
-    ],
     'community-meetups': [
         {
             question: 'What community events can I host?',
@@ -515,28 +448,6 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
         },
     ],
 
-    'screening-space': [
-        {
-            question: 'What can I screen at these venues?',
-            answer: 'You can host movie nights, documentaries, presentations, product launches, and private film screenings.',
-        },
-        {
-            question: 'Is a projector included?',
-            answer: 'Many screening venues provide projectors, screens, and AV equipment. Amenities may vary by venue.',
-        },
-        {
-            question: 'Can I host private screenings?',
-            answer: 'Yes. These venues are ideal for invite-only screenings, film clubs, and private events.',
-        },
-        {
-            question: 'Are sound systems provided?',
-            answer: 'Most screening spaces include professional sound systems for a great viewing experience.',
-        },
-        {
-            question: 'Can food and beverages be served?',
-            answer: "Many venues allow food and beverages, subject to the venue's policies.",
-        },
-    ],
     'screening-spaces': [
         {
             question: 'What can I screen at these venues?',
@@ -729,32 +640,6 @@ export const EXPLORE_PAGE_FAQS: Record<string, FAQ[]> = {
     ],
 
     'baithaks': [
-        {
-            question: 'What is a baithak venue?',
-            answer: 'A baithak venue is an intimate gathering space designed for cultural performances, discussions, music sessions, poetry readings, and community events.',
-        },
-        {
-            question: 'Can I host a live music performance in baithak venues?',
-            answer: 'Yes, many venues are suitable for classical music, ghazal nights, Sufi performances, and acoustic concerts.',
-        },
-        {
-            question: 'Are baithak spaces available for small private gatherings?',
-            answer: 'Absolutely. Many venues cater to intimate audiences ranging from 20 to 100 attendees.',
-        },
-        {
-            question: 'Can I book a baithak venue for a few hours?',
-            answer: 'Yes, several venues offer hourly and half-day rental options.',
-        },
-        {
-            question: 'What facilities are generally available in baithak spaces?',
-            answer: 'Most venues provide seating arrangements, sound systems, lighting, washrooms, and event support facilities.',
-        },
-        {
-            question: 'How early should I book a baithak space?',
-            answer: 'Booking 2-4 weeks in advance is recommended, especially for weekends and popular cultural venues.',
-        },
-    ],
-    'baithak': [
         {
             question: 'What is a baithak venue?',
             answer: 'A baithak venue is an intimate gathering space designed for cultural performances, discussions, music sessions, poetry readings, and community events.',

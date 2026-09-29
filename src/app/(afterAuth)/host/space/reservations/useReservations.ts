@@ -306,6 +306,12 @@ export const useReservations = () => {
 
     const ReservationStatusTabs = [
         {
+            label: 'Awaiting Payment',
+            value: 'awaiting_payment',
+            showBadge: !notifications.reservation?.awaiting_payment,
+            tooltip: 'Booking requests you have approved, but the guest has not completed payment yet. These will move to Upcoming once paid, or be auto-cancelled if payment is not made in time.',
+        },
+        {
             label: 'Upcoming',
             value: 'upcoming',
             showBadge: !notifications.reservation?.upcoming,

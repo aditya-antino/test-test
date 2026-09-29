@@ -9,6 +9,7 @@ import {
     parse,
 } from 'date-fns';
 import { useGetEarnings } from '@/services';
+import { formatIndianCurrencyZero } from '@/utils/IndianCurrencyFormatter';
 
 export function getRangeByFilter(filter: string): { start: Date; end: Date } {
     const today = new Date();
@@ -112,7 +113,7 @@ export const useEarningsAnalytics = () => {
 
     const formatAmount = (value: number | string | undefined) => {
         const num = parseFormattedAmount(value);
-        return num.toFixed(2);
+        return formatIndianCurrencyZero(num);
     };
 
     const totalEarnings =
